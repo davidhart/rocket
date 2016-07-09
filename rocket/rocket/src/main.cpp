@@ -1,7 +1,12 @@
-#include <iostream>
+#include "gameview.h"
 
 int main(char** argv, int argc)
 {
-	std::cout << "Hello World!" << std::endl;
+	GameView* view = GameView::Create("test application");
+
+
+
+	GameView::Release(view);
+
 	return 0;
 }

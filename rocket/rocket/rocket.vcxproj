@@ -19,7 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameview.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\windowsgameviewimpl.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\gameview.h" />
+    <ClInclude Include="src\igameviewimpl.h" />
+    <ClInclude Include="src\windowsgameviewimpl.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0606196C-9758-47C6-98A1-8F9FF68BFE86}</ProjectGuid>

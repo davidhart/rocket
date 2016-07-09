@@ -10,5 +10,22 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameview.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windowsgameviewimpl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\gameview.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\igameviewimpl.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windowsgameviewimpl.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
