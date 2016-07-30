@@ -1,7 +1,7 @@
 #include "gameview.h"
 #include "windowsgameviewimpl.h"
 
-GameView* GameView::Create(const char* title)
+GameView* GameView::Create(const wchar_t* title)
 {
 	IGameViewImpl* impl = new WindowsGameViewImpl();
 
@@ -14,7 +14,7 @@ GameView* GameView::Create(const char* title)
 	return new GameView(impl);
 }
 
-void GameView::SetTitle(const char* title)
+void GameView::SetTitle(const wchar_t* title)
 {
 	impl->SetTitle(title);
 }
@@ -22,6 +22,16 @@ void GameView::SetTitle(const char* title)
 void GameView::Release(GameView* view)
 {
 	delete view;
+}
+
+void GameView::FlushEvents()
+{
+	impl->FlushEvents();
+}
+
+bool GameView::IsClosed()
+{
+	return impl->IsClosed();
 }
 
 GameView::GameView(IGameViewImpl* impl) : 
