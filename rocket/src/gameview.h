@@ -1,23 +1,32 @@
 #pragma once
 
-class IGameViewImpl;
+#ifndef ROCKET_INCLUDED_GAMEVIEW
+#define ROCKET_INCLUDED_GAMEVIEW
 
-class GameView
+namespace Rocket
 {
-public:
-	static GameView* Create(const wchar_t* title);
-	static void Release(GameView* view);
 
-	void SetTitle(const wchar_t* title);
+	class IGameViewImpl;
 
-	void FlushEvents();
-	bool IsClosed();
+	class GameView
+	{
+	public:
+		static GameView* Create(const char* title);
+		static void Release(GameView* view);
 
-private:
-	GameView(IGameViewImpl* impl);
-	GameView(const GameView& view);
-	~GameView();
+		void SetTitle(const char* title);
 
-	IGameViewImpl* impl;
-};
+		void FlushEvents();
+		bool IsClosed();
 
+	private:
+		GameView(IGameViewImpl* impl);
+		GameView(const GameView& view);
+		~GameView();
+
+		IGameViewImpl* m_impl;
+	};
+
+}
+
+#endif

@@ -1,6 +1,8 @@
 #include "windowsgameviewimpl.h"
 
-#define WINDOWCLASSNAME L"GameViewWindowClass"
+#define WINDOWCLASSNAME "GameViewWindowClass"
+
+using namespace Rocket::Windows;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
@@ -17,30 +19,30 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 }
 
 WindowsGameViewImpl::WindowsGameViewImpl() :
-	hwnd(0),
-	isWindowClosed(false)
+	m_hwnd(0),
+	m_isWindowClosed(false)
 {
 }
 
 WindowsGameViewImpl::~WindowsGameViewImpl()
 {
-	if (hwnd != NULL)
+	if (m_hwnd != NULL)
 	{
-		CloseWindow(hwnd);
+		CloseWindow(m_hwnd);
 	}
 
-	if (isClassRegistered)
+	if (m_isClassRegistered)
 	{
-		UnregisterClassW(WINDOWCLASSNAME, NULL);
+		UnregisterClassA(WINDOWCLASSNAME, NULL);
 	}
 }
 
 bool WindowsGameViewImpl::Create()
 {
-	HINSTANCE hinstance = (HINSTANCE)GetModuleHandleW(NULL);
+	HINSTANCE hinstance = (HINSTANCE)GetModuleHandleA(NULL);
 
-	WNDCLASSEXW wcex;
-	wcex.cbSize = sizeof(WNDCLASSEXW);
+	WNDCLASSEXA wcex;
+	wcex.cbSize = sizeof(WNDCLASSEXA);
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc = &::WndProc;
 	wcex.cbClsExtra = 0;
@@ -53,19 +55,19 @@ bool WindowsGameViewImpl::Create()
 	wcex.lpszClassName = WINDOWCLASSNAME;
 	wcex.hIconSm = NULL;
 
-	ATOM windowclass = RegisterClassExW(&wcex);
+	ATOM windowclass = RegisterClassExA(&wcex);
 
-	isClassRegistered = windowclass != 0;
+	m_isClassRegistered = windowclass != 0;
 
-	if (isClassRegistered == false)
+	if (m_isClassRegistered == false)
 	{
 		return false;
 	}
 
-	hwnd = CreateWindowExW(
+	m_hwnd = CreateWindowExA(
 		WS_EX_APPWINDOW,
 		WINDOWCLASSNAME,
-		L"",
+		"",
 		WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -77,7 +79,7 @@ bool WindowsGameViewImpl::Create()
 		this
 	);
 
-	if (hwnd == NULL)
+	if (m_hwnd == NULL)
 	{
 		return false;
 	}
@@ -85,15 +87,15 @@ bool WindowsGameViewImpl::Create()
 	return true;
 }
 
-void WindowsGameViewImpl::SetTitle(const wchar_t* title)
+void WindowsGameViewImpl::SetTitle(const char* title)
 {
-	SetWindowTextW(hwnd, title);
+	SetWindowTextA(m_hwnd, title);
 }
 
 void WindowsGameViewImpl::FlushEvents()
 {
 	MSG msg;
-	while (PeekMessageW(&msg, hwnd, 0, 0, PM_REMOVE))
+	while (PeekMessageW(&msg, m_hwnd, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessageW(&msg);
@@ -102,14 +104,14 @@ void WindowsGameViewImpl::FlushEvents()
 
 bool WindowsGameViewImpl::IsClosed()
 {
-	return isWindowClosed;
+	return m_isWindowClosed;
 }
 
 LRESULT WindowsGameViewImpl::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	if (umsg == WM_CLOSE)
 	{
-		isWindowClosed = true;
+		m_isWindowClosed = true;
 	}
 
 	return DefWindowProc(hwnd, umsg, wparam, lparam);

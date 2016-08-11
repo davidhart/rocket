@@ -1,9 +1,11 @@
 #include "gameview.h"
 #include "windowsgameviewimpl.h"
 
-GameView* GameView::Create(const wchar_t* title)
+using namespace Rocket;
+
+GameView* GameView::Create(const char* title)
 {
-	IGameViewImpl* impl = new WindowsGameViewImpl();
+	IGameViewImpl* impl = new Windows::WindowsGameViewImpl();
 
 	if (impl->Create() == false)
 	{
@@ -11,12 +13,14 @@ GameView* GameView::Create(const wchar_t* title)
 		return nullptr;
 	}
 
+	impl->SetTitle(title);
+
 	return new GameView(impl);
 }
 
-void GameView::SetTitle(const wchar_t* title)
+void GameView::SetTitle(const char* title)
 {
-	impl->SetTitle(title);
+	m_impl->SetTitle(title);
 }
 
 void GameView::Release(GameView* view)
@@ -26,16 +30,16 @@ void GameView::Release(GameView* view)
 
 void GameView::FlushEvents()
 {
-	impl->FlushEvents();
+	m_impl->FlushEvents();
 }
 
 bool GameView::IsClosed()
 {
-	return impl->IsClosed();
+	return m_impl->IsClosed();
 }
 
 GameView::GameView(IGameViewImpl* impl) : 
-	impl(impl)
+	m_impl(impl)
 {
 
 }

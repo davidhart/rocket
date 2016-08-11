@@ -2,9 +2,11 @@
 
 #include <thread>
 
+using namespace Rocket;
+
 int main(char** argv, int argc)
 {
-	GameView* view = GameView::Create(L"test application");
+	GameView* view = GameView::Create("test application");
 
 	while (view->IsClosed() == false)
 	{
