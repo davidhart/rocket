@@ -17,16 +17,24 @@ namespace Rocket
 			WindowsGameViewImpl();
 			virtual ~WindowsGameViewImpl();
 			virtual bool Create();
+
+			virtual Renderer* CreateRenderer();
+			virtual void ReleaseRenderer(Renderer* renderer);
+
 			virtual void SetTitle(const char* title);
 			virtual void FlushEvents();
 			virtual bool IsClosed();
+			virtual void SetIsResizable(bool isResizable);
+			virtual bool GetIsResizable();
+
 			LRESULT WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
 
 		private:
 
-			bool m_isClassRegistered;
 			HWND m_hwnd;
+			bool m_isClassRegistered;
 			bool m_isWindowClosed;
+			bool m_isResizable;
 		};
 	}
 }

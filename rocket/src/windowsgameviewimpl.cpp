@@ -2,6 +2,7 @@
 
 #define WINDOWCLASSNAME "GameViewWindowClass"
 
+using namespace Rocket;
 using namespace Rocket::Windows;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
@@ -20,7 +21,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 
 WindowsGameViewImpl::WindowsGameViewImpl() :
 	m_hwnd(0),
-	m_isWindowClosed(false)
+	m_isClassRegistered(false),
+	m_isWindowClosed(false),
+	m_isResizable(false)
 {
 }
 
@@ -87,6 +90,16 @@ bool WindowsGameViewImpl::Create()
 	return true;
 }
 
+Renderer* WindowsGameViewImpl::CreateRenderer()
+{
+	return nullptr;
+}
+
+void WindowsGameViewImpl::ReleaseRenderer(Renderer* renderer)
+{
+
+}
+
 void WindowsGameViewImpl::SetTitle(const char* title)
 {
 	SetWindowTextA(m_hwnd, title);
@@ -105,6 +118,29 @@ void WindowsGameViewImpl::FlushEvents()
 bool WindowsGameViewImpl::IsClosed()
 {
 	return m_isWindowClosed;
+}
+
+void WindowsGameViewImpl::SetIsResizable(bool isResizable)
+{
+	LONG style = GetWindowLongA(m_hwnd, GWL_STYLE);
+
+	if (isResizable)
+	{
+		style |= WS_SIZEBOX;
+	}
+	else
+	{
+		style &= ~WS_SIZEBOX;
+	}
+
+	SetWindowLongA(m_hwnd, GWL_STYLE, style);
+
+	m_isResizable = isResizable;
+}
+
+bool WindowsGameViewImpl::GetIsResizable()
+{
+	return m_isResizable;
 }
 
 LRESULT WindowsGameViewImpl::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
