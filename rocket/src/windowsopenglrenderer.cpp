@@ -12,7 +12,12 @@ WindowsOpenGLRenderer::WindowsOpenGLRenderer(HWND hwnd) :
 
 WindowsOpenGLRenderer::~WindowsOpenGLRenderer()
 {
+	if (m_hglrc != NULL)
+	{
+		wglMakeCurrent(m_hdc, NULL);
+	}
 
+	wglDeleteContext(m_hglrc);
 }
 
 bool WindowsOpenGLRenderer::Create()
