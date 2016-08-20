@@ -13,7 +13,13 @@
     <ClCompile Include="src\gameview.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\windowsgameviewimpl.cpp">
+    <ClCompile Include="src\windowsgameview.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windowsopenglrenderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -21,10 +27,13 @@
     <ClInclude Include="src\gameview.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\igameviewimpl.h">
+    <ClInclude Include="src\windowsgameview.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\windowsgameviewimpl.h">
+    <ClInclude Include="src\renderer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windowsopenglrenderer.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

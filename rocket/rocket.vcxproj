@@ -21,12 +21,15 @@
   <ItemGroup>
     <ClCompile Include="src\gameview.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\windowsgameviewimpl.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\windowsgameview.cpp" />
+    <ClCompile Include="src\windowsopenglrenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameview.h" />
-    <ClInclude Include="src\igameviewimpl.h" />
-    <ClInclude Include="src\windowsgameviewimpl.h" />
+    <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\windowsgameview.h" />
+    <ClInclude Include="src\windowsopenglrenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0606196C-9758-47C6-98A1-8F9FF68BFE86}</ProjectGuid>
@@ -97,6 +100,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -107,6 +111,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,6 +127,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,6 +142,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,5 @@
 #include "gameview.h"
+#include "renderer.h"
 
 #include <thread>
 
@@ -15,6 +16,8 @@ int main(char** argv, int argc)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
+
+		renderer->Present();
 	}
 	
 	view->ReleaseRenderer(renderer);

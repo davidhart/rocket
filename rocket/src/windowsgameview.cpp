@@ -1,4 +1,5 @@
-#include "windowsgameviewimpl.h"
+#include "windowsgameview.h"
+#include "windowsopenglrenderer.h"
 
 #define WINDOWCLASSNAME "GameViewWindowClass"
 
@@ -14,12 +15,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 	}
 	else
 	{
-		WindowsGameViewImpl* view = (WindowsGameViewImpl*)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
+		WindowsGameView* view = (WindowsGameView*)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
 		return view->WndProc(hwnd, umsg, wparam, lparam);
 	}
 }
 
-WindowsGameViewImpl::WindowsGameViewImpl() :
+WindowsGameView::WindowsGameView() :
 	m_hwnd(0),
 	m_isClassRegistered(false),
 	m_isWindowClosed(false),
@@ -27,7 +28,7 @@ WindowsGameViewImpl::WindowsGameViewImpl() :
 {
 }
 
-WindowsGameViewImpl::~WindowsGameViewImpl()
+WindowsGameView::~WindowsGameView()
 {
 	if (m_hwnd != NULL)
 	{
@@ -40,7 +41,7 @@ WindowsGameViewImpl::~WindowsGameViewImpl()
 	}
 }
 
-bool WindowsGameViewImpl::Create()
+bool WindowsGameView::Create()
 {
 	HINSTANCE hinstance = (HINSTANCE)GetModuleHandleA(NULL);
 
@@ -90,22 +91,30 @@ bool WindowsGameViewImpl::Create()
 	return true;
 }
 
-Renderer* WindowsGameViewImpl::CreateRenderer()
+Renderer* WindowsGameView::CreateRenderer()
 {
-	return nullptr;
+	WindowsOpenGLRenderer* renderer = new WindowsOpenGLRenderer(m_hwnd);
+
+	if (renderer->Create() == false)
+	{
+		delete renderer;
+		return nullptr;
+	}
+
+	return renderer;
 }
 
-void WindowsGameViewImpl::ReleaseRenderer(Renderer* renderer)
+void WindowsGameView::ReleaseRenderer(Renderer* renderer)
 {
-
+	delete renderer;
 }
 
-void WindowsGameViewImpl::SetTitle(const char* title)
+void WindowsGameView::SetTitle(const char* title)
 {
 	SetWindowTextA(m_hwnd, title);
 }
 
-void WindowsGameViewImpl::FlushEvents()
+void WindowsGameView::FlushEvents()
 {
 	MSG msg;
 	while (PeekMessageW(&msg, m_hwnd, 0, 0, PM_REMOVE))
@@ -115,12 +124,12 @@ void WindowsGameViewImpl::FlushEvents()
 	}
 }
 
-bool WindowsGameViewImpl::IsClosed()
+bool WindowsGameView::IsClosed()
 {
 	return m_isWindowClosed;
 }
 
-void WindowsGameViewImpl::SetIsResizable(bool isResizable)
+void WindowsGameView::SetIsResizable(bool isResizable)
 {
 	LONG style = GetWindowLongA(m_hwnd, GWL_STYLE);
 
@@ -138,12 +147,12 @@ void WindowsGameViewImpl::SetIsResizable(bool isResizable)
 	m_isResizable = isResizable;
 }
 
-bool WindowsGameViewImpl::GetIsResizable()
+bool WindowsGameView::GetIsResizable()
 {
 	return m_isResizable;
 }
 
-LRESULT WindowsGameViewImpl::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
+LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	if (umsg == WM_CLOSE)
 	{

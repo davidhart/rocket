@@ -3,7 +3,7 @@
 #ifndef ROCKET_INCLUDED_WINDOWSGAMEVIEWIMPL
 #define ROCKET_INCLUDED_WINDOWSGAMEVIEWIMPL
 
-#include "igameviewimpl.h"
+#include "gameview.h"
 
 #include <Windows.h>
 
@@ -11,12 +11,12 @@ namespace Rocket
 {
 	namespace Windows
 	{
-		class WindowsGameViewImpl : public IGameViewImpl
+		class WindowsGameView : public GameView
 		{
 		public:
-			WindowsGameViewImpl();
-			virtual ~WindowsGameViewImpl();
-			virtual bool Create();
+			WindowsGameView();
+			virtual ~WindowsGameView();
+			bool Create();
 
 			virtual Renderer* CreateRenderer();
 			virtual void ReleaseRenderer(Renderer* renderer);

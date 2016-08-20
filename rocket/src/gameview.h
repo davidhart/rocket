@@ -5,7 +5,6 @@
 
 namespace Rocket
 {
-	class IGameViewImpl;
 	class Renderer;
 
 	class GameView
@@ -14,24 +13,18 @@ namespace Rocket
 		
 		static GameView* Create(const char* title);
 		static void Release(GameView* view);
+		virtual ~GameView();
 
-		Renderer* CreateRenderer();
-		void ReleaseRenderer(Renderer* renderer);
+		virtual Renderer* CreateRenderer() = 0;
+		virtual void ReleaseRenderer(Renderer* renderer) = 0;
 
-		void SetTitle(const char* title);
+		virtual void SetTitle(const char* title) = 0;
 
-		void SetIsResizable(bool isResizable);
-		bool GetIsResizable();
+		virtual void SetIsResizable(bool isResizable) = 0;
+		virtual bool GetIsResizable() = 0;
 
-		void FlushEvents();
-		bool IsClosed();
-
-	private:
-		GameView(IGameViewImpl* impl);
-		GameView(const GameView& view);
-		~GameView();
-
-		IGameViewImpl* m_impl;
+		virtual void FlushEvents() = 0;
+		virtual bool IsClosed() = 0;
 	};
 
 }
