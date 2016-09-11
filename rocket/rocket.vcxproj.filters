@@ -5,6 +5,12 @@
       <UniqueIdentifier>{8f42376f-2a71-478b-99e0-b8fe0f4c31b2}</UniqueIdentifier>
       <Extensions>.cpp</Extensions>
     </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{681c502a-e7b2-4dd1-9c0e-b20fe1db8295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\generated">
+      <UniqueIdentifier>{f0f84a14-4b6a-4a68-9511-c070d120e3ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -22,6 +28,9 @@
     <ClCompile Include="src\renderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\gl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameview.h">
@@ -36,5 +45,27 @@
     <ClInclude Include="src\windowsopenglrenderer.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\gl.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\glcorearb.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\gen_gl_core.py">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="src\generated\gldecl.inl">
+      <Filter>src\generated</Filter>
+    </None>
+    <None Include="src\generated\glsetup.inl">
+      <Filter>src\generated</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="scripts\data_gl_core.txt">
+      <Filter>scripts</Filter>
+    </Text>
   </ItemGroup>
 </Project>

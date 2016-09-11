@@ -2,6 +2,9 @@
 
 #include <gl/GL.h>
 
+#include "wglext.h"
+#include "gl.h"
+
 using namespace Rocket::Windows;
 
 WindowsOpenGLRenderer::WindowsOpenGLRenderer(HWND hwnd) :
@@ -22,6 +25,7 @@ WindowsOpenGLRenderer::~WindowsOpenGLRenderer()
 
 bool WindowsOpenGLRenderer::Create()
 {
+	// Create an OpenGL 3.0 context, with no fallback if 3.0 core is not supported
 	m_hdc = GetDC(m_hwnd);
 
 	if (m_hdc == NULL)
@@ -63,13 +67,64 @@ bool WindowsOpenGLRenderer::Create()
 		return false;
 	}
 
-	m_hglrc = wglCreateContext(m_hdc);
+	HGLRC tempHglrc = wglCreateContext(m_hdc);
+
+	if (tempHglrc == NULL)
+	{
+		return false;
+	}
+
+	wglMakeCurrent(m_hdc, tempHglrc);
+
+	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+
+	GL gl((GL::GetProcImpl)wglGetProcAddress);
+
+	wglMakeCurrent(NULL, NULL);
+	wglDeleteContext(tempHglrc);
+	
+	if (wglChoosePixelFormatARB == nullptr || wglCreateContextAttribsARB == nullptr)
+	{
+		return false;
+	}
+
+	int pfAttribs[] =
+	{
+		WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+		WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+		WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+		WGL_COLOR_BITS_ARB, 32,
+		WGL_DEPTH_BITS_ARB, 24,
+		WGL_STENCIL_BITS_ARB, 8,
+		0 // Terminator
+	};
+
+	int pixelFormat;
+	UINT numFormats;
+
+	if (wglChoosePixelFormatARB(m_hdc, pfAttribs, NULL, 1, &pixelFormat, &numFormats) == false)
+	{
+		// No supported pixel formats
+		return false;
+	}
+
+	int contextAttribs[] =
+	{
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 0,
+		WGL_CONTEXT_FLAGS_ARB, 0,
+		0
+	};
+
+	m_hglrc = wglCreateContextAttribsARB(m_hdc, NULL, contextAttribs);
 
 	if (m_hglrc == NULL)
 	{
 		return false;
 	}
-
+	
 	return true;
 }
 

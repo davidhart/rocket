@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\gameview.cpp" />
+    <ClCompile Include="src\gl.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\windowsgameview.cpp" />
@@ -27,9 +28,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameview.h" />
+    <ClInclude Include="src\gl.h" />
+    <ClInclude Include="src\glcorearb.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\windowsgameview.h" />
     <ClInclude Include="src\windowsopenglrenderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\gen_gl_core.py" />
+    <None Include="src\generated\gldecl.inl" />
+    <None Include="src\generated\glsetup.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="scripts\data_gl_core.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0606196C-9758-47C6-98A1-8F9FF68BFE86}</ProjectGuid>
