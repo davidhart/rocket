@@ -22,6 +22,11 @@ namespace Rocket
 
 			static bool IsInitialized();
 			static void Initialize(GetProcImpl get);
+
+		private:
+			Platform();
+			Platform(const Platform&);
+			~Platform();
 		};
 	}
 }
