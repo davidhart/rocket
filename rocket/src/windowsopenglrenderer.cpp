@@ -1,11 +1,10 @@
 #include "windowsopenglrenderer.h"
 
-#include <gl/GL.h>
-
+#include "opengl/rocket_opengl.h"
 #include "wglext.h"
-#include "gl.h"
 
 using namespace Rocket::Windows;
+using namespace Rocket::OpenGL;
 
 WindowsOpenGLRenderer::WindowsOpenGLRenderer(HWND hwnd) :
 	m_hwnd(hwnd)
@@ -79,7 +78,10 @@ bool WindowsOpenGLRenderer::Create()
 	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
 	PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
 
-	GL gl((GL::GetProcImpl)wglGetProcAddress);
+	if (Platform::IsInitialized() == false)
+	{
+		Platform::Initialize((Platform::GetProcImpl)wglGetProcAddress);
+	}
 
 	wglMakeCurrent(NULL, NULL);
 	wglDeleteContext(tempHglrc);
@@ -115,7 +117,7 @@ bool WindowsOpenGLRenderer::Create()
 		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
 		WGL_CONTEXT_MINOR_VERSION_ARB, 0,
 		WGL_CONTEXT_FLAGS_ARB, 0,
-		0
+		0 // Terminator
 	};
 
 	m_hglrc = wglCreateContextAttribsARB(m_hdc, NULL, contextAttribs);

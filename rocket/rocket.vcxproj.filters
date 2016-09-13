@@ -8,8 +8,11 @@
     <Filter Include="scripts">
       <UniqueIdentifier>{681c502a-e7b2-4dd1-9c0e-b20fe1db8295}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\generated">
-      <UniqueIdentifier>{f0f84a14-4b6a-4a68-9511-c070d120e3ea}</UniqueIdentifier>
+    <Filter Include="src\opengl">
+      <UniqueIdentifier>{f563cf4c-7295-4b8c-a220-5d0dff8204e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\opengl\generated">
+      <UniqueIdentifier>{003978f1-a887-4670-b027-0811648c0c7c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,8 +31,8 @@
     <ClCompile Include="src\renderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\gl.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\opengl\rocket_opengl.cpp">
+      <Filter>src\opengl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,22 +48,25 @@
     <ClInclude Include="src\windowsopenglrenderer.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\gl.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\opengl\rocket_opengl.h">
+      <Filter>src\opengl</Filter>
     </ClInclude>
-    <ClInclude Include="src\glcorearb.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\opengl\glcorearb.h">
+      <Filter>src\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\gen_gl_core.py">
       <Filter>scripts</Filter>
     </None>
-    <None Include="src\generated\gldecl.inl">
-      <Filter>src\generated</Filter>
+    <None Include="src\opengl\generated\gldecl.inl">
+      <Filter>src\opengl\generated</Filter>
     </None>
-    <None Include="src\generated\glsetup.inl">
-      <Filter>src\generated</Filter>
+    <None Include="src\opengl\generated\glsetup.inl">
+      <Filter>src\opengl\generated</Filter>
+    </None>
+    <None Include="src\opengl\generated\gldefn.inl">
+      <Filter>src\opengl\generated</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
