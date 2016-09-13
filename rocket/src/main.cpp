@@ -1,9 +1,36 @@
 #include "gameview.h"
 #include "renderer.h"
+#include "vertexbuffer.h"
 
 #include <thread>
+#include <cassert>
 
 using namespace Rocket;
+
+void TestVertexBuffers(Renderer* renderer)
+{
+	// Create a buffer with no data
+	VertexBuffer* vertexbuffer = renderer->CreateVertexBuffer(100, nullptr);
+	assert(vertexbuffer);
+	renderer->ReleaseVertexBuffer(vertexbuffer);
+
+	// Create a buffer with data, map it and compare with original data
+	float vertexdata[] = {
+		0.5f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f
+	};
+
+	VertexBuffer* vertexbuffer2 = renderer->CreateVertexBuffer(sizeof(vertexdata), vertexdata);
+
+	void* mappeddata = vertexbuffer2->Map(VertexBuffer::READ_ONLY);
+	assert(mappeddata);
+	int test = memcmp(vertexdata, mappeddata, sizeof(vertexdata));
+	assert(test == 0);
+	vertexbuffer2->Unmap();
+
+	renderer->ReleaseVertexBuffer(vertexbuffer2);
+}
 
 int main(char** argv, int argc)
 {
@@ -11,6 +38,8 @@ int main(char** argv, int argc)
 	Renderer* renderer = view->CreateRenderer();
 	
 	view->SetIsResizable(true);
+
+	TestVertexBuffers(renderer);
 
 	while (view->IsClosed() == false)
 	{

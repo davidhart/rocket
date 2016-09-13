@@ -18,6 +18,9 @@ namespace Rocket
 			virtual ~WindowsOpenGLRenderer();
 			bool Create();
 
+			virtual VertexBuffer* CreateVertexBuffer(size_t size, void* data);
+			virtual void ReleaseVertexBuffer(VertexBuffer* buffer);
+
 			virtual void Present();
 
 		private:

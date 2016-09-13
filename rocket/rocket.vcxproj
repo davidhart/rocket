@@ -21,16 +21,20 @@
   <ItemGroup>
     <ClCompile Include="src\gameview.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\opengl\glvertexbuffer.cpp" />
     <ClCompile Include="src\opengl\rocket_opengl.cpp" />
     <ClCompile Include="src\renderer.cpp" />
+    <ClCompile Include="src\vertexbuffer.cpp" />
     <ClCompile Include="src\windowsgameview.cpp" />
     <ClCompile Include="src\windowsopenglrenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="opengl\glvertexbuffer.h" />
     <ClInclude Include="src\gameview.h" />
     <ClInclude Include="src\opengl\glcorearb.h" />
     <ClInclude Include="src\opengl\rocket_opengl.h" />
     <ClInclude Include="src\renderer.h" />
+    <ClInclude Include="src\vertexbuffer.h" />
     <ClInclude Include="src\windowsgameview.h" />
     <ClInclude Include="src\windowsopenglrenderer.h" />
   </ItemGroup>

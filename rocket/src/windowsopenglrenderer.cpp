@@ -3,6 +3,9 @@
 #include "opengl/rocket_opengl.h"
 #include "wglext.h"
 
+#include "opengl/glvertexbuffer.h"
+
+using namespace Rocket;
 using namespace Rocket::Windows;
 using namespace Rocket::OpenGL;
 
@@ -128,6 +131,26 @@ bool WindowsOpenGLRenderer::Create()
 	}
 	
 	return true;
+}
+
+VertexBuffer* WindowsOpenGLRenderer::CreateVertexBuffer(size_t size, void* data)
+{
+	wglMakeCurrent(m_hdc, m_hglrc);
+
+	GLVertexBuffer* buffer = new GLVertexBuffer();
+
+	if (buffer->Create(size, data) == false)
+	{
+		delete buffer;
+		return nullptr;
+	}
+
+	return buffer;
+}
+
+void WindowsOpenGLRenderer::ReleaseVertexBuffer(VertexBuffer* buffer)
+{
+	delete buffer;
 }
 
 void WindowsOpenGLRenderer::Present()

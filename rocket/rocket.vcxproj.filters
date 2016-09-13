@@ -34,6 +34,12 @@
     <ClCompile Include="src\opengl\rocket_opengl.cpp">
       <Filter>src\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="src\opengl\glvertexbuffer.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vertexbuffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameview.h">
@@ -53,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="src\opengl\glcorearb.h">
       <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl\glvertexbuffer.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vertexbuffer.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
