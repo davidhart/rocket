@@ -25,9 +25,6 @@
     <ClCompile Include="src\windowsgameview.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\windowsopenglrenderer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\renderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -40,6 +37,15 @@
     <ClCompile Include="src\vertexbuffer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\windowsopenglrenderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\glshader.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameview.h">
@@ -51,20 +57,26 @@
     <ClInclude Include="src\renderer.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\windowsopenglrenderer.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\opengl\rocket_opengl.h">
       <Filter>src\opengl</Filter>
     </ClInclude>
     <ClInclude Include="src\opengl\glcorearb.h">
       <Filter>src\opengl</Filter>
     </ClInclude>
-    <ClInclude Include="opengl\glvertexbuffer.h">
-      <Filter>src\opengl</Filter>
-    </ClInclude>
     <ClInclude Include="src\vertexbuffer.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\glvertexbuffer.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windowsopenglrenderer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\glshader.h">
+      <Filter>src\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -23,7 +23,7 @@ void TestVertexBuffers(Renderer* renderer)
 
 	VertexBuffer* vertexbuffer2 = renderer->CreateVertexBuffer(sizeof(vertexdata), vertexdata);
 
-	void* mappeddata = vertexbuffer2->Map(VertexBuffer::READ_ONLY);
+	void* mappeddata = vertexbuffer2->Map(VertexBuffer::MAP_READ_ONLY);
 	assert(mappeddata);
 	int test = memcmp(vertexdata, mappeddata, sizeof(vertexdata));
 	assert(test == 0);

@@ -60,13 +60,13 @@ void* GLVertexBuffer::Map(VertexBuffer::MapUsage usage)
 
 	switch (usage)
 	{
-	case VertexBuffer::READ_ONLY:
+	case VertexBuffer::MAP_READ_ONLY:
 		glaccess = GL_READ_ONLY;
 		break;
-	case VertexBuffer::WRITE_ONLY:
+	case VertexBuffer::MAP_WRITE_ONLY:
 		glaccess = GL_WRITE_ONLY;
 		break;
-	case VertexBuffer::READ_AND_WRITE:
+	case VertexBuffer::MAP_READ_AND_WRITE:
 		glaccess = GL_READ_WRITE;
 	default:
 		assert(false); // GLVertexBuffer MapUsage type not implemented

@@ -2,6 +2,11 @@
 
 using namespace Rocket;
 
+VertexBuffer::VertexBuffer()
+{
+
+}
+
 VertexBuffer::~VertexBuffer()
 {
 

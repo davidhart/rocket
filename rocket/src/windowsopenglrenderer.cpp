@@ -4,6 +4,7 @@
 #include "wglext.h"
 
 #include "opengl/glvertexbuffer.h"
+#include "opengl/glshader.h"
 
 using namespace Rocket;
 using namespace Rocket::Windows;
@@ -151,6 +152,16 @@ VertexBuffer* WindowsOpenGLRenderer::CreateVertexBuffer(size_t size, void* data)
 void WindowsOpenGLRenderer::ReleaseVertexBuffer(VertexBuffer* buffer)
 {
 	delete buffer;
+}
+
+Shader* WindowsOpenGLRenderer::CreateShader(size_t size, void* data)
+{
+	return nullptr;
+}
+
+void WindowsOpenGLRenderer::ReleaseShader(Shader* shader)
+{
+	delete shader;
 }
 
 void WindowsOpenGLRenderer::Present()

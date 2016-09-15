@@ -59,6 +59,7 @@ glCompileShader
 glCreateProgram
 glCreateShader
 glDeleteProgram
+glDeleteShader
 glDetachShader
 glDisableVertexAttribArray
 glEnableVertexAttribArray

@@ -21,6 +21,9 @@ namespace Rocket
 			virtual VertexBuffer* CreateVertexBuffer(size_t size, void* data);
 			virtual void ReleaseVertexBuffer(VertexBuffer* buffer);
 
+			virtual Shader* CreateShader(size_t size, void* data);
+			virtual void ReleaseShader(Shader* shader);
+
 			virtual void Present();
 
 		private:

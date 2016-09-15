@@ -51,6 +51,7 @@ glCompileShader = (PFNGLCOMPILESHADERPROC)get("glCompileShader"); assert(glCompi
 glCreateProgram = (PFNGLCREATEPROGRAMPROC)get("glCreateProgram"); assert(glCreateProgram);
 glCreateShader = (PFNGLCREATESHADERPROC)get("glCreateShader"); assert(glCreateShader);
 glDeleteProgram = (PFNGLDELETEPROGRAMPROC)get("glDeleteProgram"); assert(glDeleteProgram);
+glDeleteShader = (PFNGLDELETESHADERPROC)get("glDeleteShader"); assert(glDeleteShader);
 glDetachShader = (PFNGLDETACHSHADERPROC)get("glDetachShader"); assert(glDetachShader);
 glDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC)get("glDisableVertexAttribArray"); assert(glDisableVertexAttribArray);
 glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)get("glEnableVertexAttribArray"); assert(glEnableVertexAttribArray);

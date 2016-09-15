@@ -6,6 +6,7 @@
 namespace Rocket
 {
 	class VertexBuffer;
+	class Shader;
 
 	class Renderer
 	{
@@ -14,6 +15,9 @@ namespace Rocket
 
 		virtual VertexBuffer* CreateVertexBuffer(size_t size, void* data) = 0;
 		virtual void ReleaseVertexBuffer(VertexBuffer* buffer) = 0;
+
+		virtual Shader* CreateShader(size_t size, void* data) = 0;
+		virtual void ReleaseShader(Shader* shader) = 0;
 
 		virtual void Present() = 0;
 	};
