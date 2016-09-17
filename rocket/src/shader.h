@@ -3,6 +3,15 @@
 
 namespace Rocket
 {
+	struct ShaderSource
+	{
+		void* vert;
+		size_t vertSize;
+
+		void* frag;
+		size_t fragSize;
+	};
+
 	class Shader
 	{
 	protected:

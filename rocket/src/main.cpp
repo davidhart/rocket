@@ -1,6 +1,7 @@
 #include "gameview.h"
 #include "renderer.h"
 #include "vertexbuffer.h"
+#include "shader.h"
 
 #include <thread>
 #include <cassert>
@@ -32,6 +33,23 @@ void TestVertexBuffers(Renderer* renderer)
 	renderer->ReleaseVertexBuffer(vertexbuffer2);
 }
 
+void TestShaders(Renderer* renderer)
+{
+	ShaderSource shaderSource =
+	{
+		nullptr,
+		0,
+		nullptr,
+		0
+	};
+
+	Shader* shader = renderer->CreateShader(shaderSource);
+
+	assert(shader);
+
+	renderer->ReleaseShader(shader);
+}
+
 int main(char** argv, int argc)
 {
 	GameView* view = GameView::Create("test application");
@@ -40,6 +58,8 @@ int main(char** argv, int argc)
 	view->SetIsResizable(true);
 
 	TestVertexBuffers(renderer);
+
+	TestShaders(renderer);
 
 	while (view->IsClosed() == false)
 	{

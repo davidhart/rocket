@@ -1,5 +1,6 @@
 #include "glshader.h"
 
+using namespace Rocket;
 using namespace Rocket::OpenGL;
 
 GLShader::GLShader() :
@@ -28,10 +29,11 @@ GLShader::~GLShader()
 	}
 }
 
-bool GLShader::Create(size_t size, void* data)
+bool GLShader::Create(const ShaderSource& source)
 {
-	m_vert = glCreateShader(GL_VERTEX_SHADER);
-	m_frag = glCreateShader(GL_FRAGMENT_SHADER);
+	m_vert = CreateSubShader(GL_VERTEX_SHADER, source.vertSize, source.vert);
+
+	m_frag = CreateSubShader(GL_FRAGMENT_SHADER, source.fragSize, source.frag);
 
 	m_program = glCreateProgram();
 	glAttachShader(m_program, m_vert);
@@ -39,4 +41,17 @@ bool GLShader::Create(size_t size, void* data)
 	glLinkProgram(m_program);
 
 	return true;
+}
+
+GLenum GLShader::CreateSubShader(GLenum type, size_t size, const void* source)
+{
+	GLenum shader = glCreateShader(type);
+
+	const GLchar* glsource = (const GLchar*)source;
+	GLint glsize = (GLint)size;
+
+	glShaderSource(shader, 1, &glsource, &glsize);
+	glCompileShader(shader);
+
+	return shader;
 }

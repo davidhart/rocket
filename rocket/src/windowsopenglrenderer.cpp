@@ -154,9 +154,17 @@ void WindowsOpenGLRenderer::ReleaseVertexBuffer(VertexBuffer* buffer)
 	delete buffer;
 }
 
-Shader* WindowsOpenGLRenderer::CreateShader(size_t size, void* data)
+Shader* WindowsOpenGLRenderer::CreateShader(const ShaderSource& source)
 {
-	return nullptr;
+	GLShader* shader = new GLShader();
+	
+	if (shader->Create(source) == false)
+	{
+		delete shader;
+		return nullptr;
+	}
+
+	return shader;
 }
 
 void WindowsOpenGLRenderer::ReleaseShader(Shader* shader)
