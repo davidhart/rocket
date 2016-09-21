@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef ROCKET_INCLUDED_GAMEVIEW
 #define ROCKET_INCLUDED_GAMEVIEW
 

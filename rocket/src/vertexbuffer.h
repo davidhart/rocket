@@ -1,6 +1,6 @@
 #pragma once
-#ifndef ROCKET_VERTEXBUFFER
-#define ROCKET_VERTEXVUFFER
+#ifndef ROCKET_INCLUDED_VERTEXBUFFER
+#define ROCKET_INCLUDED_VERTEXVUFFER
 
 namespace Rocket
 {

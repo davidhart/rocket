@@ -46,6 +46,12 @@
     <ClCompile Include="src\opengl\glshader.cpp">
       <Filter>src\opengl</Filter>
     </ClCompile>
+    <ClCompile Include="src\opengl\gltexture.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameview.h">
@@ -77,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="src\opengl\glshader.h">
       <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\gltexture.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\texture.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

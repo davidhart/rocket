@@ -1,5 +1,6 @@
-#ifndef ROCKET_GLSHADER_H
-#define ROCKET_GLSHADER_H
+#pragma once
+#ifndef ROCKET_INCLUDED_GLSHADER
+#define ROCKET_INCLUDED_GLSHADER
 
 #include "../renderer.h"
 #include "../shader.h"

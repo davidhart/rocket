@@ -1,6 +1,6 @@
 #pragma once
-#ifndef ROCKET_OPENGL_H
-#define ROCKET_OPENGL_H
+#ifndef ROCKET_INCLUDED_OPENGL
+#define ROCKET_INCLUDED_OPENGL
 
 #if _WIN32
 #include <Windows.h>

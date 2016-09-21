@@ -1,5 +1,6 @@
-#ifndef ROCKET_SHADER_H
-#define ROCKET_SHADER_H
+#pragma once
+#ifndef ROCKET_INCLUDED_SHADER
+#define ROCKET_INCLUDED_SHADER
 
 namespace Rocket
 {

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef ROCKET_GLVERTEXBUFFER
-#define ROCKET_GLVERTEXBUFFER
+#ifndef ROCKET_INCLUDED_GLVERTEXBUFFER
+#define ROCKET_INCLUDED_GLVERTEXBUFFER
 
 #include "../vertexbuffer.h"
 #include "rocket_opengl.h"

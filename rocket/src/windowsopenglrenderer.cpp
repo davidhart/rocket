@@ -5,6 +5,7 @@
 
 #include "opengl/glvertexbuffer.h"
 #include "opengl/glshader.h"
+#include "opengl/gltexture.h"
 
 using namespace Rocket;
 using namespace Rocket::Windows;
@@ -170,6 +171,24 @@ Shader* WindowsOpenGLRenderer::CreateShader(const ShaderSource& source)
 void WindowsOpenGLRenderer::ReleaseShader(Shader* shader)
 {
 	delete shader;
+}
+
+Texture* WindowsOpenGLRenderer::CreateTexture(const TextureData& textureData)
+{
+	GLTexture* texture = new GLTexture();
+
+	if (texture->Create(textureData) == false)
+	{
+		delete texture;
+		return nullptr;
+	}
+
+	return texture;
+}
+
+void WindowsOpenGLRenderer::ReleaseTexture(Texture* texture)
+{
+	delete texture;
 }
 
 void WindowsOpenGLRenderer::Present()
