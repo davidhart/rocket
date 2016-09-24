@@ -2,6 +2,7 @@
 #include "renderer.h"
 #include "vertexbuffer.h"
 #include "shader.h"
+#include "texture.h"
 
 #include <thread>
 #include <cassert>
@@ -68,6 +69,29 @@ void TestShaders(Renderer* renderer)
 	renderer->ReleaseShader(shader);
 }
 
+void TestTextures(Renderer* renderer)
+{
+	const unsigned char bytes[] = {
+		0x00, 0x00, 0x00, 0x00,
+		0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF,
+		0x00, 0x00, 0x00, 0x00
+	};
+
+	TextureData textureData;
+	textureData.type = TEXTURE_2D;
+	textureData.width = 2;
+	textureData.height = 2;
+	textureData.depth = 0;
+	textureData.data = bytes;
+	textureData.size = sizeof(bytes);
+
+	Texture* texture = renderer->CreateTexture(textureData);
+	assert(texture);
+
+	renderer->ReleaseTexture(texture);
+}
+
 int main(char** argv, int argc)
 {
 	GameView* view = GameView::Create("test application");
@@ -76,8 +100,8 @@ int main(char** argv, int argc)
 	view->SetIsResizable(true);
 
 	TestVertexBuffers(renderer);
-
 	TestShaders(renderer);
+	TestTextures(renderer);
 
 	while (view->IsClosed() == false)
 	{

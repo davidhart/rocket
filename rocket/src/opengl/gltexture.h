@@ -18,7 +18,7 @@ namespace Rocket
 			bool Create(const TextureData& data);
 
 		private:
-			GLint m_texture;
+			GLuint m_texture;
 		};
 	}
 }
