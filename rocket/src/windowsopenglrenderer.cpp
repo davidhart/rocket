@@ -7,9 +7,37 @@
 #include "opengl/glshader.h"
 #include "opengl/gltexture.h"
 
+#include <cassert>
+#include <cstdio>
+
 using namespace Rocket;
 using namespace Rocket::Windows;
 using namespace Rocket::OpenGL;
+
+void APIENTRY DebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
+{
+	char* severitystr;
+	switch (severity)
+	{
+	case GL_DEBUG_SEVERITY_LOW:
+		severitystr = "LOW";
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		severitystr = "MED";
+		break;
+	case GL_DEBUG_SEVERITY_HIGH:
+		severitystr = "HIGH";
+		break;
+	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		severitystr = "INFO";
+		break;
+	default:
+		assert(false); severitystr = "???";
+	}
+
+	// TODO: hookup with logging system
+	std::fprintf(stderr, "[OpenGL][%s]%s\n", severitystr, message);
+}
 
 WindowsOpenGLRenderer::WindowsOpenGLRenderer(HWND hwnd) :
 	m_hwnd(hwnd)
@@ -117,11 +145,17 @@ bool WindowsOpenGLRenderer::Create()
 		return false;
 	}
 
+	int contextFlags = 0;
+
+#if _DEBUG
+	contextFlags |= GL_CONTEXT_FLAG_DEBUG_BIT;
+#endif
+
 	int contextAttribs[] =
 	{
 		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
 		WGL_CONTEXT_MINOR_VERSION_ARB, 0,
-		WGL_CONTEXT_FLAGS_ARB, 0,
+		WGL_CONTEXT_FLAGS_ARB, contextFlags,
 		0 // Terminator
 	};
 
@@ -131,7 +165,23 @@ bool WindowsOpenGLRenderer::Create()
 	{
 		return false;
 	}
-	
+
+#if _DEBUG
+	{
+		wglMakeCurrent(m_hdc, m_hglrc);
+
+		PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARB = (PFNGLDEBUGMESSAGECALLBACKARBPROC)wglGetProcAddress("glDebugMessageCallbackARB");
+		if (glDebugMessageCallbackARB != nullptr)
+		{
+			glDebugMessageCallbackARB(&DebugMessageCallback, nullptr);
+			glEnable(GL_DEBUG_OUTPUT);
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+		}
+		
+		wglMakeCurrent(NULL, NULL);
+	}
+#endif
+
 	return true;
 }
 
@@ -157,6 +207,8 @@ void WindowsOpenGLRenderer::ReleaseVertexBuffer(VertexBuffer* buffer)
 
 Shader* WindowsOpenGLRenderer::CreateShader(const ShaderSource& source)
 {
+	wglMakeCurrent(m_hdc, m_hglrc);
+
 	GLShader* shader = new GLShader();
 	
 	if (shader->Create(source) == false)
@@ -175,6 +227,8 @@ void WindowsOpenGLRenderer::ReleaseShader(Shader* shader)
 
 Texture* WindowsOpenGLRenderer::CreateTexture(const TextureData& textureData)
 {
+	wglMakeCurrent(m_hdc, m_hglrc);
+
 	GLTexture* texture = new GLTexture();
 
 	if (texture->Create(textureData) == false)

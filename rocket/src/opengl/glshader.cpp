@@ -1,5 +1,7 @@
 #include "glshader.h"
 
+#include <cstdio>
+
 using namespace Rocket;
 using namespace Rocket::OpenGL;
 
@@ -40,6 +42,9 @@ bool GLShader::Create(const ShaderSource& source)
 	glAttachShader(m_program, m_frag);
 	glLinkProgram(m_program);
 
+	glUseProgram(m_program);
+	glUseProgram(0);
+
 	return true;
 }
 
@@ -48,10 +53,23 @@ GLenum GLShader::CreateSubShader(GLenum type, size_t size, const void* source)
 	GLenum shader = glCreateShader(type);
 
 	const GLchar* glsource = (const GLchar*)source;
-	GLint glsize = (GLint)size;
 
-	glShaderSource(shader, 1, &glsource, &glsize);
+	glShaderSource(shader, 1, &glsource, nullptr);
 	glCompileShader(shader);
+	
+	int compileStatus = 0;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
+
+	if (compileStatus == GL_FALSE)
+	{
+		int infoLogLen = 0;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLen);
+
+		char* log = (char*)malloc(infoLogLen);
+		glGetShaderInfoLog(shader, infoLogLen, &infoLogLen, log);
+		std::fprintf(stderr, "Shader compile errors: \n %s\n", log);
+		free(log);
+	}
 
 	return shader;
 }

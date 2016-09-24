@@ -35,12 +35,30 @@ void TestVertexBuffers(Renderer* renderer)
 
 void TestShaders(Renderer* renderer)
 {
+	const char* vert =
+		"#version 130\n"
+		"in vec4 vertex;\n"
+		"void main()\n"
+		"{\n"
+		"gl_Position = vertex;\n"
+		"}";
+	size_t vertSize = sizeof(vert);
+
+	const char* frag =
+		"#version 130\n"
+		"out vec4 frag;\n"
+		"void main()\n"
+		"{\n"
+		"frag = vec4(1,1,1,1);\n"
+		"}";
+	size_t fragSize = sizeof(frag);
+
 	ShaderSource shaderSource =
 	{
-		nullptr,
-		0,
-		nullptr,
-		0
+		vert,
+		vertSize,
+		frag,
+		fragSize
 	};
 
 	Shader* shader = renderer->CreateShader(shaderSource);

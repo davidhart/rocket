@@ -6,10 +6,10 @@ namespace Rocket
 {
 	struct ShaderSource
 	{
-		void* vert;
+		const void* vert;
 		size_t vertSize;
 
-		void* frag;
+		const void* frag;
 		size_t fragSize;
 	};
 
