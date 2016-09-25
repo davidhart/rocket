@@ -3,9 +3,10 @@
 #include "opengl/rocket_opengl.h"
 #include "wglext.h"
 
-#include "opengl/glvertexbuffer.h"
+#include "opengl/glbuffer.h"
 #include "opengl/glshader.h"
 #include "opengl/gltexture.h"
+#include "opengl/gldrawbinding.h"
 
 #include <cassert>
 #include <cstdio>
@@ -185,11 +186,11 @@ bool WindowsOpenGLRenderer::Create()
 	return true;
 }
 
-VertexBuffer* WindowsOpenGLRenderer::CreateVertexBuffer(size_t size, void* data)
+Buffer* WindowsOpenGLRenderer::CreateBuffer(size_t size, void* data)
 {
 	wglMakeCurrent(m_hdc, m_hglrc);
 
-	GLVertexBuffer* buffer = new GLVertexBuffer();
+	GLBuffer* buffer = new GLBuffer();
 
 	if (buffer->Create(size, data) == false)
 	{
@@ -200,18 +201,18 @@ VertexBuffer* WindowsOpenGLRenderer::CreateVertexBuffer(size_t size, void* data)
 	return buffer;
 }
 
-void WindowsOpenGLRenderer::ReleaseVertexBuffer(VertexBuffer* buffer)
+void WindowsOpenGLRenderer::ReleaseBuffer(Buffer* buffer)
 {
 	delete buffer;
 }
 
-Shader* WindowsOpenGLRenderer::CreateShader(const ShaderSource& source)
+Shader* WindowsOpenGLRenderer::CreateShader(const ShaderDef& def)
 {
 	wglMakeCurrent(m_hdc, m_hglrc);
 
 	GLShader* shader = new GLShader();
 	
-	if (shader->Create(source) == false)
+	if (shader->Create(def) == false)
 	{
 		delete shader;
 		return nullptr;
@@ -225,19 +226,39 @@ void WindowsOpenGLRenderer::ReleaseShader(Shader* shader)
 	delete shader;
 }
 
-Texture* WindowsOpenGLRenderer::CreateTexture(const TextureData& textureData)
+Texture* WindowsOpenGLRenderer::CreateTexture(const TextureDef& def)
 {
 	wglMakeCurrent(m_hdc, m_hglrc);
 
 	GLTexture* texture = new GLTexture();
 
-	if (texture->Create(textureData) == false)
+	if (texture->Create(def) == false)
 	{
 		delete texture;
 		return nullptr;
 	}
 
 	return texture;
+}
+
+DrawBinding* WindowsOpenGLRenderer::CreateDrawBinding(const DrawBindingDef& def)
+{
+	wglMakeCurrent(m_hdc, m_hglrc);
+
+	GLDrawBinding* binding = new GLDrawBinding();
+
+	if (binding->Create(def) == false)
+	{
+		delete binding;
+		return nullptr;
+	}
+
+	return binding;
+}
+
+void WindowsOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
+{
+	delete binding;
 }
 
 void WindowsOpenGLRenderer::ReleaseTexture(Texture* texture)

@@ -4,7 +4,7 @@
 
 namespace Rocket
 {
-	struct ShaderSource
+	struct ShaderDef
 	{
 		const void* vert;
 		size_t vertSize;

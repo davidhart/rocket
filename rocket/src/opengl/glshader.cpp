@@ -31,7 +31,7 @@ GLShader::~GLShader()
 	}
 }
 
-bool GLShader::Create(const ShaderSource& source)
+bool GLShader::Create(const ShaderDef& source)
 {
 	m_vert = CreateSubShader(GL_VERTEX_SHADER, source.vertSize, source.vert);
 

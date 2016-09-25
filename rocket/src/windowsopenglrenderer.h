@@ -18,14 +18,17 @@ namespace Rocket
 			virtual ~WindowsOpenGLRenderer();
 			bool Create();
 
-			virtual VertexBuffer* CreateVertexBuffer(size_t size, void* data);
-			virtual void ReleaseVertexBuffer(VertexBuffer* buffer);
+			virtual Buffer* CreateBuffer(size_t size, void* data);
+			virtual void ReleaseBuffer(Buffer* buffer);
 
-			virtual Shader* CreateShader(const ShaderSource& shaderSource);
+			virtual Shader* CreateShader(const ShaderDef& shaderSource);
 			virtual void ReleaseShader(Shader* shader);
 
-			virtual Texture* CreateTexture(const TextureData& textureData);
+			virtual Texture* CreateTexture(const TextureDef& textureData);
 			virtual void ReleaseTexture(Texture* texture);
+
+			virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef);
+			virtual void ReleaseDrawBinding(DrawBinding* drawBinding);
 
 			virtual void Present();
 

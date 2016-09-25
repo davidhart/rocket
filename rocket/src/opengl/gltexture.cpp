@@ -15,7 +15,7 @@ GLTexture::~GLTexture()
 	glDeleteTextures(1, &m_texture);
 }
 
-bool GLTexture::Create(const TextureData& textureData)
+bool GLTexture::Create(const TextureDef& textureData)
 {
 	glGenTextures(1, &m_texture);
 	assert(m_texture);

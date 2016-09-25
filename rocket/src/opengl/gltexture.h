@@ -15,7 +15,7 @@ namespace Rocket
 			GLTexture();
 			~GLTexture();
 
-			bool Create(const TextureData& data);
+			bool Create(const TextureDef& data);
 
 		private:
 			GLuint m_texture;

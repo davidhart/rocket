@@ -2,25 +2,25 @@
 #ifndef ROCKET_INCLUDED_GLVERTEXBUFFER
 #define ROCKET_INCLUDED_GLVERTEXBUFFER
 
-#include "../vertexbuffer.h"
+#include "../buffer.h"
 #include "rocket_opengl.h"
 
 namespace Rocket
 {
 	namespace OpenGL
 	{
-		class GLVertexBuffer : public VertexBuffer
+		class GLBuffer : public Buffer
 		{
 		public:
-			GLVertexBuffer();
-			virtual ~GLVertexBuffer();
+			GLBuffer();
+			virtual ~GLBuffer();
 
 			bool Create(size_t size, void* data);
 
 			virtual void UpdateData(void* data, size_t size, size_t offset = 0);
 			virtual size_t Size() const;
 			
-			virtual void* Map(VertexBuffer::MapUsage usage);
+			virtual void* Map(MapUsage usage);
 			virtual void Unmap();
 
 		private:

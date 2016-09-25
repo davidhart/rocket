@@ -4,25 +4,31 @@
 
 namespace Rocket
 {
-	class VertexBuffer;
+	class Buffer;
 	class Shader;
-	struct ShaderSource;
+	struct ShaderDef;
 	class Texture;
-	struct TextureData;
+	struct TextureDef;
+
+	class DrawBinding;
+	struct DrawBindingDef;
 
 	class Renderer
 	{
 	public:
 		virtual ~Renderer();
 
-		virtual VertexBuffer* CreateVertexBuffer(size_t size, void* data) = 0;
-		virtual void ReleaseVertexBuffer(VertexBuffer* buffer) = 0;
+		virtual Buffer* CreateBuffer(size_t size, void* data) = 0;
+		virtual void ReleaseBuffer(Buffer* buffer) = 0;
 
-		virtual Shader* CreateShader(const ShaderSource& shaderSource) = 0;
+		virtual Shader* CreateShader(const ShaderDef& shaderSource) = 0;
 		virtual void ReleaseShader(Shader* shader) = 0;
 
-		virtual Texture* CreateTexture(const TextureData& textureData) = 0;
+		virtual Texture* CreateTexture(const TextureDef& textureData) = 0;
 		virtual void ReleaseTexture(Texture* texture) = 0;
+
+		virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef) = 0;
+		virtual void ReleaseDrawBinding(DrawBinding* drawBinding) = 0;
 
 		virtual void Present() = 0;
 	};

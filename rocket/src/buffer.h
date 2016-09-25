@@ -4,10 +4,10 @@
 
 namespace Rocket
 {
-	class VertexBuffer
+	class Buffer
 	{
 	protected:
-		VertexBuffer();
+		Buffer();
 
 	public:
 		enum MapUsage
@@ -17,7 +17,7 @@ namespace Rocket
 			MAP_READ_AND_WRITE
 		};
 
-		virtual ~VertexBuffer();
+		virtual ~Buffer();
 
 		virtual void UpdateData(void* data, size_t size, size_t offset = 0) = 0;
 		virtual size_t Size() const = 0;
@@ -26,7 +26,7 @@ namespace Rocket
 		virtual void Unmap() = 0;
 
 	private:
-		VertexBuffer(const VertexBuffer&);
+		Buffer(const Buffer&);
 	};
 }
 

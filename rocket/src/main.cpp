@@ -1,6 +1,6 @@
 #include "gameview.h"
 #include "renderer.h"
-#include "vertexbuffer.h"
+#include "buffer.h"
 #include "shader.h"
 #include "texture.h"
 
@@ -12,9 +12,9 @@ using namespace Rocket;
 void TestVertexBuffers(Renderer* renderer)
 {
 	// Create a buffer with no data
-	VertexBuffer* vertexbuffer = renderer->CreateVertexBuffer(100, nullptr);
+	Buffer* vertexbuffer = renderer->CreateBuffer(100, nullptr);
 	assert(vertexbuffer);
-	renderer->ReleaseVertexBuffer(vertexbuffer);
+	renderer->ReleaseBuffer(vertexbuffer);
 
 	// Create a buffer with data, map it and compare with original data
 	float vertexdata[] = {
@@ -23,15 +23,15 @@ void TestVertexBuffers(Renderer* renderer)
 		1.0f, 0.0f, 0.0f
 	};
 
-	VertexBuffer* vertexbuffer2 = renderer->CreateVertexBuffer(sizeof(vertexdata), vertexdata);
+	Buffer* vertexbuffer2 = renderer->CreateBuffer(sizeof(vertexdata), vertexdata);
 
-	void* mappeddata = vertexbuffer2->Map(VertexBuffer::MAP_READ_ONLY);
+	void* mappeddata = vertexbuffer2->Map(Buffer::MAP_READ_ONLY);
 	assert(mappeddata);
 	int test = memcmp(vertexdata, mappeddata, sizeof(vertexdata));
 	assert(test == 0);
 	vertexbuffer2->Unmap();
 
-	renderer->ReleaseVertexBuffer(vertexbuffer2);
+	renderer->ReleaseBuffer(vertexbuffer2);
 }
 
 void TestShaders(Renderer* renderer)
@@ -54,7 +54,7 @@ void TestShaders(Renderer* renderer)
 		"}";
 	size_t fragSize = sizeof(frag);
 
-	ShaderSource shaderSource =
+	ShaderDef shaderSource =
 	{
 		vert,
 		vertSize,
@@ -78,7 +78,7 @@ void TestTextures(Renderer* renderer)
 		0x00, 0x00, 0x00, 0x00
 	};
 
-	TextureData textureData;
+	TextureDef textureData;
 	textureData.type = TEXTURE_2D;
 	textureData.width = 2;
 	textureData.height = 2;

@@ -14,7 +14,7 @@ namespace Rocket
 		TEXTURE_3D
 	};
 
-	struct TextureData
+	struct TextureDef
 	{
 		TextureType type;
 

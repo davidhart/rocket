@@ -31,12 +31,6 @@
     <ClCompile Include="src\opengl\rocket_opengl.cpp">
       <Filter>src\opengl</Filter>
     </ClCompile>
-    <ClCompile Include="src\opengl\glvertexbuffer.cpp">
-      <Filter>src\opengl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\vertexbuffer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\windowsopenglrenderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -50,6 +44,18 @@
       <Filter>src\opengl</Filter>
     </ClCompile>
     <ClCompile Include="src\texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\glbuffer.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\buffer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\gldrawbinding.cpp">
+      <Filter>src\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drawbinding.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,12 +75,6 @@
     <ClInclude Include="src\opengl\glcorearb.h">
       <Filter>src\opengl</Filter>
     </ClInclude>
-    <ClInclude Include="src\vertexbuffer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\opengl\glvertexbuffer.h">
-      <Filter>src\opengl</Filter>
-    </ClInclude>
     <ClInclude Include="src\windowsopenglrenderer.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -89,6 +89,18 @@
     </ClInclude>
     <ClInclude Include="src\texture.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\glbuffer.h">
+      <Filter>src\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\buffer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\drawbinding.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\gldrawbinding.h">
+      <Filter>src\opengl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

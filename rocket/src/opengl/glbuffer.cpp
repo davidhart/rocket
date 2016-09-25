@@ -1,17 +1,17 @@
-#include "glvertexbuffer.h"
+#include "glbuffer.h"
 #include <cassert>
 
 using namespace Rocket::OpenGL;
 
 
-GLVertexBuffer::GLVertexBuffer() :
+GLBuffer::GLBuffer() :
 	m_handle(0),
 	m_size(0)
 {
 
 }
 
-GLVertexBuffer::~GLVertexBuffer()
+GLBuffer::~GLBuffer()
 {
 	if (m_handle != 0)
 	{
@@ -19,7 +19,7 @@ GLVertexBuffer::~GLVertexBuffer()
 	}
 }
 
-bool GLVertexBuffer::Create(size_t size, void* data)
+bool GLBuffer::Create(size_t size, void* data)
 {
 	assert(m_handle == 0); // GLVertexBuffer already initialised
 
@@ -42,31 +42,31 @@ bool GLVertexBuffer::Create(size_t size, void* data)
 	return true;
 }
 
-void GLVertexBuffer::UpdateData(void* data, size_t size, size_t offset)
+void GLBuffer::UpdateData(void* data, size_t size, size_t offset)
 {
 	assert(offset + size <= m_size); // GLVertexBuffer update out of range
 	glBindBuffer(GL_ARRAY_BUFFER, m_handle);
 	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 
-size_t GLVertexBuffer::Size() const
+size_t GLBuffer::Size() const
 {
 	return m_size;
 }
 
-void* GLVertexBuffer::Map(VertexBuffer::MapUsage usage)
+void* GLBuffer::Map(Buffer::MapUsage usage)
 {
 	GLenum glaccess;
 
 	switch (usage)
 	{
-	case VertexBuffer::MAP_READ_ONLY:
+	case Buffer::MAP_READ_ONLY:
 		glaccess = GL_READ_ONLY;
 		break;
-	case VertexBuffer::MAP_WRITE_ONLY:
+	case Buffer::MAP_WRITE_ONLY:
 		glaccess = GL_WRITE_ONLY;
 		break;
-	case VertexBuffer::MAP_READ_AND_WRITE:
+	case Buffer::MAP_READ_AND_WRITE:
 		glaccess = GL_READ_WRITE;
 	default:
 		assert(false); // GLVertexBuffer MapUsage type not implemented
@@ -77,7 +77,7 @@ void* GLVertexBuffer::Map(VertexBuffer::MapUsage usage)
 	return glMapBuffer(GL_ARRAY_BUFFER, glaccess);
 }
 
-void GLVertexBuffer::Unmap()
+void GLBuffer::Unmap()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_handle);
 	glUnmapBuffer(GL_ARRAY_BUFFER);

@@ -14,7 +14,7 @@ namespace Rocket
 		{
 		public:
 			GLShader();
-			bool Create(const ShaderSource& source);
+			bool Create(const ShaderDef& source);
 
 			~GLShader();
 
