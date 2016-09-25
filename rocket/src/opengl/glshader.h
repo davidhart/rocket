@@ -16,6 +16,8 @@ namespace Rocket
 			GLShader();
 			bool Create(const ShaderDef& source);
 
+			GLuint GetNativeHandle();
+
 			~GLShader();
 
 		private:

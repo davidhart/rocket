@@ -4,19 +4,19 @@
 
 namespace Rocket
 {
-	class VertexBuffer;
+	class Buffer;
 
 	enum DrawBindingType
 	{
 		DB_TYPE_FLOAT,
 		DB_TYPE_DOUBLE,
 
-		DB_TYPE_INT32,
-		DB_TYPE_UINT32,
 		DB_TYPE_INT8,
 		DB_TYPE_UINT8,
 		DB_TYPE_INT16,
-		DB_TYPE_UINT16
+		DB_TYPE_UINT16,
+		DB_TYPE_INT32,
+		DB_TYPE_UINT32
 	};
 
 	enum DrawBindingComponents
@@ -32,7 +32,7 @@ namespace Rocket
 		int index;
 		DrawBindingType type;
 		DrawBindingComponents components;
-		VertexBuffer* buffer;
+		Buffer* buffer;
 		size_t offset;
 		size_t stride;
 		// TODO: instancing
@@ -41,7 +41,7 @@ namespace Rocket
 	struct IndexBinding
 	{
 		DrawBindingType type;
-		VertexBuffer* buffer;
+		Buffer* buffer;
 		size_t offet;
 	};
 

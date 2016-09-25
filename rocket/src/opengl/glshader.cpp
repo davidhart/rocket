@@ -48,6 +48,11 @@ bool GLShader::Create(const ShaderDef& source)
 	return true;
 }
 
+GLuint GLShader::GetNativeHandle()
+{
+	return m_program;
+}
+
 GLenum GLShader::CreateSubShader(GLenum type, size_t size, const void* source)
 {
 	GLenum shader = glCreateShader(type);

@@ -82,3 +82,8 @@ void GLBuffer::Unmap()
 	glBindBuffer(GL_ARRAY_BUFFER, m_handle);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
+
+GLuint GLBuffer::GetNativeHandle()
+{
+	return m_handle;
+}

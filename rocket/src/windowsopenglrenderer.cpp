@@ -266,6 +266,14 @@ void WindowsOpenGLRenderer::ReleaseTexture(Texture* texture)
 	delete texture;
 }
 
+void WindowsOpenGLRenderer::RenderTemp(DrawBinding* binding, Shader* shader)
+{
+	m_tempDrawQueue.push(TempDraw
+	{
+		binding, shader
+	});
+}
+
 void WindowsOpenGLRenderer::Present()
 {
 	if (!wglMakeCurrent(m_hdc, m_hglrc))
@@ -274,8 +282,23 @@ void WindowsOpenGLRenderer::Present()
 	}
 
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	while (m_tempDrawQueue.empty() == false)
+	{
+		TempDraw draw = m_tempDrawQueue.front();
+
+		GLuint vaohandle = ((GLDrawBinding*)draw.binding)->GetNativeHandle();
+		glBindVertexArray(vaohandle);
+
+		GLuint shaderhandle = ((GLShader*)draw.shader)->GetNativeHandle();
+		glUseProgram(shaderhandle);
+
+		GLsizei numElements = ((GLDrawBinding*)draw.binding)->GetNumElements();
+		glDrawArrays(GL_TRIANGLES, 0, numElements);
+
+		m_tempDrawQueue.pop();
+	}
 
 	SwapBuffers(m_hdc);
 }

@@ -16,6 +16,9 @@ namespace Rocket
 			~GLDrawBinding();
 			bool Create(const DrawBindingDef& drawBindingDef);
 
+			GLuint GetNativeHandle();
+			size_t GetNumElements();
+
 		private:
 			GLDrawBinding(const GLDrawBinding&);
 

@@ -23,6 +23,8 @@ namespace Rocket
 			virtual void* Map(MapUsage usage);
 			virtual void Unmap();
 
+			GLuint GetNativeHandle();
+
 		private:
 			GLuint m_handle;
 			size_t m_size;

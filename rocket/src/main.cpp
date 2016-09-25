@@ -3,13 +3,14 @@
 #include "buffer.h"
 #include "shader.h"
 #include "texture.h"
+#include "drawbinding.h"
 
 #include <thread>
 #include <cassert>
 
 using namespace Rocket;
 
-void TestVertexBuffers(Renderer* renderer)
+Buffer* CreateTestBuffer(Renderer* renderer)
 {
 	// Create a buffer with no data
 	Buffer* vertexbuffer = renderer->CreateBuffer(100, nullptr);
@@ -18,9 +19,9 @@ void TestVertexBuffers(Renderer* renderer)
 
 	// Create a buffer with data, map it and compare with original data
 	float vertexdata[] = {
-		0.5f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		1.0f, 0.0f, 0.0f
+		-1.0f, -1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,	  0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,     0.0f, 0.0f, 1.0f
 	};
 
 	Buffer* vertexbuffer2 = renderer->CreateBuffer(sizeof(vertexdata), vertexdata);
@@ -31,26 +32,54 @@ void TestVertexBuffers(Renderer* renderer)
 	assert(test == 0);
 	vertexbuffer2->Unmap();
 
-	renderer->ReleaseBuffer(vertexbuffer2);
+	return vertexbuffer2;
 }
 
-void TestShaders(Renderer* renderer)
+DrawBinding* CreateTestDrawBinding(Renderer* renderer, Buffer* vertexbuffer)
+{
+	VertexBinding vertexBindings[] =
+	{
+		{ 1, DB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 12, 24 },
+		{ 0, DB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 0, 24 },
+	};
+
+	DrawBindingDef bindingDef =
+	{
+		vertexBindings,
+		2,
+		nullptr,
+		3
+	};
+
+	DrawBinding* binding = renderer->CreateDrawBinding(bindingDef);
+	assert(binding);
+	return binding;
+}
+
+Shader* CreateTestShader(Renderer* renderer)
 {
 	const char* vert =
 		"#version 130\n"
-		"in vec4 vertex;\n"
+		"#extension GL_ARB_explicit_attrib_location : enable\n"
+		"layout(location=0)in vec3 vertex;\n"
+		"layout(location=1)in vec3 i_color;\n"
+		"out vec3 f_color;\n"
 		"void main()\n"
 		"{\n"
-		"gl_Position = vertex;\n"
+		"gl_Position.xyz = vertex;\n"
+		"gl_Position.w = 1;\n"
+		"f_color = i_color;\n"
 		"}";
 	size_t vertSize = sizeof(vert);
 
 	const char* frag =
-		"#version 130\n"
+		"#version 140\n"
+		"in vec3 f_color;\n"
 		"out vec4 frag;\n"
 		"void main()\n"
 		"{\n"
-		"frag = vec4(1,1,1,1);\n"
+		"frag.xyz = f_color.xyz;\n"
+		"frag.w = 1;\n"
 		"}";
 	size_t fragSize = sizeof(frag);
 
@@ -65,8 +94,7 @@ void TestShaders(Renderer* renderer)
 	Shader* shader = renderer->CreateShader(shaderSource);
 
 	assert(shader);
-
-	renderer->ReleaseShader(shader);
+	return shader;
 }
 
 void TestTextures(Renderer* renderer)
@@ -99,8 +127,9 @@ int main(char** argv, int argc)
 	
 	view->SetIsResizable(true);
 
-	TestVertexBuffers(renderer);
-	TestShaders(renderer);
+	Buffer* buffer = CreateTestBuffer(renderer);
+	Shader* shader = CreateTestShader(renderer);
+	DrawBinding* binding = CreateTestDrawBinding(renderer, buffer);
 	TestTextures(renderer);
 
 	while (view->IsClosed() == false)
@@ -108,9 +137,15 @@ int main(char** argv, int argc)
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
 
+		renderer->RenderTemp(binding, shader);
+
 		renderer->Present();
 	}
 	
+	renderer->ReleaseDrawBinding(binding);
+	renderer->ReleaseShader(shader);
+	renderer->ReleaseBuffer(buffer);
+
 	view->ReleaseRenderer(renderer);
 	GameView::Release(view);
 	

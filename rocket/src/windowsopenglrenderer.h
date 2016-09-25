@@ -6,11 +6,18 @@
 #include "renderer.h"
 
 #include <Windows.h>
+#include <queue>
 
 namespace Rocket
 {
 	namespace Windows
 	{
+		struct TempDraw
+		{
+			DrawBinding* binding;
+			Shader* shader;
+		};
+
 		class WindowsOpenGLRenderer : public Renderer
 		{
 		public:
@@ -30,6 +37,8 @@ namespace Rocket
 			virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef);
 			virtual void ReleaseDrawBinding(DrawBinding* drawBinding);
 
+			virtual void RenderTemp(DrawBinding* drawBinding, Shader* shader);
+
 			virtual void Present();
 
 		private:
@@ -37,6 +46,8 @@ namespace Rocket
 
 			HDC m_hdc;
 			HGLRC m_hglrc;
+
+			std::queue<TempDraw> m_tempDrawQueue;
 		};
 	}
 }
