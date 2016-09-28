@@ -5,16 +5,26 @@ using namespace Rocket;
 
 GameView* GameView::Create(const char* title)
 {
-	Windows::WindowsGameView* view = new Windows::WindowsGameView();
+    GameView* view = nullptr;
+    
+#if _WINDOWS
+    if (view != nullptr)
+    {
+        Windows::WindowsGameView* windowsview = new Windows::WindowsGameView();
 
-	if (view->Create() == false)
-	{
-		delete view;
-		return nullptr;
-	}
+        if (windowsview->Create() == false)
+        {
+            delete windowsview;
+            return nullptr;
+        }
 
-	view->SetTitle(title);
-
+        windowsview->SetTitle(title);
+        view = windowsview;
+    }
+#endif
+    
+    
+    
 	return view;
 }
 

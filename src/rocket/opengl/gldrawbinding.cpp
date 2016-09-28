@@ -1,5 +1,5 @@
-#include "gldrawbinding.h"
-#include "glbuffer.h"
+#include "opengl/gldrawbinding.h"
+#include "opengl/glbuffer.h"
 
 #include <cassert>
 
@@ -13,12 +13,11 @@ GLDrawBinding::GLDrawBinding() :
 
 GLDrawBinding::~GLDrawBinding()
 {
-
 }
 
 bool GLDrawBinding::Create(const DrawBindingDef& drawBindingDef)
 {
-	glGenVertexArrays(1, &m_vao);
+    glGenVertexArrays(1, &m_vao);
 	assert(m_vao);
 	
 	glBindVertexArray(m_vao);
@@ -74,7 +73,7 @@ bool GLDrawBinding::Create(const DrawBindingDef& drawBindingDef)
 			assert(false); // Binding type not implemented
 		}
 	}
-
+    
 	if (drawBindingDef.indexAttributes != nullptr)
 	{
 		glEnable(GL_ELEMENT_ARRAY_BUFFER);
@@ -94,7 +93,7 @@ GLuint GLDrawBinding::GetNativeHandle()
 	return m_vao;
 }
 
-size_t GLDrawBinding::GetNumElements()
+unsigned GLDrawBinding::GetNumElements()
 {
 	return m_def.length;
 }

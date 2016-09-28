@@ -70,7 +70,7 @@ Shader* CreateTestShader(Renderer* renderer)
 		"gl_Position.w = 1;\n"
 		"f_color = i_color;\n"
 		"}";
-	size_t vertSize = sizeof(vert);
+	unsigned vertSize = sizeof(vert);
 
 	const char* frag =
 		"#version 140\n"
@@ -81,7 +81,7 @@ Shader* CreateTestShader(Renderer* renderer)
 		"frag.xyz = f_color.xyz;\n"
 		"frag.w = 1;\n"
 		"}";
-	size_t fragSize = sizeof(frag);
+	unsigned fragSize = sizeof(frag);
 
 	ShaderDef shaderSource =
 	{
@@ -120,11 +120,14 @@ void TestTextures(Renderer* renderer)
 	renderer->ReleaseTexture(texture);
 }
 
-int main(char** argv, int argc)
+int main(int argc, char** argv)
 {
 	GameView* view = GameView::Create("test application");
+    assert(view);
+    
 	Renderer* renderer = view->CreateRenderer();
-	
+    assert(renderer);
+    
 	view->SetIsResizable(true);
 
 	Buffer* buffer = CreateTestBuffer(renderer);

@@ -1,5 +1,7 @@
 #include "windowsopenglrenderer.h"
 
+#if _WINDOWS
+
 #include "opengl/rocket_opengl.h"
 #include "wglext.h"
 
@@ -302,3 +304,5 @@ void WindowsOpenGLRenderer::Present()
 
 	SwapBuffers(m_hdc);
 }
+
+#endif

@@ -19,8 +19,8 @@ namespace Rocket
 
 		virtual ~Buffer();
 
-		virtual void UpdateData(void* data, size_t size, size_t offset = 0) = 0;
-		virtual size_t Size() const = 0;
+        virtual void UpdateData(void* data, unsigned size, unsigned offset = 0) = 0;
+        virtual unsigned Size() const = 0;
 		
 		virtual void* Map(MapUsage usage) = 0;
 		virtual void Unmap() = 0;

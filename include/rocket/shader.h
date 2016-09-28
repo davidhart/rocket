@@ -7,10 +7,10 @@ namespace Rocket
 	struct ShaderDef
 	{
 		const void* vert;
-		size_t vertSize;
+		unsigned vertSize;
 
 		const void* frag;
-		size_t fragSize;
+		unsigned fragSize;
 	};
 
 	class Shader

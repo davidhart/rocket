@@ -1,6 +1,8 @@
 #include "windowsgameview.h"
 #include "windowsopenglrenderer.h"
 
+#if _WINDOWS
+
 #define WINDOWCLASSNAME "GameViewWindowClass"
 
 using namespace Rocket;
@@ -161,3 +163,5 @@ LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpa
 
 	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
+
+#endif

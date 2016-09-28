@@ -18,7 +18,7 @@ namespace Rocket
 	public:
 		virtual ~Renderer();
 
-		virtual Buffer* CreateBuffer(size_t size, void* data) = 0;
+		virtual Buffer* CreateBuffer(unsigned size, void* data) = 0;
 		virtual void ReleaseBuffer(Buffer* buffer) = 0;
 
 		virtual Shader* CreateShader(const ShaderDef& shaderSource) = 0;

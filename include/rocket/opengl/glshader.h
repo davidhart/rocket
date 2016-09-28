@@ -22,7 +22,7 @@ namespace Rocket
 
 		private:
 
-			GLuint CreateSubShader(GLenum type, size_t size, const void* data);
+			GLuint CreateSubShader(GLenum type, unsigned size, const void* data);
 
 			GLuint m_program;
 			GLuint m_frag;

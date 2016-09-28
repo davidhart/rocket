@@ -5,6 +5,8 @@
 
 #include "gameview.h"
 
+#ifdef _WINDOWS
+
 #include <Windows.h>
 
 namespace Rocket
@@ -38,5 +40,7 @@ namespace Rocket
 		};
 	}
 }
+
+#endif
 
 #endif

@@ -1,10 +1,11 @@
-# gl 1.2
+#if !ROCKET_GL_1_2_LINKED
 glDrawRangeElements
 glTexImage3D
 glTexSubImage3D
 glCopyTexSubImage3D
+#endif
 
-# gl 1.3
+#if !ROCKET_GL_1_3_LINKED
 glActiveTexture
 glSampleCoverage
 glCompressedTexImage3D
@@ -14,8 +15,9 @@ glCompressedTexSubImage3D
 glCompressedTexSubImage2D
 glCompressedTexSubImage1D
 glGetCompressedTexImage
+#endif
 
-# gl 1.4
+#if !ROCKET_GL_1_4_LINKED
 glBlendFuncSeparate
 glMultiDrawArrays
 glMultiDrawElements
@@ -25,8 +27,9 @@ glPointParameteri
 glPointParameteriv
 glBlendColor
 glBlendEquation
+#endif
 
-# gl 1.5
+#if !ROCKET_GL_1_5_LINKED
 glGenQueries
 glDeleteQueries
 glIsQuery
@@ -46,8 +49,9 @@ glMapBuffer
 glUnmapBuffer
 glGetBufferParameteriv
 glGetBufferPointerv
+#endif
 
-# gl 2.0
+#if !ROCKET_GL_2_0_LINKED
 glBlendEquationSeparate
 glDrawBuffers
 glStencilOpSeparate
@@ -141,8 +145,18 @@ glVertexAttrib4ubv
 glVertexAttrib4uiv
 glVertexAttrib4usv
 glVertexAttribPointer
+#endif
 
-# gl 3.0
+#if !ROCKET_GL_2_1_LINKED
+glUniformMatrix2x3fv
+glUniformMatrix3x2fv
+glUniformMatrix2x4fv
+glUniformMatrix4x2fv
+glUniformMatrix3x4fv
+glUniformMatrix4x3fv
+#endif
+
+#if !ROCKET_GL_3_0_LINKED
 glColorMaski
 glGetBooleani_v
 glGetIntegeri_v
@@ -176,7 +190,7 @@ glVertexAttribI4iv
 glVertexAttribI1uiv
 glVertexAttribI2uiv
 glVertexAttribI3uiv
-glVertexAttribI4uiv 
+glVertexAttribI4uiv
 glVertexAttribI4bv
 glVertexAttribI4sv
 glVertexAttribI4ubv
@@ -227,3 +241,4 @@ glBindVertexArray
 glDeleteVertexArrays
 glGenVertexArrays
 glIsVertexArray
+#endif

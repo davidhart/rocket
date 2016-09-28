@@ -5,6 +5,8 @@
 
 #include "renderer.h"
 
+#ifdef _WINDOWS
+
 #include <Windows.h>
 #include <queue>
 
@@ -51,5 +53,7 @@ namespace Rocket
 		};
 	}
 }
+
+#endif
 
 #endif

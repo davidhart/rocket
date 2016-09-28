@@ -18,12 +18,12 @@ namespace Rocket
 	{
 		TextureType type;
 
-		size_t width;
-		size_t height;
-		size_t depth;
+		unsigned width;
+		unsigned height;
+		unsigned depth;
 		
 		const void* data;
-		size_t size;
+		unsigned size;
 	};
 
 	class Texture

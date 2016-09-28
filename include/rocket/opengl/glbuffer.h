@@ -15,10 +15,10 @@ namespace Rocket
 			GLBuffer();
 			virtual ~GLBuffer();
 
-			bool Create(size_t size, void* data);
+			bool Create(unsigned size, void* data);
 
-			virtual void UpdateData(void* data, size_t size, size_t offset = 0);
-			virtual size_t Size() const;
+			virtual void UpdateData(void* data, unsigned size, unsigned offset = 0);
+			virtual unsigned Size() const;
 			
 			virtual void* Map(MapUsage usage);
 			virtual void Unmap();
@@ -27,7 +27,7 @@ namespace Rocket
 
 		private:
 			GLuint m_handle;
-			size_t m_size;
+			unsigned m_size;
 		};
 	}
 }

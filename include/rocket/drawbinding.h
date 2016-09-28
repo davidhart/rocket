@@ -33,8 +33,8 @@ namespace Rocket
 		DrawBindingType type;
 		DrawBindingComponents components;
 		Buffer* buffer;
-		size_t offset;
-		size_t stride;
+        unsigned offset;
+        unsigned stride;
 		// TODO: instancing
 	};
 
@@ -42,17 +42,17 @@ namespace Rocket
 	{
 		DrawBindingType type;
 		Buffer* buffer;
-		size_t offet;
+        unsigned offet;
 	};
 
 	struct DrawBindingDef
 	{
 		VertexBinding* vertexAttributes;
-		size_t numVertexAttributes;
+        unsigned numVertexAttributes;
 
 		IndexBinding* indexAttributes;
 
-		size_t length;
+        unsigned length;
 	};
 
 	class DrawBinding

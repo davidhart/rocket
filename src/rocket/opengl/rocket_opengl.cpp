@@ -1,6 +1,4 @@
-#pragma once
-
-#include "rocket_opengl.h"
+#include "opengl/rocket_opengl.h"
 #include <cassert>
 
 static bool s_isInitialized = false;
@@ -9,7 +7,7 @@ namespace Rocket
 {
 	namespace OpenGL
 	{
-#include "generated/gldefn.inl"
+#include "opengl/generated/gldefn.h"
 
 		bool Platform::IsInitialized()
 		{
@@ -18,7 +16,7 @@ namespace Rocket
 
 		void Platform::Initialize(GetProcImpl get)
 		{
-#include "generated/glsetup.inl"
+#include "opengl/generated/glsetup.h"
 			s_isInitialized = true;
 		}
 	}

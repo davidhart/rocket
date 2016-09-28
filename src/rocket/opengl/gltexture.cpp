@@ -1,4 +1,4 @@
-#include "gltexture.h"
+#include "opengl/gltexture.h"
 
 #include <cassert>
 

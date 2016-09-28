@@ -1,4 +1,4 @@
-#include "glbuffer.h"
+#include "opengl/glbuffer.h"
 #include <cassert>
 
 using namespace Rocket::OpenGL;
@@ -19,7 +19,7 @@ GLBuffer::~GLBuffer()
 	}
 }
 
-bool GLBuffer::Create(size_t size, void* data)
+bool GLBuffer::Create(unsigned size, void* data)
 {
 	assert(m_handle == 0); // GLVertexBuffer already initialised
 
@@ -42,14 +42,14 @@ bool GLBuffer::Create(size_t size, void* data)
 	return true;
 }
 
-void GLBuffer::UpdateData(void* data, size_t size, size_t offset)
+void GLBuffer::UpdateData(void* data, unsigned size, unsigned offset)
 {
 	assert(offset + size <= m_size); // GLVertexBuffer update out of range
 	glBindBuffer(GL_ARRAY_BUFFER, m_handle);
 	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 
-size_t GLBuffer::Size() const
+unsigned GLBuffer::Size() const
 {
 	return m_size;
 }
