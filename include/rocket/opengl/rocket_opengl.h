@@ -7,7 +7,7 @@
 #include <gl/GL.h>
 
 #elif __APPLE__
-#include <OpenGL/GL.h>
+#include <OpenGL/gl.h>
 #endif
 
 #if defined(GL_VERSION_1_2)
