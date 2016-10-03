@@ -3,7 +3,7 @@
 #ifndef ROCKET_INCLUDED_WINDOWSOPENGLRENDERER
 #define ROCKET_INCLUDED_WINDOWSOPENGLRENDERER
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 
 #include "baseopenglrenderer.h"
 
@@ -19,7 +19,7 @@ namespace Rocket
 			WindowsOpenGLRenderer(HWND hwnd);
 			virtual ~WindowsOpenGLRenderer();
 			virtual bool CreateContext();
-            virtual void ActiveContext();
+            virtual void ActivateContext();
             virtual void DeactivateContext();
             virtual void SwapBuffers();
 

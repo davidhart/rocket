@@ -8,7 +8,7 @@ GameView* GameView::Create(const char* title)
 {
     GameView* view = nullptr;
     
-#if _WINDOWS
+#if _WIN32
     if (view == nullptr)
     {
         Windows::WindowsGameView* windowsview = new Windows::WindowsGameView();

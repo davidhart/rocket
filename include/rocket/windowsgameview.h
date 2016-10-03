@@ -3,7 +3,7 @@
 #ifndef ROCKET_INCLUDED_WINDOWSGAMEVIEWIMPL
 #define ROCKET_INCLUDED_WINDOWSGAMEVIEWIMPL
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 
 #include "gameview.h"
 #include <Windows.h>

@@ -1,6 +1,6 @@
 #include "windowsopenglrenderer.h"
 
-#if _WINDOWS
+#if _WIN32
 
 #include "opengl/rocket_opengl.h"
 #include "wglext.h"
@@ -11,6 +11,12 @@
 using namespace Rocket;
 using namespace Rocket::Windows;
 using namespace Rocket::OpenGL;
+
+
+void* getProcAddress(const char* name)
+{
+	return (void*)wglGetProcAddress(name);
+}
 
 void APIENTRY DebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
 {
@@ -111,7 +117,7 @@ bool WindowsOpenGLRenderer::CreateContext()
 
 	if (Platform::IsInitialized() == false)
 	{
-		Platform::Initialize((Platform::GetProcImpl)wglGetProcAddress);
+		Platform::Initialize(getProcAddress);
 	}
 
 	wglMakeCurrent(NULL, NULL);
@@ -195,7 +201,7 @@ void WindowsOpenGLRenderer::DeactivateContext()
 
 void WindowsOpenGLRenderer::SwapBuffers()
 {
-    SwapBuffers(m_hdc);
+    ::SwapBuffers(m_hdc);
 }
 
 #endif
