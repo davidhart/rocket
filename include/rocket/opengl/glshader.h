@@ -25,8 +25,8 @@ namespace Rocket
 			GLuint CreateSubShader(GLenum type, unsigned size, const void* data);
 
 			GLuint m_program;
+            GLuint m_vert;
 			GLuint m_frag;
-			GLuint m_vert;
 		};
 	}
 }

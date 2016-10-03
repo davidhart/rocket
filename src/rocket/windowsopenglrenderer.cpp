@@ -5,11 +5,6 @@
 #include "opengl/rocket_opengl.h"
 #include "wglext.h"
 
-#include "opengl/glbuffer.h"
-#include "opengl/glshader.h"
-#include "opengl/gltexture.h"
-#include "opengl/gldrawbinding.h"
-
 #include <cassert>
 #include <cstdio>
 
@@ -58,7 +53,7 @@ WindowsOpenGLRenderer::~WindowsOpenGLRenderer()
 	wglDeleteContext(m_hglrc);
 }
 
-bool WindowsOpenGLRenderer::Create()
+bool WindowsOpenGLRenderer::CreateContext()
 {
 	// Create an OpenGL 3.0 context, with no fallback if 3.0 core is not supported
 	m_hdc = GetDC(m_hwnd);
@@ -188,121 +183,19 @@ bool WindowsOpenGLRenderer::Create()
 	return true;
 }
 
-Buffer* WindowsOpenGLRenderer::CreateBuffer(size_t size, void* data)
+void WindowsOpenGLRenderer::ActivateContext()
 {
-	wglMakeCurrent(m_hdc, m_hglrc);
-
-	GLBuffer* buffer = new GLBuffer();
-
-	if (buffer->Create(size, data) == false)
-	{
-		delete buffer;
-		return nullptr;
-	}
-
-	return buffer;
+    wglMakeCurrent(m_hdc, m_hglrc);
 }
 
-void WindowsOpenGLRenderer::ReleaseBuffer(Buffer* buffer)
+void WindowsOpenGLRenderer::DeactivateContext()
 {
-	delete buffer;
+    wglMakeCurrent(NULL, NULL);
 }
 
-Shader* WindowsOpenGLRenderer::CreateShader(const ShaderDef& def)
+void WindowsOpenGLRenderer::SwapBuffers()
 {
-	wglMakeCurrent(m_hdc, m_hglrc);
-
-	GLShader* shader = new GLShader();
-	
-	if (shader->Create(def) == false)
-	{
-		delete shader;
-		return nullptr;
-	}
-
-	return shader;
-}
-
-void WindowsOpenGLRenderer::ReleaseShader(Shader* shader)
-{
-	delete shader;
-}
-
-Texture* WindowsOpenGLRenderer::CreateTexture(const TextureDef& def)
-{
-	wglMakeCurrent(m_hdc, m_hglrc);
-
-	GLTexture* texture = new GLTexture();
-
-	if (texture->Create(def) == false)
-	{
-		delete texture;
-		return nullptr;
-	}
-
-	return texture;
-}
-
-DrawBinding* WindowsOpenGLRenderer::CreateDrawBinding(const DrawBindingDef& def)
-{
-	wglMakeCurrent(m_hdc, m_hglrc);
-
-	GLDrawBinding* binding = new GLDrawBinding();
-
-	if (binding->Create(def) == false)
-	{
-		delete binding;
-		return nullptr;
-	}
-
-	return binding;
-}
-
-void WindowsOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
-{
-	delete binding;
-}
-
-void WindowsOpenGLRenderer::ReleaseTexture(Texture* texture)
-{
-	delete texture;
-}
-
-void WindowsOpenGLRenderer::RenderTemp(DrawBinding* binding, Shader* shader)
-{
-	m_tempDrawQueue.push(TempDraw
-	{
-		binding, shader
-	});
-}
-
-void WindowsOpenGLRenderer::Present()
-{
-	if (!wglMakeCurrent(m_hdc, m_hglrc))
-	{
-		return;
-	}
-
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-	while (m_tempDrawQueue.empty() == false)
-	{
-		TempDraw draw = m_tempDrawQueue.front();
-
-		GLuint vaohandle = ((GLDrawBinding*)draw.binding)->GetNativeHandle();
-		glBindVertexArray(vaohandle);
-
-		GLuint shaderhandle = ((GLShader*)draw.shader)->GetNativeHandle();
-		glUseProgram(shaderhandle);
-
-		GLsizei numElements = ((GLDrawBinding*)draw.binding)->GetNumElements();
-		glDrawArrays(GL_TRIANGLES, 0, numElements);
-
-		m_tempDrawQueue.pop();
-	}
-
-	SwapBuffers(m_hdc);
+    SwapBuffers(m_hdc);
 }
 
 #endif

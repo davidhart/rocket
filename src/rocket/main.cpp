@@ -59,7 +59,7 @@ DrawBinding* CreateTestDrawBinding(Renderer* renderer, Buffer* vertexbuffer)
 Shader* CreateTestShader(Renderer* renderer)
 {
 	const char* vert =
-		"#version 130\n"
+		"#version 140\n"
 		"#extension GL_ARB_explicit_attrib_location : enable\n"
 		"layout(location=0)in vec3 vertex;\n"
 		"layout(location=1)in vec3 i_color;\n"
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
 	GameView* view = GameView::Create("test application");
     assert(view);
     
-	Renderer* renderer = view->CreateRenderer();
+    Renderer* renderer = view->CreateRenderer();
     assert(renderer);
     
 	view->SetIsResizable(true);
@@ -139,9 +139,8 @@ int main(int argc, char** argv)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
-
+        
 		renderer->RenderTemp(binding, shader);
-
 		renderer->Present();
 	}
 	

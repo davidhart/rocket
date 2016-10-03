@@ -21,6 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 file(GLOB_RECURSE TESTPROGRAM_SOURCES
     GROUP
     src/rocket/*.cpp
+	src/rocket/*.mm
     include/rocket/*.h
 	include/rocket/*.inl)
 
@@ -36,3 +37,6 @@ find_package(OpenGL REQUIRED)
 
 add_executable(rocket ${TESTPROGRAM_SOURCES})
 target_link_libraries(rocket ${OPENGL_LIBRARIES})
+
+set(COCOA_LIBRARIES "-framework Cocoa -framework CoreFoundation")
+target_link_libraries(rocket ${COCOA_LIBRARIES})

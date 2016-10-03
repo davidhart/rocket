@@ -30,7 +30,7 @@ bool GLDrawBinding::Create(const DrawBindingDef& drawBindingDef)
 		GLuint attribIndex = (GLuint)binding->index;
 		GLint size = (GLuint)binding->components;
 		GLsizei stride = (GLsizei)binding->stride;
-		void* offset = (void*)binding->offset;
+		void* offset = reinterpret_cast<void*>(binding->offset);
 
 		glEnableVertexAttribArray(attribIndex);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);

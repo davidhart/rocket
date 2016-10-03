@@ -1,5 +1,6 @@
 #include "gameview.h"
 #include "windowsgameview.h"
+#include "osxgameview.h"
 
 using namespace Rocket;
 
@@ -8,22 +9,41 @@ GameView* GameView::Create(const char* title)
     GameView* view = nullptr;
     
 #if _WINDOWS
-    if (view != nullptr)
+    if (view == nullptr)
     {
         Windows::WindowsGameView* windowsview = new Windows::WindowsGameView();
 
-        if (windowsview->Create() == false)
+        if (windowsview->Create())
+        {
+            view = windowsview;
+        }
+        else
         {
             delete windowsview;
-            return nullptr;
         }
-
-        windowsview->SetTitle(title);
-        view = windowsview;
     }
 #endif
     
+#if __APPLE__
+    if (view == nullptr)
+    {
+        OSX::OSXGameView* osxview = new OSX::OSXGameView();
+        
+        if (osxview->Create())
+        {
+            view = osxview;
+        }
+        else
+        {
+            delete osxview;
+        }
+    }
+#endif
     
+    if (view == nullptr)
+        return nullptr;
+    
+    view->SetTitle(title);
     
 	return view;
 }
