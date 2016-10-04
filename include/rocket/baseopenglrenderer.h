@@ -32,7 +32,7 @@ namespace Rocket
         virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef);
         virtual void ReleaseDrawBinding(DrawBinding* drawBinding);
         
-        virtual void RenderTemp(DrawBinding* drawBinding, Shader* shader);
+        virtual void RenderTemp(DrawBinding* drawBinding, Material* shader);
         
         virtual void Present();
         
@@ -41,7 +41,7 @@ namespace Rocket
         struct TempDraw
         {
             DrawBinding* binding;
-            Shader* shader;
+            Material* material;
         };
         
         std::queue<TempDraw> m_tempDrawQueue;

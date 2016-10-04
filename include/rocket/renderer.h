@@ -13,6 +13,8 @@ namespace Rocket
 	class DrawBinding;
 	struct DrawBindingDef;
 
+	class Material;
+
 	class Renderer
 	{
 	public:
@@ -30,7 +32,7 @@ namespace Rocket
 		virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef) = 0;
 		virtual void ReleaseDrawBinding(DrawBinding* drawBinding) = 0;
 
-		virtual void RenderTemp(DrawBinding* binding, Shader* shader) = 0;
+		virtual void RenderTemp(DrawBinding* binding, Material* material) = 0;
 
 		virtual void Present() = 0;
 	};

@@ -1,4 +1,5 @@
 #include "baseopenglrenderer.h"
+#include "material.h"
 
 #include "opengl/glbuffer.h"
 #include "opengl/glshader.h"
@@ -97,12 +98,13 @@ void BaseOpenGLRenderer::ReleaseTexture(Texture* texture)
     delete texture;
 }
 
-void BaseOpenGLRenderer::RenderTemp(DrawBinding* binding, Shader* shader)
+void BaseOpenGLRenderer::RenderTemp(DrawBinding* binding, Material* shader)
 {
-    m_tempDrawQueue.push(TempDraw
-                         {
-                             binding, shader
-                         });
+	TempDraw draw = {
+		binding, shader
+	};
+
+    m_tempDrawQueue.push(draw);
 }
 
 void BaseOpenGLRenderer::Present()
@@ -118,8 +120,10 @@ void BaseOpenGLRenderer::Present()
         
         GLuint vaohandle = ((GLDrawBinding*)draw.binding)->GetNativeHandle();
         glBindVertexArray(vaohandle);
+
+		Material* material = draw.material;
         
-        GLuint shaderhandle = ((GLShader*)draw.shader)->GetNativeHandle();
+        GLuint shaderhandle = ((GLShader*)material->GetShader())->GetNativeHandle();
         glUseProgram(shaderhandle);
         
         GLsizei numElements = ((GLDrawBinding*)draw.binding)->GetNumElements();

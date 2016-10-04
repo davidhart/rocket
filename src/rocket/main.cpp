@@ -4,6 +4,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "drawbinding.h"
+#include "material.h"
 
 #include <thread>
 #include <cassert>
@@ -135,15 +136,19 @@ int main(int argc, char** argv)
 	DrawBinding* binding = CreateTestDrawBinding(renderer, buffer);
 	TestTextures(renderer);
 
+	Material* material = new Material(shader);
+
 	while (view->IsClosed() == false)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
         
-		renderer->RenderTemp(binding, shader);
+		renderer->RenderTemp(binding, material);
 		renderer->Present();
 	}
 	
+	delete material;
+
 	renderer->ReleaseDrawBinding(binding);
 	renderer->ReleaseShader(shader);
 	renderer->ReleaseBuffer(buffer);
