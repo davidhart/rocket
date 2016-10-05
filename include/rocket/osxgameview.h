@@ -26,9 +26,12 @@ namespace Rocket
             virtual void FlushEvents();
             virtual bool IsClosed();
             
+            void WindowWillClose();
+            
         private:
             void* m_window;
             void* m_view;
+            bool m_open;
         };
     }
 }

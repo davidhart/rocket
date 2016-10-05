@@ -16,7 +16,7 @@ using namespace Rocket::OSX;
 
 @implementation RocketApplication
 
-- (void)doNothing:(id)object
+- (void)empty:(id)object
 {
 }
 
@@ -74,11 +74,12 @@ using namespace Rocket::OSX;
 
 
 
-@interface RocketOSXView : NSView
+@interface RocketOSXView : NSView <NSWindowDelegate>
 {
     OSXGameView* gameView;
 }
 -(id)initWithGameView:(OSXGameView*)view;
+-(void)windowWillClose:(NSNotification*)notif;
 @end
 
 @implementation RocketOSXView
@@ -93,6 +94,11 @@ using namespace Rocket::OSX;
     return self;
 }
 
+-(void)windowWillClose:(NSNotification*)notif
+{
+    gameView->WindowWillClose();
+}
+
 // TODO: respond to input events here
 
 @end
@@ -105,10 +111,7 @@ static bool StaticSetupAppKit()
     
     [RocketApplication sharedApplication];
     
-    [NSThread detachNewThreadSelector:@selector(doNothing:)
-                             toTarget:NSApp
-                           withObject:nil];
-    
+    [NSThread detachNewThreadSelector:@selector(empty:) toTarget:NSApp withObject:nil];
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     
     id appdelegate = [[RocketApplicationDelegate alloc] init];
@@ -123,7 +126,8 @@ static bool StaticSetupAppKit()
 
 OSXGameView::OSXGameView() :
     m_window(nullptr),
-    m_view(nullptr)
+    m_view(nullptr),
+    m_open(false)
 {
     
 }
@@ -157,9 +161,10 @@ bool OSXGameView::Create()
     id view = [[RocketOSXView alloc]
               initWithGameView:this];
     
+    // TODO: figure out what this does
 //    [view setWantsBestResolutionOpenGLSurface:YES];
     
-    
+    [window setDelegate: view];
     [window makeFirstResponder:view];
     [window setContentView:view];
     [window setRestorable:NO];
@@ -172,7 +177,13 @@ bool OSXGameView::Create()
     m_window = (void*)window;
     m_view = (void*)view;
     
-    return m_window != nil && m_view != nil;
+    if (m_window == nil || m_view == nil)
+    {
+        return false;
+    }
+    
+    m_open = true;
+    return true;
 }
 
 Renderer* OSXGameView::CreateRenderer()
@@ -225,7 +236,12 @@ void OSXGameView::FlushEvents()
 
 bool OSXGameView::IsClosed()
 {
-    return false;
+    return m_open == false;
+}
+
+void OSXGameView::WindowWillClose()
+{
+    m_open = false;
 }
 
 #endif
