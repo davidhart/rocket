@@ -32,9 +32,17 @@ using namespace Rocket::OSX;
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
+    id windows = [sender windows];
+
     // Force close windows
+    for (int i = 0; i < [windows count]; ++i)
+    {
+        NSWindow* window = [windows objectAtIndex:i];
+        [window close];
+    }
     
-    // Cancel termination and allow window close to be detected
+    // Cancel termination and allow window closed event to be detected so app can
+    // terminate using standard flow
     return NSTerminateCancel;
 }
 
@@ -149,8 +157,7 @@ bool OSXGameView::Create()
     windowRect.origin = CGPointMake(0.0f, 0.0f);
     windowRect.size = CGSizeMake(800.0f, 600.0f);
     
-    NSWindowStyleMask windowStyle =
-        NSResizableWindowMask | NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
+    NSWindowStyleMask windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
     
     id window = [[RocketOSXWindow alloc]
                  initWithContentRect:windowRect
@@ -211,12 +218,21 @@ void OSXGameView::SetTitle(const char* title)
 
 void OSXGameView::SetIsResizable(bool isResizable)
 {
+    NSWindow* window = (id)m_window;
     
+    if (isResizable)
+    {
+        [window setStyleMask: [window styleMask] | NSResizableWindowMask];
+    }
+    else
+    {
+        [window setStyleMask: [window styleMask] & ~NSResizableWindowMask];
+    }
 }
 
 bool OSXGameView::GetIsResizable()
 {
-    return true;
+    return ([((id)m_window) styleMask] & NSResizableWindowMask) == NSResizableWindowMask;
 }
 
 void OSXGameView::FlushEvents()

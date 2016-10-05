@@ -125,11 +125,10 @@ int main(int argc, char** argv)
 {
 	GameView* view = GameView::Create("test application");
     assert(view);
+    view->SetIsResizable(true);
     
     Renderer* renderer = view->CreateRenderer();
     assert(renderer);
-    
-	view->SetIsResizable(true);
 
 	Buffer* buffer = CreateTestBuffer(renderer);
 	Shader* shader = CreateTestShader(renderer);
