@@ -7,7 +7,10 @@
 #include <gl/GL.h>
 
 #elif __APPLE__
+// Don't automatically include glext.h because we're going to import glcorearb
+#define GL_GLEXT_LEGACY
 #include <OpenGL/gl.h>
+#undef GL_GLEXT_LEGACY
 #endif
 
 #if defined(GL_VERSION_1_2)
