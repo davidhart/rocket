@@ -1,4 +1,4 @@
-#include "baseopenglrenderer.h"
+#include "opengl/baseopenglrenderer.h"
 #include "material.h"
 
 #include "opengl/glbuffer.h"

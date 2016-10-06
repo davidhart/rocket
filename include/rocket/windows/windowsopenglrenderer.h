@@ -5,7 +5,7 @@
 
 #ifdef _WIN32
 
-#include "baseopenglrenderer.h"
+#include "opengl/baseopenglrenderer.h"
 
 #include <Windows.h>
 

@@ -1,5 +1,5 @@
-#include "windowsgameview.h"
-#include "windowsopenglrenderer.h"
+#include "windows/windowsgameview.h"
+#include "windows/windowsopenglrenderer.h"
 
 #if _WIN32
 

@@ -1,8 +1,8 @@
-#include "osxgameview.h"
+#include "osx/osxgameview.h"
 
 #if __APPLE__
 
-#include "osxopenglrenderer.h"
+#include "osx/osxopenglrenderer.h"
 #import <Cocoa/Cocoa.h>
 
 using namespace Rocket;

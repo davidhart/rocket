@@ -4,7 +4,7 @@
 
 #if __APPLE__
 
-#include "baseopenglrenderer.h"
+#include "opengl/baseopenglrenderer.h"
 
 namespace Rocket
 {

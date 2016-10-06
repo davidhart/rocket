@@ -1,6 +1,12 @@
 #include "gameview.h"
-#include "windowsgameview.h"
-#include "osxgameview.h"
+
+#if _WIN32
+#include "windows/windowsgameview.h"
+#endif
+
+#if __APPLE__
+#include "osx/osxgameview.h"
+#endif
 
 using namespace Rocket;
 

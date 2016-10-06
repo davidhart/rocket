@@ -1,4 +1,4 @@
-#include "osxopenglrenderer.h"
+#include "osx/osxopenglrenderer.h"
 #include "opengl/rocket_opengl.h"
 
 #if __APPLE__
