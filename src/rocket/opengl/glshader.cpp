@@ -54,7 +54,7 @@ GLuint GLShader::GetNativeHandle()
 	return m_program;
 }
 
-GLenum GLShader::CreateSubShader(GLenum type, unsigned size, const void* source)
+GLenum GLShader::CreateSubShader(GLenum type, unsigned, const void* source)
 {
 	GLenum shader = glCreateShader(type);
 

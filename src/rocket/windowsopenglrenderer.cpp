@@ -18,7 +18,7 @@ void* getProcAddress(const char* name)
 	return (void*)wglGetProcAddress(name);
 }
 
-void APIENTRY DebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
+void APIENTRY DebugMessageCallback(GLenum, GLenum, GLuint, GLenum severity, GLsizei, const GLchar *message, const void *)
 {
 	char* severitystr;
 	switch (severity)

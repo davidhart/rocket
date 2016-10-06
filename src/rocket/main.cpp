@@ -28,9 +28,8 @@ Buffer* CreateTestBuffer(Renderer* renderer)
 	Buffer* vertexbuffer2 = renderer->CreateBuffer(sizeof(vertexdata), vertexdata);
 
 	void* mappeddata = vertexbuffer2->Map(Buffer::MAP_READ_ONLY);
-	assert(mappeddata);
-	int test = memcmp(vertexdata, mappeddata, sizeof(vertexdata));
-	assert(test == 0);
+	if (mappeddata == nullptr) assert(false);
+	assert(memcmp(vertexdata, mappeddata, sizeof(vertexdata))==0);
 	vertexbuffer2->Unmap();
 
 	return vertexbuffer2;
@@ -121,7 +120,7 @@ void TestTextures(Renderer* renderer)
 	renderer->ReleaseTexture(texture);
 }
 
-int main(int argc, char** argv)
+int main(int, char**)
 {
 	GameView* view = GameView::Create("test application");
     assert(view);

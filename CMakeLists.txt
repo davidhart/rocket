@@ -18,6 +18,19 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+#Require c++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+#Increase level of warnings
+if(MSVC)
+  # Force to always compile with W4
+  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  endif()
+endif()
+
 file(GLOB_RECURSE TESTPROGRAM_SOURCES
     GROUP
     src/rocket/*.cpp
@@ -30,13 +43,12 @@ include_directories(include/rocket)
 define_source_root_groups(include include/rocket "")
 define_source_root_groups(src src/rocket "")
 
-SET(CMAKE_CXX_FLAGS "-std=c++11")
+add_executable(rocket ${TESTPROGRAM_SOURCES})
 
 find_package(OpenGL REQUIRED)
-
-
-add_executable(rocket ${TESTPROGRAM_SOURCES})
 target_link_libraries(rocket ${OPENGL_LIBRARIES})
 
-set(COCOA_LIBRARIES "-framework Cocoa -framework CoreFoundation")
-target_link_libraries(rocket ${COCOA_LIBRARIES})
+if (APPLE)
+	set(COCOA_LIBRARIES "-framework Cocoa -framework CoreFoundation")
+	target_link_libraries(rocket ${COCOA_LIBRARIES})
+endif()

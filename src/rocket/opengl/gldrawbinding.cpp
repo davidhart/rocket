@@ -22,7 +22,7 @@ bool GLDrawBinding::Create(const DrawBindingDef& drawBindingDef)
 	
 	glBindVertexArray(m_vao);
 
-	for (int i = 0; i < drawBindingDef.numVertexAttributes; ++i)
+	for (unsigned i = 0; i < drawBindingDef.numVertexAttributes; ++i)
 	{
 		VertexBinding* binding = drawBindingDef.vertexAttributes + i;
 		GLuint bufferHandle = ((GLBuffer*)binding->buffer)->GetNativeHandle();
