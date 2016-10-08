@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cassert>
 #include <map>
 #include <iostream>
 
@@ -111,12 +112,21 @@ void set1f(const ParameterData& data)
 
 void GLShaderParameters::SetFloat(const char* name, float value)
 {
-	ParameterData data;
-	data.location = glGetUniformLocation(m_program, name);
-	data.value.f = value;
-	data.setter = &set1f;
+	auto it = m_parameters.find(name);
+	if (it == m_parameters.end())
+	{
+		ParameterData data;
+		data.location = glGetUniformLocation(m_program, name);
+		assert(data.location >= 0);
+		data.value.f = value;
+		data.setter = &set1f;
 
-	m_parameters[name] = data;
+		m_parameters.emplace(name, data);
+	}
+	else
+	{
+		it->second.value.f = value;
+	}
 }
 
 void set2f(const ParameterData& data)
@@ -126,12 +136,21 @@ void set2f(const ParameterData& data)
 
 void GLShaderParameters::SetVec2(const char* name, const vec2& value)
 {
-	ParameterData data;
-	data.location = glGetUniformLocation(m_program, name);
-	data.value.v2 = value;
-	data.setter = &set2f;
+	auto it = m_parameters.find(name);
+	if (it == m_parameters.end())
+	{
+		ParameterData data;
+		data.location = glGetUniformLocation(m_program, name);
+		assert(data.location >= 0);
+		data.value.v2 = value;
+		data.setter = &set2f;
 
-	m_parameters[name] = data;
+		m_parameters.emplace(name, data);
+	}
+	else
+	{
+		it->second.value.v2 = value;
+	}
 }
 
 void set3f(const ParameterData& data)
@@ -141,12 +160,21 @@ void set3f(const ParameterData& data)
 
 void GLShaderParameters::SetVec3(const char* name, const vec3& value)
 {
-	ParameterData data;
-	data.location = glGetUniformLocation(m_program, name);
-	data.value.v3 = value;
-	data.setter = &set3f;
+	auto it = m_parameters.find(name);
+	if (it == m_parameters.end())
+	{
+		ParameterData data;
+		data.location = glGetUniformLocation(m_program, name);
+		assert(data.location >= 0);
+		data.value.v3 = value;
+		data.setter = &set3f;
 
-	m_parameters[name] = data;
+		m_parameters.emplace(name, data);
+	}
+	else
+	{
+		it->second.value.v3 = value;
+	}
 }
 
 void set4f(const ParameterData& data)
@@ -156,12 +184,21 @@ void set4f(const ParameterData& data)
 
 void GLShaderParameters::SetVec4(const char* name, const vec4& value)
 {
-	ParameterData data;
-	data.location = glGetUniformLocation(m_program, name);
-	data.value.v4 = value;
-	data.setter = &set4f;
+	auto it = m_parameters.find(name);
+	if (it == m_parameters.end())
+	{
+		ParameterData data;
+		data.location = glGetUniformLocation(m_program, name);
+		assert(data.location >= 0);
+		data.value.v4 = value;
+		data.setter = &set4f;
 
-	m_parameters[name] = data;
+		m_parameters.emplace(name, data);
+	}
+	else
+	{
+		it->second.value.v4 = value;
+	}
 }
 
 void GLShaderParameters::MakeCurrent()

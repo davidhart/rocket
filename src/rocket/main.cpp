@@ -63,8 +63,7 @@ Shader* CreateTestShader(Renderer* renderer)
 	const char* vert =
 		"#version 140\n"
 		"#extension GL_ARB_explicit_attrib_location : enable\n"
-		"#extension GL_ARB_explicit_uniform_location : enable\n"
-		"layout(location=0)uniform vec4 u_color;\n"
+		"uniform vec4 u_color;\n"
 		"layout(location=0)in vec3 vertex;\n"
 		"layout(location=1)in vec3 i_color;\n"
 		"out vec3 f_color;\n"
