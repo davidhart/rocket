@@ -3,7 +3,7 @@
 #if _WIN32
 
 #include "opengl/rocket_opengl.h"
-#include "wglext.h"
+#include "windows/wglext.h"
 
 #include <cassert>
 #include <cstdio>
