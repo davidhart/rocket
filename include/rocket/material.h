@@ -5,6 +5,7 @@
 namespace Rocket
 {
 	class Shader;
+	class ShaderParameters;
 
 	class Material
 	{
@@ -14,9 +15,11 @@ namespace Rocket
 		~Material();
 
 		Shader* GetShader();
+		ShaderParameters* GetParameters();
 
 	private:
 		Shader* m_shader;
+		ShaderParameters* m_parameters;
 	};
 }
 

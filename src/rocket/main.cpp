@@ -6,6 +6,8 @@
 #include "drawbinding.h"
 #include "material.h"
 
+#include "vectormath.h"
+
 #include <thread>
 #include <cassert>
 
@@ -61,6 +63,8 @@ Shader* CreateTestShader(Renderer* renderer)
 	const char* vert =
 		"#version 140\n"
 		"#extension GL_ARB_explicit_attrib_location : enable\n"
+		"#extension GL_ARB_explicit_uniform_location : enable\n"
+		"layout(location=0)uniform vec4 u_color;\n"
 		"layout(location=0)in vec3 vertex;\n"
 		"layout(location=1)in vec3 i_color;\n"
 		"out vec3 f_color;\n"
@@ -68,7 +72,7 @@ Shader* CreateTestShader(Renderer* renderer)
 		"{\n"
 		"gl_Position.xyz = vertex;\n"
 		"gl_Position.w = 1;\n"
-		"f_color = i_color;\n"
+		"f_color = i_color * u_color.xyz;\n"
 		"}";
 	unsigned vertSize = sizeof(vert);
 
@@ -140,6 +144,9 @@ int main(int, char**)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
+
+		vec4 random_color = vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
+		material->GetParameters()->SetVec4("u_color", random_color);
         
 		renderer->RenderTemp(binding, material);
 		renderer->Present();

@@ -125,13 +125,17 @@ void BaseOpenGLRenderer::Present()
         
         GLuint shaderhandle = ((GLShader*)material->GetShader())->GetNativeHandle();
         glUseProgram(shaderhandle);
-        
+
+		GLShaderParameters* parameters = (GLShaderParameters*)material->GetParameters();
+		parameters->MakeCurrent();
+
         GLsizei numElements = ((GLDrawBinding*)draw.binding)->GetNumElements();
         glDrawArrays(GL_TRIANGLES, 0, numElements);
         
         m_tempDrawQueue.pop();
     }
     
+	glFlush();
     SwapBuffers();
     DeactivateContext();
 }

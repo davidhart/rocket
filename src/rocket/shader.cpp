@@ -2,6 +2,10 @@
 
 using namespace Rocket;
 
+ShaderParameters::~ShaderParameters()
+{
+}
+
 Shader::Shader()
 {
 
