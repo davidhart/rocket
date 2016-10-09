@@ -49,12 +49,30 @@ bool GLShader::Create(const ShaderDef& source)
 	glUseProgram(m_program);
 	glUseProgram(0);
 
+
+	GLint activeUniforms;
+	glGetProgramiv(m_program, GL_ACTIVE_UNIFORMS, &activeUniforms);
+
+	for (int i = 0; i < activeUniforms; ++i)
+	{
+		GLint size;
+		GLenum type;
+
+		GLchar name[256];
+		int nameLength = 0;
+
+		glGetActiveUniform(m_program, i, sizeof(name), &nameLength, &size, &type, name);
+
+		GLint location = glGetUniformLocation(m_program, name);
+		m_shaderParameterLocations[std::string(name, nameLength)] = location;
+	}
+
 	return true;
 }
 
 ShaderParameters* GLShader::CreateParameters()
 {
-	return new GLShaderParameters(m_program);
+	return new GLShaderParameters(this);
 }
 
 void GLShader::ReleaseParameters(ShaderParameters* parameters)
@@ -67,6 +85,18 @@ GLuint GLShader::GetNativeHandle()
 	return m_program;
 }
 
+GLint GLShader::GetParameterLocation(const char* name)
+{
+	auto it = m_shaderParameterLocations.find(name);
+
+	if (it == m_shaderParameterLocations.end())
+	{
+		return -1;
+	}
+
+	return it->second;
+}
+
 GLenum GLShader::CreateSubShader(GLenum type, unsigned, const void* source)
 {
 	GLenum shader = glCreateShader(type);
@@ -76,12 +106,12 @@ GLenum GLShader::CreateSubShader(GLenum type, unsigned, const void* source)
 	glShaderSource(shader, 1, &glsource, nullptr);
 	glCompileShader(shader);
 	
-	int compileStatus = 0;
+	GLint compileStatus = 0;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
 
 	if (compileStatus == GL_FALSE)
 	{
-		int infoLogLen = 0;
+		GLint infoLogLen = 0;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLen);
 
         char* log = (char*)malloc(infoLogLen);
@@ -100,8 +130,8 @@ ParameterData::ParameterData() :
 {
 }
 
-GLShaderParameters::GLShaderParameters(GLuint program) :
-	m_program(program)
+GLShaderParameters::GLShaderParameters(GLShader* shader) :
+	m_shader(shader)
 {
 }
 
@@ -112,21 +142,12 @@ void set1f(const ParameterData& data)
 
 void GLShaderParameters::SetFloat(const char* name, float value)
 {
-	auto it = m_parameters.find(name);
-	if (it == m_parameters.end())
-	{
-		ParameterData data;
-		data.location = glGetUniformLocation(m_program, name);
-		assert(data.location >= 0);
-		data.value.f = value;
-		data.setter = &set1f;
+	ParameterData data;
+	data.location = m_shader->GetParameterLocation(name);
+	data.value.f = value;
+	data.setter = &set1f;
 
-		m_parameters.emplace(name, data);
-	}
-	else
-	{
-		it->second.value.f = value;
-	}
+	m_parameters[name] = data;
 }
 
 void set2f(const ParameterData& data)
@@ -136,21 +157,12 @@ void set2f(const ParameterData& data)
 
 void GLShaderParameters::SetVec2(const char* name, const vec2& value)
 {
-	auto it = m_parameters.find(name);
-	if (it == m_parameters.end())
-	{
-		ParameterData data;
-		data.location = glGetUniformLocation(m_program, name);
-		assert(data.location >= 0);
-		data.value.v2 = value;
-		data.setter = &set2f;
+	ParameterData data;
+	data.location = m_shader->GetParameterLocation(name);
+	data.value.v2 = value;
+	data.setter = &set2f;
 
-		m_parameters.emplace(name, data);
-	}
-	else
-	{
-		it->second.value.v2 = value;
-	}
+	m_parameters[name] = data;
 }
 
 void set3f(const ParameterData& data)
@@ -160,21 +172,12 @@ void set3f(const ParameterData& data)
 
 void GLShaderParameters::SetVec3(const char* name, const vec3& value)
 {
-	auto it = m_parameters.find(name);
-	if (it == m_parameters.end())
-	{
-		ParameterData data;
-		data.location = glGetUniformLocation(m_program, name);
-		assert(data.location >= 0);
-		data.value.v3 = value;
-		data.setter = &set3f;
+	ParameterData data;
+	data.location = m_shader->GetParameterLocation(name);
+	data.value.v3 = value;
+	data.setter = &set3f;
 
-		m_parameters.emplace(name, data);
-	}
-	else
-	{
-		it->second.value.v3 = value;
-	}
+	m_parameters[name] = data;
 }
 
 void set4f(const ParameterData& data)
@@ -184,21 +187,12 @@ void set4f(const ParameterData& data)
 
 void GLShaderParameters::SetVec4(const char* name, const vec4& value)
 {
-	auto it = m_parameters.find(name);
-	if (it == m_parameters.end())
-	{
-		ParameterData data;
-		data.location = glGetUniformLocation(m_program, name);
-		assert(data.location >= 0);
-		data.value.v4 = value;
-		data.setter = &set4f;
+	ParameterData data;
+	data.location = m_shader->GetParameterLocation(name);
+	data.value.v4 = value;
+	data.setter = &set4f;
 
-		m_parameters.emplace(name, data);
-	}
-	else
-	{
-		it->second.value.v4 = value;
-	}
+	m_parameters[name] = data;
 }
 
 void GLShaderParameters::MakeCurrent()
@@ -206,6 +200,10 @@ void GLShaderParameters::MakeCurrent()
 	for (auto it = m_parameters.begin(); it != m_parameters.end(); ++it)
 	{
 		ParameterData data = it->second;
-		it->second.setter(data);
+
+		if (data.location >= 0)
+		{
+			it->second.setter(data);
+		}
 	}
 }

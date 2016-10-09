@@ -25,6 +25,8 @@ namespace Rocket
 
 			GLuint GetNativeHandle();
 
+			int GetParameterLocation(const char* name);
+
 		private:
 
 			GLuint CreateSubShader(GLenum type, unsigned size, const void* data);
@@ -32,6 +34,8 @@ namespace Rocket
 			GLuint m_program;
             GLuint m_vert;
 			GLuint m_frag;
+
+			std::map<std::string, int> m_shaderParameterLocations;
 		};
 
 		union ParameterValue
@@ -57,7 +61,7 @@ namespace Rocket
 		class GLShaderParameters : public ShaderParameters
 		{
 		public:
-			GLShaderParameters(GLuint program);
+			GLShaderParameters(GLShader* shader);
 
 			typedef std::map<std::string, ParameterData> ParameterCollection;
 
@@ -70,7 +74,7 @@ namespace Rocket
 
 		private:
 			
-			GLuint m_program;
+			GLShader* m_shader;
 			ParameterCollection m_parameters;
 		};
 	}
