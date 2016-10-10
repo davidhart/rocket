@@ -123,9 +123,13 @@ GLenum GLShader::CreateSubShader(GLenum type, unsigned, const void* source)
 	return shader;
 }
 
+ParameterValue::ParameterValue()
+{
+	// Intentionally uninitialized
+}
+
 ParameterData::ParameterData() :
 	location(-1),
-	value{ 0 },
 	setter(nullptr)
 {
 }
@@ -142,12 +146,9 @@ void set1f(const ParameterData& data)
 
 void GLShaderParameters::SetFloat(const char* name, float value)
 {
-	ParameterData data;
-	data.location = m_shader->GetParameterLocation(name);
-	data.value.f = value;
-	data.setter = &set1f;
-
-	m_parameters[name] = data;
+	ParameterValue pv;
+	pv.f = value;
+	Set(name, pv, &set1f);
 }
 
 void set2f(const ParameterData& data)
@@ -157,12 +158,9 @@ void set2f(const ParameterData& data)
 
 void GLShaderParameters::SetVec2(const char* name, const vec2& value)
 {
-	ParameterData data;
-	data.location = m_shader->GetParameterLocation(name);
-	data.value.v2 = value;
-	data.setter = &set2f;
-
-	m_parameters[name] = data;
+	ParameterValue pv;
+	pv.v2 = value;
+	Set(name, pv, &set2f);
 }
 
 void set3f(const ParameterData& data)
@@ -172,12 +170,9 @@ void set3f(const ParameterData& data)
 
 void GLShaderParameters::SetVec3(const char* name, const vec3& value)
 {
-	ParameterData data;
-	data.location = m_shader->GetParameterLocation(name);
-	data.value.v3 = value;
-	data.setter = &set3f;
-
-	m_parameters[name] = data;
+	ParameterValue pv;
+	pv.v3 = value;
+	Set(name, pv, &set3f);
 }
 
 void set4f(const ParameterData& data)
@@ -187,11 +182,65 @@ void set4f(const ParameterData& data)
 
 void GLShaderParameters::SetVec4(const char* name, const vec4& value)
 {
+	ParameterValue pv;
+	pv.v4 = value;
+	Set(name, pv, &set4f);
+}
+
+void set1i(const ParameterData& data)
+{
+	glUniform1i(data.location, data.value.i);
+}
+
+void GLShaderParameters::SetInt(const char* name, int value)
+{
+	ParameterValue pv;
+	pv.i = value;
+	Set(name, pv, &set1i);
+}
+
+void set2i(const ParameterData& data)
+{
+	glUniform2i(data.location, data.value.iv2.x, data.value.iv2.y);
+}
+
+void GLShaderParameters::SetIVec2(const char* name, const ivec2& value)
+{
+	ParameterValue pv;
+	pv.iv2 = value;
+	Set(name, pv, &set2i);
+}
+
+void set3i(const ParameterData& data)
+{
+	glUniform3i(data.location, data.value.iv3.x, data.value.iv3.y, data.value.iv3.z);
+}
+
+void GLShaderParameters::SetIVec3(const char* name, const ivec3& value)
+{
+	ParameterValue pv;
+	pv.iv3 = value;
+	Set(name, pv, &set3i);
+}
+
+void set4i(const ParameterData& data)
+{
+	glUniform4i(data.location, data.value.iv4.x, data.value.iv4.y, data.value.iv4.z, data.value.iv4.w);
+}
+
+void GLShaderParameters::SetIVec4(const char* name, const ivec4& value)
+{
+	ParameterValue pv;
+	pv.iv4 = value;
+	Set(name, pv, &set4i);
+}
+
+void GLShaderParameters::Set(const char* name, const ParameterValue& value, SetFunc func)
+{
 	ParameterData data;
 	data.location = m_shader->GetParameterLocation(name);
-	data.value.v4 = value;
-	data.setter = &set4f;
-
+	data.value = value;
+	data.setter = func;
 	m_parameters[name] = data;
 }
 

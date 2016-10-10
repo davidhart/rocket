@@ -44,6 +44,13 @@ namespace Rocket
 			vec2 v2;
 			vec3 v3;
 			vec4 v4;
+
+			int i;
+			ivec2 iv2;
+			ivec3 iv3;
+			ivec4 iv4;
+
+			ParameterValue();
 		};
 
 		struct ParameterData;
@@ -70,9 +77,16 @@ namespace Rocket
 			virtual void SetVec3(const char* name, const vec3& val);
 			virtual void SetVec4(const char* name, const vec4& val);
 
+			virtual void SetInt(const char* name, int val);
+			virtual void SetIVec2(const char* name, const ivec2& val);
+			virtual void SetIVec3(const char* name, const ivec3& val);
+			virtual void SetIVec4(const char* name, const ivec4& val);
+
 			void MakeCurrent();
 
 		private:
+
+			void Set(const char* name, const ParameterValue& value, SetFunc func);
 			
 			GLShader* m_shader;
 			ParameterCollection m_parameters;

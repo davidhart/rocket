@@ -24,6 +24,11 @@ namespace Rocket
 		virtual void SetVec2(const char* name, const vec2& value) = 0;
 		virtual void SetVec3(const char* name, const vec3& value) = 0;
 		virtual void SetVec4(const char* name, const vec4& value) = 0;
+
+		virtual void SetInt(const char* name, int value) = 0;
+		virtual void SetIVec2(const char* name, const ivec2& value) = 0;
+		virtual void SetIVec3(const char* name, const ivec3& value) = 0;
+		virtual void SetIVec4(const char* name, const ivec4& value) = 0;
 	};
 
 	class Shader
