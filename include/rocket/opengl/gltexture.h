@@ -16,6 +16,7 @@ namespace Rocket
 			~GLTexture();
 
 			bool Create(const TextureDef& data);
+			GLint GetNativeHandle();
 
 		private:
 			GLuint m_texture;

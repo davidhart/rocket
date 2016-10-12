@@ -1,4 +1,5 @@
 #include "opengl/glshader.h"
+#include "opengl/gltexture.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -235,6 +236,21 @@ void GLShaderParameters::SetIVec4(const char* name, const ivec4& value)
 	Set(name, pv, &set4i);
 }
 
+void GLShaderParameters::SetTexture1D(const char* name, Texture* texture)
+{
+	m_textures[name] = { m_shader->GetParameterLocation(name), texture, TEXTURE_1D };
+}
+
+void GLShaderParameters::SetTexture2D(const char* name, Texture* texture)
+{
+	m_textures[name] = { m_shader->GetParameterLocation(name), texture, TEXTURE_2D };
+}
+
+void GLShaderParameters::SetTexture3D(const char* name, Texture* texture)
+{
+	m_textures[name] = { m_shader->GetParameterLocation(name), texture, TEXTURE_3D };
+}
+
 void GLShaderParameters::Set(const char* name, const ParameterValue& value, SetFunc func)
 {
 	ParameterData data;
@@ -243,6 +259,7 @@ void GLShaderParameters::Set(const char* name, const ParameterValue& value, SetF
 	data.setter = func;
 	m_parameters[name] = data;
 }
+
 
 void GLShaderParameters::MakeCurrent()
 {
@@ -254,5 +271,40 @@ void GLShaderParameters::MakeCurrent()
 		{
 			it->second.setter(data);
 		}
+	}
+
+	int sampler = 0;
+
+	for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
+	{
+		//assert(sampler < glGetInteger(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS));
+
+		glActiveTexture(GL_TEXTURE0 + sampler);
+
+		GLenum samplerType = 0;
+
+		switch (it->second.type)
+		{
+		case TEXTURE_1D:
+			samplerType = GL_TEXTURE_1D;
+			break;
+		case TEXTURE_2D:
+			samplerType = GL_TEXTURE_2D;
+			break;
+		case TEXTURE_3D:
+			samplerType = GL_TEXTURE_3D;
+			break;
+		default:
+			assert(false); // Unssuported sampler type
+		}
+
+		GLTexture* tex = (GLTexture*)(it->second.texture);
+
+		glBindTexture(samplerType, tex->GetNativeHandle());
+		//glTexParameteri(samplerType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		//glTexParameteri(samplerType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(samplerType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glUniform1i(it->second.location, sampler);
 	}
 }

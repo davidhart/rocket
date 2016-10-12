@@ -15,6 +15,8 @@ namespace Rocket
 		unsigned fragSize;
 	};
 
+	class Texture;
+
 	class ShaderParameters
 	{
 	public:
@@ -29,6 +31,10 @@ namespace Rocket
 		virtual void SetIVec2(const char* name, const ivec2& value) = 0;
 		virtual void SetIVec3(const char* name, const ivec3& value) = 0;
 		virtual void SetIVec4(const char* name, const ivec4& value) = 0;
+		
+		virtual void SetTexture1D(const char* name, Texture* texture) = 0;
+		virtual void SetTexture2D(const char* name, Texture* texture) = 0;
+		virtual void SetTexture3D(const char* name, Texture* texture) = 0;
 	};
 
 	class Shader

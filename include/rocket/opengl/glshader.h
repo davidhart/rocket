@@ -4,6 +4,7 @@
 
 #include "shader.h"
 #include "renderer.h"
+#include "texture.h"
 #include "rocket_opengl.h"
 
 #include <map>
@@ -24,7 +25,6 @@ namespace Rocket
 			virtual void ReleaseParameters(ShaderParameters* parameters);
 
 			GLuint GetNativeHandle();
-
 			int GetParameterLocation(const char* name);
 
 		private:
@@ -50,6 +50,8 @@ namespace Rocket
 			ivec3 iv3;
 			ivec4 iv4;
 
+			Texture* texture;
+
 			ParameterValue();
 		};
 
@@ -65,22 +67,34 @@ namespace Rocket
 			ParameterData();
 		};
 
+		struct TextureSampler
+		{
+			GLint location;
+			Texture* texture;
+			TextureType type;
+		};
+
 		class GLShaderParameters : public ShaderParameters
 		{
 		public:
 			GLShaderParameters(GLShader* shader);
 
 			typedef std::map<std::string, ParameterData> ParameterCollection;
+			typedef std::map<std::string, TextureSampler> TextureCollection;
 
-			virtual void SetFloat(const char* name, float val);
-			virtual void SetVec2(const char* name, const vec2& val);
-			virtual void SetVec3(const char* name, const vec3& val);
-			virtual void SetVec4(const char* name, const vec4& val);
+			virtual void SetFloat(const char* name, float value);
+			virtual void SetVec2(const char* name, const vec2& value);
+			virtual void SetVec3(const char* name, const vec3& value);
+			virtual void SetVec4(const char* name, const vec4& value);
 
-			virtual void SetInt(const char* name, int val);
-			virtual void SetIVec2(const char* name, const ivec2& val);
-			virtual void SetIVec3(const char* name, const ivec3& val);
-			virtual void SetIVec4(const char* name, const ivec4& val);
+			virtual void SetInt(const char* name, int value);
+			virtual void SetIVec2(const char* name, const ivec2& value);
+			virtual void SetIVec3(const char* name, const ivec3& value);
+			virtual void SetIVec4(const char* name, const ivec4& value);
+
+			virtual void SetTexture1D(const char* name, Texture* texture);
+			virtual void SetTexture2D(const char* name, Texture* texture);
+			virtual void SetTexture3D(const char* name, Texture* texture);
 
 			void MakeCurrent();
 
@@ -90,6 +104,7 @@ namespace Rocket
 			
 			GLShader* m_shader;
 			ParameterCollection m_parameters;
+			TextureCollection m_textures;
 		};
 	}
 }

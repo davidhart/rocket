@@ -50,3 +50,8 @@ bool GLTexture::Create(const TextureDef& textureData)
 
 	return true;
 }
+
+GLint GLTexture::GetNativeHandle()
+{
+	return m_texture;
+}
