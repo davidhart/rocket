@@ -281,6 +281,7 @@ void GLShaderParameters::MakeCurrent()
 		glBindTexture(GL_TEXTURE_1D, ((GLTexture1D*)it->second.texture)->GetNativeHandle());
 		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glUniform1i(it->second.location, sampler);
+        sampler++;
 	}
     
     for (auto it = m_samplers2D.begin(); it != m_samplers2D.end(); ++it)
@@ -289,6 +290,7 @@ void GLShaderParameters::MakeCurrent()
         glBindTexture(GL_TEXTURE_2D, ((GLTexture2D*)it->second.texture)->GetNativeHandle());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glUniform1i(it->second.location, sampler);
+        sampler++;
     }
     
     for (auto it = m_samplers3D.begin(); it != m_samplers3D.end(); ++it)
@@ -297,5 +299,6 @@ void GLShaderParameters::MakeCurrent()
         glBindTexture(GL_TEXTURE_3D, ((GLTexture3D*)it->second.texture)->GetNativeHandle());
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glUniform1i(it->second.location, sampler);
+        sampler++;
     }
 }
