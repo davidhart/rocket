@@ -4,6 +4,7 @@
 
 #if __APPLE__
 
+#include "gameview.h"
 #include "opengl/baseopenglrenderer.h"
 
 namespace Rocket
@@ -20,6 +21,8 @@ namespace Rocket
             virtual void ActivateContext();
             virtual void DeactivateContext();
             virtual void SwapBuffers();
+            
+            virtual void GameViewResized(const ivec2& size);
             
         private:
             void* m_view;

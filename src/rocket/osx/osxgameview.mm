@@ -98,13 +98,38 @@ using namespace Rocket::OSX;
     if (self != nil)
     {
         self->gameView = view;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(surfaceNeedsUpdate:)
+                                                     name:NSViewGlobalFrameDidChangeNotification
+                                                   object:self];
     }
     return self;
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSViewGlobalFrameDidChangeNotification
+                                                  object:self];
+    
+    [super dealloc];
 }
 
 -(void)windowWillClose:(NSNotification*)notif
 {
     gameView->WindowWillClose();
+}
+
+-(void)surfaceNeedsUpdate:(NSNotification*)notification
+{
+    NSRect frame = [self.window contentRectForFrameRect:self.window.frame];
+    frame.origin = CGPointMake(0, 0);
+    [self setFrame: frame];
+    
+    NSRect backing = [self convertRectToBacking:[self bounds]];
+    
+    gameView->NotifySizeObservers(ivec2((int)backing.size.width, (int)backing.size.height));
 }
 
 // TODO: respond to input events here
@@ -159,17 +184,19 @@ bool OSXGameView::Create()
     
     NSWindowStyleMask windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
     
-    id window = [[RocketOSXWindow alloc]
+    RocketOSXWindow* window = [[RocketOSXWindow alloc]
                  initWithContentRect:windowRect
                  styleMask:windowStyle
                  backing:NSBackingStoreBuffered
                  defer:NO];
     
-    id view = [[RocketOSXView alloc]
+    RocketOSXView* view = [[RocketOSXView alloc]
               initWithGameView:this];
     
-    // TODO: figure out what this does
-//    [view setWantsBestResolutionOpenGLSurface:YES];
+    [view setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+    
+    // Request high dpi resolution
+    [view setWantsBestResolutionOpenGLSurface:YES];
     
     [window setDelegate: view];
     [window makeFirstResponder:view];
@@ -203,11 +230,15 @@ Renderer* OSXGameView::CreateRenderer()
         return nullptr;
     }
     
+    AddSizeObserver(renderer);
+    
     return renderer;
 }
 
 void OSXGameView::ReleaseRenderer(Renderer* renderer)
 {
+    RemoveSizeObserver((OSXOpenGLRenderer*)renderer);
+    
     delete renderer;
 }
 

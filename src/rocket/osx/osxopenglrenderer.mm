@@ -60,9 +60,9 @@ bool OSXOpenGLRenderer::CreateContext()
         0
     };
     
-    id pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
+    NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes];
     
-    id nsglcontext = [[NSOpenGLContext alloc] initWithFormat:pixelformat shareContext:nil];
+    NSOpenGLContext* nsglcontext = [[NSOpenGLContext alloc] initWithFormat:pixelformat shareContext:nil];
     
     [nsglcontext setView: ((id)m_view)];
     
@@ -94,6 +94,13 @@ void OSXOpenGLRenderer::DeactivateContext()
 void OSXOpenGLRenderer::SwapBuffers()
 {
     [((id)m_nsglcontext) flushBuffer];
+}
+
+void OSXOpenGLRenderer::GameViewResized(const ivec2& size)
+{
+    [(NSOpenGLContext*)m_nsglcontext update];
+    
+    BaseOpenGLRenderer::GameViewResized(size);
 }
 
 #endif
