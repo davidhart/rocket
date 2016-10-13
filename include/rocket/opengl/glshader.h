@@ -67,12 +67,23 @@ namespace Rocket
 			ParameterData();
 		};
 
-		struct TextureSampler
+		struct TextureSampler1D
 		{
 			GLint location;
-			Texture* texture;
-			TextureType type;
+			Texture1D* texture;
 		};
+        
+        struct TextureSampler2D
+        {
+            GLint location;
+            Texture2D* texture;
+        };
+        
+        struct TextureSampler3D
+        {
+            GLint location;
+            Texture3D* texture;
+        };
 
 		class GLShaderParameters : public ShaderParameters
 		{
@@ -80,8 +91,10 @@ namespace Rocket
 			GLShaderParameters(GLShader* shader);
 
 			typedef std::map<std::string, ParameterData> ParameterCollection;
-			typedef std::map<std::string, TextureSampler> TextureCollection;
-
+			typedef std::map<std::string, TextureSampler1D> Samplers1DCollection;
+            typedef std::map<std::string, TextureSampler2D> Samplers2DCollection;
+            typedef std::map<std::string, TextureSampler3D> Samplers3DCollection;
+            
 			virtual void SetFloat(const char* name, float value);
 			virtual void SetVec2(const char* name, const vec2& value);
 			virtual void SetVec3(const char* name, const vec3& value);
@@ -92,9 +105,9 @@ namespace Rocket
 			virtual void SetIVec3(const char* name, const ivec3& value);
 			virtual void SetIVec4(const char* name, const ivec4& value);
 
-			virtual void SetTexture1D(const char* name, Texture* texture);
-			virtual void SetTexture2D(const char* name, Texture* texture);
-			virtual void SetTexture3D(const char* name, Texture* texture);
+			virtual void SetTexture1D(const char* name, Texture1D* texture);
+			virtual void SetTexture2D(const char* name, Texture2D* texture);
+			virtual void SetTexture3D(const char* name, Texture3D* texture);
 
 			void MakeCurrent();
 
@@ -104,7 +117,9 @@ namespace Rocket
 			
 			GLShader* m_shader;
 			ParameterCollection m_parameters;
-			TextureCollection m_textures;
+			Samplers1DCollection m_samplers1D;
+            Samplers2DCollection m_samplers2D;
+            Samplers3DCollection m_samplers3D;
 		};
 	}
 }

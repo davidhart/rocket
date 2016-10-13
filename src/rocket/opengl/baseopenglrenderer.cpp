@@ -58,11 +58,11 @@ void BaseOpenGLRenderer::ReleaseShader(Shader* shader)
     delete shader;
 }
 
-Texture* BaseOpenGLRenderer::CreateTexture(const TextureDef& def)
+Texture1D* BaseOpenGLRenderer::CreateTexture(const TextureDef1D& def)
 {
     ActivateContext();
     
-    GLTexture* texture = new GLTexture();
+    GLTexture1D* texture = new GLTexture1D();
     
     if (texture->Create(def) == false)
     {
@@ -71,6 +71,52 @@ Texture* BaseOpenGLRenderer::CreateTexture(const TextureDef& def)
     }
     
     return texture;
+}
+
+
+void BaseOpenGLRenderer::ReleaseTexture(Texture1D* texture)
+{
+    delete texture;
+}
+
+Texture2D* BaseOpenGLRenderer::CreateTexture(const TextureDef2D& def)
+{
+    ActivateContext();
+    
+    GLTexture2D* texture = new GLTexture2D();
+    
+    if (texture->Create(def) == false)
+    {
+        delete texture;
+        return nullptr;
+    }
+    
+    return texture;
+}
+
+void BaseOpenGLRenderer::ReleaseTexture(Texture2D* texture)
+{
+    delete texture;
+}
+
+Texture3D* BaseOpenGLRenderer::CreateTexture(const TextureDef3D& def)
+{
+    ActivateContext();
+    
+    GLTexture3D* texture = new GLTexture3D();
+    
+    if (texture->Create(def) == false)
+    {
+        delete texture;
+        return nullptr;
+    }
+    
+    return texture;
+}
+
+void BaseOpenGLRenderer::ReleaseTexture(Texture3D* texture)
+{
+    delete texture;
 }
 
 DrawBinding* BaseOpenGLRenderer::CreateDrawBinding(const DrawBindingDef& def)
@@ -91,11 +137,6 @@ DrawBinding* BaseOpenGLRenderer::CreateDrawBinding(const DrawBindingDef& def)
 void BaseOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
 {
     delete binding;
-}
-
-void BaseOpenGLRenderer::ReleaseTexture(Texture* texture)
-{
-    delete texture;
 }
 
 void BaseOpenGLRenderer::RenderTemp(DrawBinding* binding, Material* shader)

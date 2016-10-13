@@ -26,8 +26,14 @@ namespace Rocket
         virtual Shader* CreateShader(const ShaderDef& shaderSource);
         virtual void ReleaseShader(Shader* shader);
         
-        virtual Texture* CreateTexture(const TextureDef& textureData);
-        virtual void ReleaseTexture(Texture* texture);
+        virtual Texture1D* CreateTexture(const TextureDef1D& textureData);
+        virtual void ReleaseTexture(Texture1D* texture);
+        
+        virtual Texture2D* CreateTexture(const TextureDef2D& textureData);
+        virtual void ReleaseTexture(Texture2D* texture);
+        
+        virtual Texture3D* CreateTexture(const TextureDef3D& textureData);
+        virtual void ReleaseTexture(Texture3D* texture);
         
         virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef);
         virtual void ReleaseDrawBinding(DrawBinding* drawBinding);

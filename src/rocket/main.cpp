@@ -107,7 +107,7 @@ Shader* CreateTestShader(Renderer* renderer)
 	return shader;
 }
 
-Texture* CreateTestTexture2D(Renderer* renderer)
+Texture2D* CreateTestTexture2D(Renderer* renderer)
 {
 	const unsigned char bytes[] = {
 		0x00, 0x00, 0x00, 0x00,
@@ -116,15 +116,13 @@ Texture* CreateTestTexture2D(Renderer* renderer)
 		0x00, 0x00, 0x00, 0x00
 	};
 
-	TextureDef textureData;
-	textureData.type = TEXTURE_2D;
+	TextureDef2D textureData;
 	textureData.width = 2;
 	textureData.height = 2;
-	textureData.depth = 0;
 	textureData.data = bytes;
 	textureData.size = sizeof(bytes);
 
-	Texture* texture = renderer->CreateTexture(textureData);
+	Texture2D* texture = renderer->CreateTexture(textureData);
 	assert(texture);
 
 	return texture;
@@ -142,7 +140,7 @@ int main(int, char**)
 	Buffer* buffer = CreateTestBuffer(renderer);
 	Shader* shader = CreateTestShader(renderer);
 	DrawBinding* binding = CreateTestDrawBinding(renderer, buffer);
-	Texture* texture = CreateTestTexture2D(renderer);
+	Texture2D* texture = CreateTestTexture2D(renderer);
 
 	Material* material = new Material(shader);
 	material->GetParameters()->SetTexture2D("s_texture", texture);

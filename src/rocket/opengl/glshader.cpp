@@ -236,19 +236,19 @@ void GLShaderParameters::SetIVec4(const char* name, const ivec4& value)
 	Set(name, pv, &set4i);
 }
 
-void GLShaderParameters::SetTexture1D(const char* name, Texture* texture)
+void GLShaderParameters::SetTexture1D(const char* name, Texture1D* texture)
 {
-	m_textures[name] = { m_shader->GetParameterLocation(name), texture, TEXTURE_1D };
+	m_samplers1D[name] = { m_shader->GetParameterLocation(name), texture };
 }
 
-void GLShaderParameters::SetTexture2D(const char* name, Texture* texture)
+void GLShaderParameters::SetTexture2D(const char* name, Texture2D* texture)
 {
-	m_textures[name] = { m_shader->GetParameterLocation(name), texture, TEXTURE_2D };
+	m_samplers2D[name] = { m_shader->GetParameterLocation(name), texture };
 }
 
-void GLShaderParameters::SetTexture3D(const char* name, Texture* texture)
+void GLShaderParameters::SetTexture3D(const char* name, Texture3D* texture)
 {
-	m_textures[name] = { m_shader->GetParameterLocation(name), texture, TEXTURE_3D };
+	m_samplers3D[name] = { m_shader->GetParameterLocation(name), texture };
 }
 
 void GLShaderParameters::Set(const char* name, const ParameterValue& value, SetFunc func)
@@ -274,37 +274,28 @@ void GLShaderParameters::MakeCurrent()
 	}
 
 	int sampler = 0;
-
-	for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
+    
+	for (auto it = m_samplers1D.begin(); it != m_samplers1D.end(); ++it)
 	{
-		//assert(sampler < glGetInteger(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS));
-
 		glActiveTexture(GL_TEXTURE0 + sampler);
-
-		GLenum samplerType = 0;
-
-		switch (it->second.type)
-		{
-		case TEXTURE_1D:
-			samplerType = GL_TEXTURE_1D;
-			break;
-		case TEXTURE_2D:
-			samplerType = GL_TEXTURE_2D;
-			break;
-		case TEXTURE_3D:
-			samplerType = GL_TEXTURE_3D;
-			break;
-		default:
-			assert(false); // Unssuported sampler type
-		}
-
-		GLTexture* tex = (GLTexture*)(it->second.texture);
-
-		glBindTexture(samplerType, tex->GetNativeHandle());
-		//glTexParameteri(samplerType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		//glTexParameteri(samplerType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(samplerType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+		glBindTexture(GL_TEXTURE_1D, ((GLTexture1D*)it->second.texture)->GetNativeHandle());
+		glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glUniform1i(it->second.location, sampler);
 	}
+    
+    for (auto it = m_samplers2D.begin(); it != m_samplers2D.end(); ++it)
+    {
+        glActiveTexture(GL_TEXTURE0 + sampler);
+        glBindTexture(GL_TEXTURE_2D, ((GLTexture2D*)it->second.texture)->GetNativeHandle());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glUniform1i(it->second.location, sampler);
+    }
+    
+    for (auto it = m_samplers3D.begin(); it != m_samplers3D.end(); ++it)
+    {
+        glActiveTexture(GL_TEXTURE0 + sampler);
+        glBindTexture(GL_TEXTURE_3D, ((GLTexture3D*)it->second.texture)->GetNativeHandle());
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glUniform1i(it->second.location, sampler);
+    }
 }

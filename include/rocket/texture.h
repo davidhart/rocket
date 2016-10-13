@@ -7,24 +7,33 @@ namespace Rocket
 	// TODO: support:
 	// texture 1d array, 2d array
 	// non u8 rgba pixel formats
-	enum TextureType
-	{
-		TEXTURE_1D,
-		TEXTURE_2D,
-		TEXTURE_3D
-	};
+    
+    struct TextureDef1D
+    {
+        unsigned width;
+        
+        const void* data;
+        unsigned size;
+    };
 
-	struct TextureDef
+	struct TextureDef2D
 	{
-		TextureType type;
-
 		unsigned width;
 		unsigned height;
-		unsigned depth;
 		
 		const void* data;
 		unsigned size;
 	};
+    
+    struct TextureDef3D
+    {
+        unsigned width;
+        unsigned height;
+        unsigned depth;
+        
+        const void* data;
+        unsigned size;
+    };
 
 	class Texture
 	{
@@ -35,8 +44,20 @@ namespace Rocket
 		virtual ~Texture();
 
 	private:
-		Texture(const Texture& texture);
+		Texture(const Texture&);
 	};
+    
+    class Texture1D : public Texture
+    {
+    };
+    
+    class Texture2D : public Texture
+    {
+    };
+    
+    class Texture3D : public Texture
+    {
+    };
 }
 
 #endif

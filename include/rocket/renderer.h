@@ -7,8 +7,13 @@ namespace Rocket
 	class Buffer;
 	class Shader;
 	struct ShaderDef;
-	class Texture;
-	struct TextureDef;
+    
+	class Texture1D;
+    class Texture2D;
+    class Texture3D;
+    struct TextureDef1D;
+    struct TextureDef2D;
+    struct TextureDef3D;
 
 	class DrawBinding;
 	struct DrawBindingDef;
@@ -26,8 +31,14 @@ namespace Rocket
 		virtual Shader* CreateShader(const ShaderDef& shaderSource) = 0;
 		virtual void ReleaseShader(Shader* shader) = 0;
 
-		virtual Texture* CreateTexture(const TextureDef& textureData) = 0;
-		virtual void ReleaseTexture(Texture* texture) = 0;
+        virtual Texture1D* CreateTexture(const TextureDef1D& textureData) = 0;
+        virtual void ReleaseTexture(Texture1D* texture) = 0;
+        
+		virtual Texture2D* CreateTexture(const TextureDef2D& textureData) = 0;
+        virtual void ReleaseTexture(Texture2D* texture) = 0;
+        
+        virtual Texture3D* CreateTexture(const TextureDef3D& textureData) = 0;
+		virtual void ReleaseTexture(Texture3D* texture) = 0;
 
 		virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef) = 0;
 		virtual void ReleaseDrawBinding(DrawBinding* drawBinding) = 0;
