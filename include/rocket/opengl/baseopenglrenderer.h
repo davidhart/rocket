@@ -3,11 +3,12 @@
 #define ROCKET_BASEOPENGLRENDERER_DEFINED
 
 #include "renderer.h"
+#include "gameview.h"
 #include <queue>
 
 namespace Rocket
 {
-    class BaseOpenGLRenderer : public Renderer
+    class BaseOpenGLRenderer : public Renderer, public IGameViewSizeObserver
     {
     protected:
         BaseOpenGLRenderer();
@@ -42,6 +43,8 @@ namespace Rocket
         
         virtual void Present();
         
+		virtual void GameViewResized(const ivec2& vec);
+
     private:
         
         struct TempDraw

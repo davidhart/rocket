@@ -2,13 +2,13 @@
 #ifndef ROCKET_OSXGAMEVIEW_INCLUDED
 #define ROCKET_OSXGAMEVIEW_INCLUDED
 
-#include "gameview.h"
+#include "implementation/basegameview.h"
 
 namespace Rocket
 {
     namespace OSX
     {
-        class OSXGameView : public GameView
+        class OSXGameView : public Implementation::BaseGameView
         {
         public:
             OSXGameView();

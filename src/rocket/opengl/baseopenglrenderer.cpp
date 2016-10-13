@@ -180,3 +180,10 @@ void BaseOpenGLRenderer::Present()
     SwapBuffers();
     DeactivateContext();
 }
+
+void BaseOpenGLRenderer::GameViewResized(const ivec2& vec)
+{
+	ActivateContext();
+	glViewport(0, 0, vec.x, vec.y);
+	DeactivateContext();
+}

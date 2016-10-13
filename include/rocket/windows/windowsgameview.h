@@ -5,14 +5,15 @@
 
 #ifdef _WIN32
 
-#include "gameview.h"
+#include "vectormath.h"
+#include "implementation/basegameview.h"
 #include <Windows.h>
 
 namespace Rocket
 {
 	namespace Windows
 	{
-		class WindowsGameView : public GameView
+		class WindowsGameView : public Implementation::BaseGameView 
 		{
 		public:
 			WindowsGameView();

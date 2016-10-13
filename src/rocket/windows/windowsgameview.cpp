@@ -103,11 +103,15 @@ Renderer* WindowsGameView::CreateRenderer()
 		return nullptr;
 	}
 
+	AddSizeObserver(renderer);
+
 	return renderer;
 }
 
 void WindowsGameView::ReleaseRenderer(Renderer* renderer)
 {
+	RemoveSizeObserver((WindowsOpenGLRenderer*)renderer);
+
 	delete renderer;
 }
 
@@ -156,9 +160,15 @@ bool WindowsGameView::GetIsResizable()
 
 LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	if (umsg == WM_CLOSE)
+	switch (umsg)
 	{
+	case WM_CLOSE:
 		m_isWindowClosed = true;
+		break;
+
+	case WM_SIZE:
+		NotifySizeObservers(ivec2(LOWORD(lparam), HIWORD(lparam)));
+		break;
 	}
 
 	return DefWindowProc(hwnd, umsg, wparam, lparam);
