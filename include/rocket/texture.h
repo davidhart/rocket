@@ -52,8 +52,8 @@ namespace Rocket
 	{
 		WrapMode widthWrap;
 		WrapMode heightWrap;
+        MinFilter minFilter;
 		MagFilter magFilter;
-		MinFilter minFilter;
 
 		TextureSamplerDef2D();
 	};
@@ -73,8 +73,8 @@ namespace Rocket
 		WrapMode widthWrap;
 		WrapMode heightWrap;
 		WrapMode depthWrap;
+        MinFilter minFilter;
 		MagFilter magFilter;
-		MinFilter minFilter;
 
 		TextureSamplerDef3D();
 	};

@@ -2,6 +2,9 @@
 #ifndef ROCKET_VECTORMATH_INCLUDED
 #define ROCKET_VECTORMATH_INCLUDED
 
+#include <cmath>
+#include <cstring>
+
 namespace Rocket
 {
 #pragma pack(push, 1)
@@ -99,7 +102,7 @@ namespace Rocket
 
 	template<typename T> inline tvec2<T>::tvec2(const T* data)
 	{
-		memcpy(&x, data, sizeof(T) * 2);
+        std::memcpy(&x, data, sizeof(T) * 2);
 	}
 
 	template<typename T> inline T* tvec2<T>::data()
@@ -130,7 +133,7 @@ namespace Rocket
 
 	template<typename T> inline tvec3<T>::tvec3(const T* data)
 	{
-		memcpy(&x, data, sizeof(T) * 3);
+        std::memcpy(&x, data, sizeof(T) * 3);
 	}
 
 	template<typename T> inline T* tvec3<T>::data()
@@ -181,7 +184,7 @@ namespace Rocket
 
 	template<typename T> inline tvec4<T>::tvec4(const T* data)
 	{
-		memcpy(&x, data, sizeof(T) * 4);
+        std::memcpy(&x, data, sizeof(T) * 4);
 	}
 
 	template<typename T> inline T* tvec4<T>::data()
@@ -205,20 +208,20 @@ namespace Rocket
 			0, 0, 0, 0
 		};
 
-		memcpy(values, def, sizeof(def));
+        std::memcpy(values, def, sizeof(def));
 	}
 
 	template <typename T> inline tmat4<T>::tmat4(const T* data)
 	{
-		memcpy(values, data, sizeof(T) * 16);
+        std::memcpy(values, data, sizeof(T) * 16);
 	}
 
 	template <typename T> inline tmat4<T>::tmat4(const tvec4<T>& row0, const tvec4<T>& row1, const tvec4<T>& row2, const tvec4<T>& row3)
 	{
-		memcpy(values, row0.data(), sizeof(T) * 4);
-		memcpy(values + 4, row1.data(), sizeof(T) * 4);
-		memcpy(values + 8, row2.data(), sizeof(T) * 4);
-		memcpy(values + 12, row3.data(), sizeof(T) * 4);
+        std::memcpy(values, row0.data(), sizeof(T) * 4);
+        std::memcpy(values + 4, row1.data(), sizeof(T) * 4);
+        std::memcpy(values + 8, row2.data(), sizeof(T) * 4);
+        std::memcpy(values + 12, row3.data(), sizeof(T) * 4);
 	}
 
 	template <typename T> inline T* tmat4<T>::data()
