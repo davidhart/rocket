@@ -116,13 +116,17 @@ Texture2D* CreateTestTexture2D(Renderer* renderer)
 		0x00, 0x00, 0x00, 0x00
 	};
 
-	TextureDef2D textureData;
-	textureData.width = 2;
-	textureData.height = 2;
-	textureData.data = bytes;
-	textureData.size = sizeof(bytes);
+	TextureDef2D def;
+	def.sampler.widthWrap = WRAP_REPEAT;
+	def.sampler.heightWrap = WRAP_REPEAT;
+	def.sampler.magFilter = MAG_LINEAR;
+	def.sampler.minFilter = MIN_LINEAR_MIP_LINEAR;
+	def.width = 2;
+	def.height = 2;
+	def.data = bytes;
+	def.size = sizeof(bytes);
 
-	Texture2D* texture = renderer->CreateTexture(textureData);
+	Texture2D* texture = renderer->CreateTexture(def);
 	assert(texture);
 
 	return texture;

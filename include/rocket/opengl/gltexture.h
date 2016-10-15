@@ -9,7 +9,6 @@ namespace Rocket
 {
 	namespace OpenGL
 	{
-        
         class GLTexture1D : public Texture1D
         {
         public:
