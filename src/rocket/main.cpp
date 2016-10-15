@@ -65,15 +65,19 @@ Shader* CreateTestShader(Renderer* renderer)
 		"#version 140\n"
 		"#extension GL_ARB_explicit_attrib_location : enable\n"
 		"uniform vec4 u_color;\n"
-		"layout(location=0)in vec3 vertex;\n"
+		"uniform mat4 u_transform;\n"
+		"layout(location=0)in vec3 i_vertex;\n"
 		"layout(location=1)in vec3 i_color;\n"
 		"layout(location=2)in vec2 i_uv;\n"
 		"out vec3 f_color;\n"
 		"out vec2 f_uv;\n"
 		"void main()\n"
 		"{\n"
-		"gl_Position.xyz = vertex;\n"
-		"gl_Position.w = 1;\n"
+		"vec4 temp;\n"
+		"temp.xyz = i_vertex.xyz;\n"
+		"temp.w = 1;\n"
+		"temp = u_transform * temp;\n"
+		"gl_Position = temp;\n"
 		"f_color = i_color * u_color.xyz;\n"
 		"f_uv = i_uv;\n"
 		"}";
@@ -119,8 +123,6 @@ Texture2D* CreateTestTexture2D(Renderer* renderer)
 	TextureDef2D def;
 	def.sampler.widthWrap = WRAP_REPEAT;
 	def.sampler.heightWrap = WRAP_REPEAT;
-	def.sampler.magFilter = MAG_LINEAR;
-	def.sampler.minFilter = MIN_LINEAR_MIP_LINEAR;
 	def.width = 2;
 	def.height = 2;
 	def.data = bytes;
@@ -147,9 +149,17 @@ int main(int, char**)
 	Texture2D* texture = CreateTestTexture2D(renderer);
 
 	Material* material = new Material(shader);
-	material->GetParameters()->SetTexture2D("s_texture", texture);
+	ShaderParameters* parameters = material->GetParameters();
+
+	parameters->SetTexture2D("s_texture", texture);
+
+	
+
+	float angle = 0.0f;
+
 
 	vec2 offset(0.0f, 0.0f);
+
 
 	while (view->IsClosed() == false)
 	{
@@ -157,13 +167,17 @@ int main(int, char**)
 		view->FlushEvents();
 
 		vec4 random_color = vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
-		material->GetParameters()->SetVec4("u_color", random_color);
+		parameters->SetVec4("u_color", random_color);
 
-		offset.x += 0.005f;
+		offset.x += 0.01f;
 		offset.y += 0.0025f;
 
-		material->GetParameters()->SetVec2("u_offset", offset);
+		parameters->SetVec2("u_offset", offset);
         
+		angle += 0.005f;
+		mat4 transform = mat4::AxisAngle(vec3::Up(), angle);
+		parameters->SetMat4("u_transform", transform);
+
 		renderer->RenderTemp(binding, material);
 		renderer->Present();
 	}

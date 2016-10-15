@@ -50,7 +50,7 @@ namespace Rocket
 			ivec3 iv3;
 			ivec4 iv4;
 
-			Texture* texture;
+			mat4 mat4;
 
 			ParameterValue();
 		};
@@ -99,6 +99,8 @@ namespace Rocket
 			virtual void SetVec2(const char* name, const vec2& value);
 			virtual void SetVec3(const char* name, const vec3& value);
 			virtual void SetVec4(const char* name, const vec4& value);
+
+			virtual void SetMat4(const char* name, const mat4& value);
 
 			virtual void SetInt(const char* name, int value);
 			virtual void SetIVec2(const char* name, const ivec2& value);

@@ -28,6 +28,8 @@ namespace Rocket
 		virtual void SetVec2(const char* name, const vec2& value) = 0;
 		virtual void SetVec3(const char* name, const vec3& value) = 0;
 		virtual void SetVec4(const char* name, const vec4& value) = 0;
+		
+		virtual void SetMat4(const char* name, const mat4& value) = 0;
 
 		virtual void SetInt(const char* name, int value) = 0;
 		virtual void SetIVec2(const char* name, const ivec2& value) = 0;

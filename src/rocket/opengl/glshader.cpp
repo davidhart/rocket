@@ -188,6 +188,18 @@ void GLShaderParameters::SetVec4(const char* name, const vec4& value)
 	Set(name, pv, &set4f);
 }
 
+void setmat4f(const ParameterData& data)
+{
+	glUniformMatrix4fv(data.location, 1, GL_FALSE, data.value.mat4.data());
+}
+
+void GLShaderParameters::SetMat4(const char* name, const mat4& value)
+{
+	ParameterValue pv;
+	pv.mat4 = value;
+	Set(name, pv, &setmat4f);
+}
+
 void set1i(const ParameterData& data)
 {
 	glUniform1i(data.location, data.value.i);
