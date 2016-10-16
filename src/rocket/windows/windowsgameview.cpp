@@ -85,6 +85,10 @@ bool WindowsGameView::Create()
 		this
 	);
 
+	// TODO: correct window to be actually the right size
+
+	m_size = ivec2(800, 600);
+
 	if (m_hwnd == NULL)
 	{
 		return false;
@@ -158,6 +162,11 @@ bool WindowsGameView::GetIsResizable()
 	return m_isResizable;
 }
 
+ivec2 WindowsGameView::GetSize() const
+{
+	return m_size;
+}
+
 LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	switch (umsg)
@@ -167,7 +176,8 @@ LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpa
 		break;
 
 	case WM_SIZE:
-		NotifySizeObservers(ivec2(LOWORD(lparam), HIWORD(lparam)));
+		m_size = ivec2(LOWORD(lparam), HIWORD(lparam));
+		NotifySizeObservers(m_size);
 		break;
 	}
 

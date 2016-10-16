@@ -28,6 +28,7 @@ namespace Rocket
 			virtual bool IsClosed();
 			virtual void SetIsResizable(bool isResizable);
 			virtual bool GetIsResizable();
+			virtual ivec2 GetSize() const;
 
 			LRESULT WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
 
@@ -37,6 +38,7 @@ namespace Rocket
 			bool m_isClassRegistered;
 			bool m_isWindowClosed;
 			bool m_isResizable;
+			ivec2 m_size;
 		};
 	}
 }

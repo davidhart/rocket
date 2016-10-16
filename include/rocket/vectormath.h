@@ -34,12 +34,14 @@ namespace Rocket
 		tvec3(const tvec2<T>& v, T z);
 		tvec3(const T* data);
 
+		T* data();
+		const T* data() const;
+
 		static tvec3<T> Right();
 		static tvec3<T> Up();
 		static tvec3<T> Forward();
 
-		T* data();
-		const T* data() const;
+		static T Dot(const tvec3<T>& lhs, const tvec3<T>& rhs);
 	};
 
 	template<typename T> class tvec4
@@ -58,6 +60,8 @@ namespace Rocket
 
 		T* data();
 		const T* data() const;
+		
+		static T Dot(const tvec4<T>& lhs, const tvec4<T>& rhs);
 	};
 
 	typedef tvec2<float> vec2;
@@ -78,9 +82,16 @@ namespace Rocket
 		T* data();
 		const T* data() const;
 		tvec4<T> operator[](int row) const;
+		T at(int row, int column) const;
+		tvec4<T> row(int row) const;
+		tvec4<T> col(int column) const;
+
+		tmat4<T> operator* (const tmat4<T>& rhs) const;
+		tmat4<T>& operator*= (const tmat4<T>& rhs);
 
 		static tmat4<T> Identity();
 		static tmat4<T> AxisAngle(const tvec3<T>& axis, T angle);
+		static tmat4<T> Ortho(T left, T right, T top, T bottom, T near, T far);
 
 	private:
 		T values[16];
@@ -88,6 +99,17 @@ namespace Rocket
 
 	typedef tmat4<float> mat4;
 #pragma pack(pop)
+
+	// util
+	template <typename T> inline T rocket_dot(T x0, T y0, T z0, T x1, T y1, T z1)
+	{
+		return x0 * x1 + y0 * y1 + z0 * z1;
+	}
+
+	template<typename T> inline T rocket_dot(T x0, T y0, T z0, T w0, T x1, T y1, T z1, T w1)
+	{
+		return x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
+	}
 
 	// tvec2 implementation
 	template<typename T> inline tvec2<T>::tvec2() :
@@ -161,6 +183,11 @@ namespace Rocket
 		return tvec3<T>(0, 0, 1);
 	}
 
+	template<typename T> inline T tvec3<T>::Dot(const tvec3<T>& lhs, const tvec3<T>& rhs)
+	{
+		return rocket_dot(lhs.x, lhs.y, lhs.z, rhs.x, rhs.y, rhs.z);
+	}
+
 	// tvec4 implementation
 	template<typename T> inline tvec4<T>::tvec4() :
 		x(0), y(0), z(0), w(0)
@@ -195,6 +222,11 @@ namespace Rocket
 	template<typename T> inline const T* tvec4<T>::data() const
 	{
 		return &x;
+	}
+
+	template<typename T> inline T tvec4<T>::Dot(const tvec4<T>& lhs, const tvec4<T>& rhs)
+	{
+		return rocket_dot<T>(lhs.x, lhs.y, lhs.z, lhs.w, rhs.x, rhs.y, rhs.z, rhs.w);
 	}
 
 	// tmat4 implementation
@@ -236,9 +268,58 @@ namespace Rocket
 
 	template <typename T> inline tvec4<T> tmat4<T>::operator[](int row) const
 	{
-		return tvec4<T>(values[row * 4]);
+		return row(row);
 	}
 
+	template <typename T> inline T tmat4<T>::at(int row, int column) const
+	{
+		return values[row * 4 + column];
+	}
+
+	template <typename T> inline tvec4<T> tmat4<T>::row(int row) const
+	{
+		return tvec4<T>(values + (row * 4));
+	}
+	
+	template <typename T> inline tvec4<T> tmat4<T>::col(int column) const
+	{
+		return tvec4<T>(at(0, column), at(1, column), at(2, column), at(3, column));
+	}
+
+	template <typename T> inline tmat4<T> tmat4<T>::operator*(const tmat4<T>& rhs) const
+	{
+		tvec4<T> l[] =
+		{
+			row(0),
+			row(1),
+			row(2),
+			row(3)
+		};
+
+		tvec4<T> r[] =
+		{
+			rhs.col(0),
+			rhs.col(1),
+			rhs.col(2),
+			rhs.col(3)
+		};
+
+		T data[] = 
+		{
+			tvec4<T>::Dot(l[0], r[0]), tvec4<T>::Dot(l[0], r[1]), tvec4<T>::Dot(l[0], r[2]), tvec4<T>::Dot(l[0], r[3]),
+			tvec4<T>::Dot(l[1], r[0]), tvec4<T>::Dot(l[1], r[1]), tvec4<T>::Dot(l[1], r[2]), tvec4<T>::Dot(l[1], r[3]),
+			tvec4<T>::Dot(l[2], r[0]), tvec4<T>::Dot(l[2], r[1]), tvec4<T>::Dot(l[2], r[2]), tvec4<T>::Dot(l[2], r[3]),
+			tvec4<T>::Dot(l[3], r[0]), tvec4<T>::Dot(l[3], r[1]), tvec4<T>::Dot(l[3], r[2]), tvec4<T>::Dot(l[3], r[3]),
+		};
+
+		return tmat4<T>(data);
+	}
+
+	template <typename T> inline tmat4<T>& tmat4<T>::operator*=(const tmat4<T>& rhs)
+	{
+		*this = *this * rhs;
+		return *this;
+	}
 
 	template<typename T> inline tmat4<T> tmat4<T>::Identity()
 	{
@@ -277,6 +358,23 @@ namespace Rocket
 						0,
 
 			0, 0, 0, 1
+		};
+
+		return tmat4<T>(def);
+	}
+
+	template <typename T> inline tmat4<T> tmat4<T>::Ortho(T left, T right, T top, T bottom, T near, T far)
+	{
+		T width = right - left;
+		T height = top - bottom;
+		T depth = far - near;
+
+		T def[] =
+		{
+			2 / width,	0,				0,				-(right + left) / width,
+			0,			2 / height,		0,				-(top + bottom) / height,
+			0,			0,				-2 / (depth),	-(far + near) / depth,
+			0,			0,				0,				1
 		};
 
 		return tmat4<T>(def);

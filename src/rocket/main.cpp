@@ -156,10 +156,10 @@ int main(int, char**)
 	
 
 	float angle = 0.0f;
+	float angle2 = 0.0f;
 
 
 	vec2 offset(0.0f, 0.0f);
-
 
 	while (view->IsClosed() == false)
 	{
@@ -174,9 +174,17 @@ int main(int, char**)
 
 		parameters->SetVec2("u_offset", offset);
         
-		angle += 0.005f;
+		angle += 0.01f;
+		angle2 += 0.025f;
+
+		ivec2 size = view->GetSize();
+		float ratio = (float)size.x / (float)size.y;
+
+		mat4 ortho = mat4::Ortho(-2 * ratio, 2 * ratio, 2, -2, -2, 2);
+
 		mat4 transform = mat4::AxisAngle(vec3::Up(), angle);
-		parameters->SetMat4("u_transform", transform);
+		mat4 transform2 = transform * mat4::AxisAngle(vec3::Forward(), angle2);
+		parameters->SetMat4("u_transform", transform * transform2 * ortho);
 
 		renderer->RenderTemp(binding, material);
 		renderer->Present();
