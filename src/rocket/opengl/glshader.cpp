@@ -190,7 +190,7 @@ void GLShaderParameters::SetVec4(const char* name, const vec4& value)
 
 void setmat4f(const ParameterData& data)
 {
-	glUniformMatrix4fv(data.location, 1, GL_FALSE, data.value.mat4.data());
+	glUniformMatrix4fv(data.location, 1, GL_TRUE, data.value.mat4.data());
 }
 
 void GLShaderParameters::SetMat4(const char* name, const mat4& value)

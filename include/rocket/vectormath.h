@@ -20,6 +20,9 @@ namespace Rocket
 
 		T* data();
 		const T* data() const;
+
+		static tvec2<T> Zero();
+		static tvec2<T> One();
 	};
 
 	template<typename T> class tvec3
@@ -40,6 +43,8 @@ namespace Rocket
 		static tvec3<T> Right();
 		static tvec3<T> Up();
 		static tvec3<T> Forward();
+		static tvec3<T> Zero();
+		static tvec3<T> One();
 
 		static T Dot(const tvec3<T>& lhs, const tvec3<T>& rhs);
 	};
@@ -62,6 +67,8 @@ namespace Rocket
 		const T* data() const;
 		
 		static T Dot(const tvec4<T>& lhs, const tvec4<T>& rhs);
+		static tvec4<T> Zero();
+		static tvec4<T> One();
 	};
 
 	typedef tvec2<float> vec2;
@@ -90,8 +97,10 @@ namespace Rocket
 		tmat4<T>& operator*= (const tmat4<T>& rhs);
 
 		static tmat4<T> Identity();
+		static tmat4<T> Translate(const tvec3<T>& offset);
 		static tmat4<T> AxisAngle(const tvec3<T>& axis, T angle);
 		static tmat4<T> Ortho(T left, T right, T top, T bottom, T near, T far);
+		static tmat4<T> Frustum(T left, T right, T top, T bottom, T near, T far);
 
 	private:
 		T values[16];
@@ -135,6 +144,16 @@ namespace Rocket
 	template<typename T> inline const T* tvec2<T>::data() const
 	{
 		return &x;
+	}
+
+	template<typename T> inline tvec2<T> tvec2<T>::Zero()
+	{
+		return tvec2<T>(0, 0);
+	}
+
+	template<typename T> inline tvec2<T> tvec2<T>::One()
+	{
+		return tvec2<T>(1, 1);
 	}
 
 	// tvec3 implementation
@@ -183,6 +202,16 @@ namespace Rocket
 		return tvec3<T>(0, 0, 1);
 	}
 
+	template<typename T> inline tvec3<T> tvec3<T>::Zero()
+	{
+		return tvec3<T>(0, 0, 0);
+	}
+
+	template<typename T> inline tvec3<T> tvec3<T>::One()
+	{
+		return tvec3<T>(1, 1, 1);
+	}
+
 	template<typename T> inline T tvec3<T>::Dot(const tvec3<T>& lhs, const tvec3<T>& rhs)
 	{
 		return rocket_dot(lhs.x, lhs.y, lhs.z, rhs.x, rhs.y, rhs.z);
@@ -229,6 +258,16 @@ namespace Rocket
 		return rocket_dot<T>(lhs.x, lhs.y, lhs.z, lhs.w, rhs.x, rhs.y, rhs.z, rhs.w);
 	}
 
+	template<typename T> inline tvec4<T> tvec4<T>::Zero()
+	{
+		return tvec4<T>(0, 0, 0, 0);
+	}
+
+	template<typename T> inline tvec4<T> tvec4<T>::One()
+	{
+		return tvec4<T>(1, 1, 1, 1);
+	}
+
 	// tmat4 implementation
 	template<typename T> inline tmat4<T>::tmat4()
 	{
@@ -243,12 +282,12 @@ namespace Rocket
         std::memcpy(values, def, sizeof(def));
 	}
 
-	template <typename T> inline tmat4<T>::tmat4(const T* data)
+	template<typename T> inline tmat4<T>::tmat4(const T* data)
 	{
         std::memcpy(values, data, sizeof(T) * 16);
 	}
 
-	template <typename T> inline tmat4<T>::tmat4(const tvec4<T>& row0, const tvec4<T>& row1, const tvec4<T>& row2, const tvec4<T>& row3)
+	template<typename T> inline tmat4<T>::tmat4(const tvec4<T>& row0, const tvec4<T>& row1, const tvec4<T>& row2, const tvec4<T>& row3)
 	{
         std::memcpy(values, row0.data(), sizeof(T) * 4);
         std::memcpy(values + 4, row1.data(), sizeof(T) * 4);
@@ -256,37 +295,37 @@ namespace Rocket
         std::memcpy(values + 12, row3.data(), sizeof(T) * 4);
 	}
 
-	template <typename T> inline T* tmat4<T>::data()
+	template<typename T> inline T* tmat4<T>::data()
 	{
 		return values;
 	}
 
-	template <typename T> inline const T* tmat4<T>::data() const
+	template<typename T> inline const T* tmat4<T>::data() const
 	{
 		return values;
 	}
 
-	template <typename T> inline tvec4<T> tmat4<T>::operator[](int row) const
+	template<typename T> inline tvec4<T> tmat4<T>::operator[](int row) const
 	{
 		return this->row(row);
 	}
 
-	template <typename T> inline T tmat4<T>::at(int row, int column) const
+	template<typename T> inline T tmat4<T>::at(int row, int column) const
 	{
 		return values[row * 4 + column];
 	}
 
-	template <typename T> inline tvec4<T> tmat4<T>::row(int row) const
+	template<typename T> inline tvec4<T> tmat4<T>::row(int row) const
 	{
 		return tvec4<T>(values + (row * 4));
 	}
 	
-	template <typename T> inline tvec4<T> tmat4<T>::col(int column) const
+	template<typename T> inline tvec4<T> tmat4<T>::col(int column) const
 	{
 		return tvec4<T>(at(0, column), at(1, column), at(2, column), at(3, column));
 	}
 
-	template <typename T> inline tmat4<T> tmat4<T>::operator*(const tmat4<T>& rhs) const
+	template<typename T> inline tmat4<T> tmat4<T>::operator*(const tmat4<T>& rhs) const
 	{
 		tvec4<T> l[] =
 		{
@@ -315,7 +354,7 @@ namespace Rocket
 		return tmat4<T>(data);
 	}
 
-	template <typename T> inline tmat4<T>& tmat4<T>::operator*=(const tmat4<T>& rhs)
+	template<typename T> inline tmat4<T>& tmat4<T>::operator*=(const tmat4<T>& rhs)
 	{
 		*this = *this * rhs;
 		return *this;
@@ -328,6 +367,19 @@ namespace Rocket
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
+			0, 0, 0, 1
+		};
+
+		return tmat4<T>(def);
+	}
+
+	template<typename T> inline tmat4<T> tmat4<T>::Translate(const tvec3<T>& offset)
+	{
+		T def[] =
+		{
+			1, 0, 0, offset.x,
+			0, 1, 0, offset.y,
+			0, 0, 1, offset.z,
 			0, 0, 0, 1
 		};
 
@@ -363,7 +415,7 @@ namespace Rocket
 		return tmat4<T>(def);
 	}
 
-	template <typename T> inline tmat4<T> tmat4<T>::Ortho(T left, T right, T top, T bottom, T near, T far)
+	template<typename T> inline tmat4<T> tmat4<T>::Ortho(T left, T right, T bottom, T top, T near, T far)
 	{
 		T width = right - left;
 		T height = top - bottom;
@@ -375,6 +427,23 @@ namespace Rocket
 			0,			2 / height,		0,				-(top + bottom) / height,
 			0,			0,				-2 / (depth),	-(far + near) / depth,
 			0,			0,				0,				1
+		};
+
+		return tmat4<T>(def);
+	}
+
+	template<typename T> inline tmat4<T> tmat4<T>::Frustum(T left, T right, T bottom, T top, T near, T far)
+	{
+		T width = right - left;
+		T height = top - bottom;
+		T depth = far - near;
+
+		T def[] =
+		{
+			2 * near / width,	0,					(right + left) / width,		0,
+			0,					2 * near / height,	(top + bottom) / height,	0,
+			0,					0,					- (far + near) / depth,		-2*far*near / depth,
+			0,					0,					-1,							0
 		};
 
 		return tmat4<T>(def);

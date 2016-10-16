@@ -222,8 +222,7 @@ int main(int, char**)
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
 
-		vec4 random_color = vec4(1, 1, 1, 1);
-		//vec4 random_color = vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
+		vec4 random_color = vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
 		parameters->SetVec4("u_color", random_color);
 
 		offset.x += 0.01f;
@@ -237,11 +236,13 @@ int main(int, char**)
 		ivec2 size = view->GetSize();
 		float ratio = (float)size.x / (float)size.y;
 
-		mat4 ortho = mat4::Ortho(-2 * ratio, 2 * ratio, 2, -2, -2, 2);
+		mat4 projectionmat = mat4::Frustum(-1.0f * ratio, 1.0f * ratio, -1.0f, 1.0f, 1.5f, 1000.0f);
+		mat4 viewmat = mat4::Translate(vec3(0.0f, 0.0f, -5.5f));
 
 		mat4 transform = mat4::AxisAngle(vec3::Up(), angle);
 		mat4 transform2 = mat4::AxisAngle(vec3::Right(), angle2);
-		parameters->SetMat4("u_transform", transform * transform2 * ortho);
+		mat4 modelmat = transform * transform2;
+		parameters->SetMat4("u_transform", projectionmat * viewmat * modelmat);
 
 		renderer->RenderTemp(binding, material);
 		renderer->Present();
