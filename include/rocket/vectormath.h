@@ -268,7 +268,7 @@ namespace Rocket
 
 	template <typename T> inline tvec4<T> tmat4<T>::operator[](int row) const
 	{
-		return row(row);
+		return this->row(row);
 	}
 
 	template <typename T> inline T tmat4<T>::at(int row, int column) const

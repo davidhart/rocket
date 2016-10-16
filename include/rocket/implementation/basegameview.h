@@ -14,7 +14,7 @@ namespace Rocket
 		public:
 			virtual void AddSizeObserver(IGameViewSizeObserver* observer);
 			virtual void RemoveSizeObserver(IGameViewSizeObserver* observer);
-			void NotifySizeObservers(const ivec2& size);
+			virtual void NotifySizeObservers(const ivec2& size);
 
 		private:
 			std::vector<IGameViewSizeObserver*> m_sizeObservers;

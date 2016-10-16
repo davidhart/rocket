@@ -182,6 +182,8 @@ bool OSXGameView::Create()
     windowRect.origin = CGPointMake(0.0f, 0.0f);
     windowRect.size = CGSizeMake(800.0f, 600.0f);
     
+    m_size = ivec2(800, 600);
+    
     NSWindowStyleMask windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
     
     RocketOSXWindow* window = [[RocketOSXWindow alloc]
@@ -266,6 +268,11 @@ bool OSXGameView::GetIsResizable()
     return ([((id)m_window) styleMask] & NSResizableWindowMask) == NSResizableWindowMask;
 }
 
+ivec2 OSXGameView::GetSize() const
+{
+    return m_size;
+}
+
 void OSXGameView::FlushEvents()
 {
     for (;;)
@@ -289,6 +296,12 @@ bool OSXGameView::IsClosed()
 void OSXGameView::WindowWillClose()
 {
     m_open = false;
+}
+
+void OSXGameView::NotifySizeObservers(const ivec2 &size)
+{
+    m_size = size;
+    BaseGameView::NotifySizeObservers(size);
 }
 
 #endif

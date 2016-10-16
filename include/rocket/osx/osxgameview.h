@@ -22,16 +22,20 @@ namespace Rocket
     
             virtual void SetIsResizable(bool isResizable);
             virtual bool GetIsResizable();
+            virtual ivec2 GetSize() const;
     
             virtual void FlushEvents();
             virtual bool IsClosed();
             
             void WindowWillClose();
             
+            virtual void NotifySizeObservers(const ivec2& size);
+            
         private:
             void* m_window;
             void* m_view;
             bool m_open;
+            ivec2 m_size;
         };
     }
 }
