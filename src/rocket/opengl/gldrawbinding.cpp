@@ -145,7 +145,7 @@ void GLDrawBinding::Draw()
 
 	if (m_useIndexBuffer)
 	{
-		glDrawElements(GL_TRIANGLES, m_numElements, m_indexType, (void*)m_indexOffset);
+		glDrawElements(GL_TRIANGLES, m_numElements, m_indexType, reinterpret_cast<void*>(m_indexOffset));
 	}
 	else
 	{
