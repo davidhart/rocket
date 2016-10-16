@@ -13,45 +13,102 @@
 
 using namespace Rocket;
 
-Buffer* CreateTestBuffer(Renderer* renderer)
+Buffer* CreateTestGeometry(Renderer* renderer)
 {
-	// Create a buffer with no data
-	Buffer* vertexbuffer = renderer->CreateBuffer(100, nullptr);
-	assert(vertexbuffer);
-	renderer->ReleaseBuffer(vertexbuffer);
-
 	// Create a buffer with data, map it and compare with original data
 	float vertexdata[] = {
-		-1.0f, -1.0f, 0.0f,   1.0f, 0.0f, 0.0f,    0.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,	  0.0f, 1.0f, 0.0f,    1.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,     0.0f, 0.0f, 1.0f,    0.5f, 1.0f,
+		-1.0f, -1.0f,  1.0f,   1.0f, 0.0f, 0.0f,    0.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f,   1.0f, 0.0f, 0.0f,    1.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f,   1.0f, 0.0f, 0.0f,    1.0f, 1.0f,
+		-1.0f,  1.0f,  1.0f,   1.0f, 0.0f, 0.0f,    0.0f, 1.0f,
+
+		-1.0f,  1.0f, -1.0f,   0.0f, 1.0f, 0.0f,    0.0f, 0.0f,
+		 1.0f,  1.0f, -1.0f,   0.0f, 1.0f, 0.0f,    1.0f, 0.0f,
+		 1.0f, -1.0f, -1.0f,   0.0f, 1.0f, 0.0f,    1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,   0.0f, 1.0f, 0.0f,    0.0f, 1.0f,
+
+		-1.0f, -1.0f,  1.0f,   0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
+		-1.0f,  1.0f,  1.0f,   0.0f, 0.0f, 1.0f,    1.0f, 1.0f,
+		-1.0f,  1.0f, -1.0f,   0.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+		-1.0f, -1.0f, -1.0f,   0.0f, 0.0f, 1.0f,    0.0f, 0.0f,
+
+		 1.0f, -1.0f, -1.0f,   0.0f, 1.0f, 1.0f,    0.0f, 1.0f,
+		 1.0f,  1.0f, -1.0f,   0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+		 1.0f,  1.0f,  1.0f,   0.0f, 1.0f, 1.0f,    1.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f,   0.0f, 1.0f, 1.0f,    0.0f, 0.0f,
+
+		-1.0f, -1.0f, -1.0f,   1.0f, 1.0f, 0.0f,    0.0f, 0.0f,
+		 1.0f, -1.0f, -1.0f,   1.0f, 1.0f, 0.0f,    1.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f,   1.0f, 1.0f, 0.0f,    1.0f, 1.0f,
+		-1.0f, -1.0f,  1.0f,   1.0f, 1.0f, 0.0f,    0.0f, 1.0f,
+
+		-1.0f,  1.0f,  1.0f,   1.0f, 0.0f, 1.0f,    0.0f, 1.0f,
+		 1.0f,  1.0f,  1.0f,   1.0f, 0.0f, 1.0f,    1.0f, 1.0f,
+		 1.0f,  1.0f, -1.0f,   1.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+		-1.0f,  1.0f, -1.0f,   1.0f, 0.0f, 1.0f,    0.0f, 0.0f,
 	};
 
-	Buffer* vertexbuffer2 = renderer->CreateBuffer(sizeof(vertexdata), vertexdata);
+	Buffer* vertexbuffer = renderer->CreateBuffer(sizeof(vertexdata), vertexdata);
+	assert(vertexbuffer);
 
-	void* mappeddata = vertexbuffer2->Map(Buffer::MAP_READ_ONLY);
+	void* mappeddata = vertexbuffer->Map(Buffer::MAP_READ_ONLY);
 	if (mappeddata == nullptr) assert(false);
 	assert(memcmp(vertexdata, mappeddata, sizeof(vertexdata))==0);
-	vertexbuffer2->Unmap();
+	vertexbuffer->Unmap();
 
-	return vertexbuffer2;
+	return vertexbuffer;
 }
 
-DrawBinding* CreateTestDrawBinding(Renderer* renderer, Buffer* vertexbuffer)
+Buffer* CreateTestIndices(Renderer* renderer)
+{
+	unsigned short indices[] = {
+		0, 1, 2,
+		0, 2, 3,
+
+		4, 5, 6,
+		4, 6, 7,
+
+		8, 9, 10,
+		8, 10, 11,
+
+		12, 13, 14,
+		12, 14, 15,
+
+		16, 17, 18,
+		16, 18, 19,
+
+		20, 21, 22,
+		20, 22, 23,
+	};
+
+	Buffer* indexBuffer = renderer->CreateBuffer(sizeof(indices), indices);
+	assert(indexBuffer);
+
+	return indexBuffer;
+}
+
+DrawBinding* CreateTestDrawBinding(Renderer* renderer, Buffer* vertexbuffer, Buffer* indexbuffer)
 {
 	VertexBinding vertexBindings[] =
 	{
-		{ 2, DB_TYPE_FLOAT, DB_COMPONENTS_2, vertexbuffer, 24, 32 },
-		{ 1, DB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 12, 32 },
-		{ 0, DB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 0, 32 },
+		{ 2, VB_TYPE_FLOAT, DB_COMPONENTS_2, vertexbuffer, 24, 32 },
+		{ 1, VB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 12, 32 },
+		{ 0, VB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 0, 32 },
+	};
+
+	IndexBinding indexBinding =
+	{
+		IB_TYPE_UINT16,
+		indexbuffer,
+		0
 	};
 
 	DrawBindingDef bindingDef =
 	{
 		vertexBindings,
 		3,
-		nullptr,
-		3
+		&indexBinding,
+		36
 	};
 
 	DrawBinding* binding = renderer->CreateDrawBinding(bindingDef);
@@ -143,17 +200,16 @@ int main(int, char**)
     Renderer* renderer = view->CreateRenderer();
     assert(renderer);
 
-	Buffer* buffer = CreateTestBuffer(renderer);
+	Buffer* vertbuffer = CreateTestGeometry(renderer);
+	Buffer* indexbuffer = CreateTestIndices(renderer);
 	Shader* shader = CreateTestShader(renderer);
-	DrawBinding* binding = CreateTestDrawBinding(renderer, buffer);
+	DrawBinding* binding = CreateTestDrawBinding(renderer, vertbuffer, indexbuffer);
 	Texture2D* texture = CreateTestTexture2D(renderer);
 
 	Material* material = new Material(shader);
 	ShaderParameters* parameters = material->GetParameters();
 
 	parameters->SetTexture2D("s_texture", texture);
-
-	
 
 	float angle = 0.0f;
 	float angle2 = 0.0f;
@@ -166,7 +222,8 @@ int main(int, char**)
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
 
-		vec4 random_color = vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
+		vec4 random_color = vec4(1, 1, 1, 1);
+		//vec4 random_color = vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
 		parameters->SetVec4("u_color", random_color);
 
 		offset.x += 0.01f;
@@ -183,7 +240,7 @@ int main(int, char**)
 		mat4 ortho = mat4::Ortho(-2 * ratio, 2 * ratio, 2, -2, -2, 2);
 
 		mat4 transform = mat4::AxisAngle(vec3::Up(), angle);
-		mat4 transform2 = transform * mat4::AxisAngle(vec3::Forward(), angle2);
+		mat4 transform2 = mat4::AxisAngle(vec3::Right(), angle2);
 		parameters->SetMat4("u_transform", transform * transform2 * ortho);
 
 		renderer->RenderTemp(binding, material);
@@ -194,7 +251,8 @@ int main(int, char**)
 
 	renderer->ReleaseDrawBinding(binding);
 	renderer->ReleaseShader(shader);
-	renderer->ReleaseBuffer(buffer);
+	renderer->ReleaseBuffer(indexbuffer);
+	renderer->ReleaseBuffer(vertbuffer);
 	renderer->ReleaseTexture(texture);
 
 	view->ReleaseRenderer(renderer);

@@ -154,13 +154,13 @@ void BaseOpenGLRenderer::Present()
     
     glClearColor(0.3f, 0.05f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
     while (m_tempDrawQueue.empty() == false)
     {
         TempDraw draw = m_tempDrawQueue.front();
-        
-        GLuint vaohandle = ((GLDrawBinding*)draw.binding)->GetNativeHandle();
-        glBindVertexArray(vaohandle);
 
 		Material* material = draw.material;
         
@@ -170,9 +170,8 @@ void BaseOpenGLRenderer::Present()
 		GLShaderParameters* parameters = (GLShaderParameters*)material->GetParameters();
 		parameters->MakeCurrent();
 
-        GLsizei numElements = ((GLDrawBinding*)draw.binding)->GetNumElements();
-        glDrawArrays(GL_TRIANGLES, 0, numElements);
-        
+		((GLDrawBinding*)draw.binding)->Draw();
+
         m_tempDrawQueue.pop();
     }
     

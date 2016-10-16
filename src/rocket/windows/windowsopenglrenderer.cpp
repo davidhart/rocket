@@ -181,7 +181,7 @@ bool WindowsOpenGLRenderer::CreateContext()
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 		}
-		
+
 		wglMakeCurrent(NULL, NULL);
 	}
 #endif

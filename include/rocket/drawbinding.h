@@ -6,17 +6,24 @@ namespace Rocket
 {
 	class Buffer;
 
-	enum DrawBindingType
+	enum VertexBindingType
 	{
-		DB_TYPE_FLOAT,
-		DB_TYPE_DOUBLE,
+		VB_TYPE_FLOAT,
+		VB_TYPE_DOUBLE,
 
-		DB_TYPE_INT8,
-		DB_TYPE_UINT8,
-		DB_TYPE_INT16,
-		DB_TYPE_UINT16,
-		DB_TYPE_INT32,
-		DB_TYPE_UINT32
+		VB_TYPE_INT8,
+		VB_TYPE_UINT8,
+		VB_TYPE_INT16,
+		VB_TYPE_UINT16,
+		VB_TYPE_INT32,
+		VB_TYPE_UINT32
+	};
+
+	enum IndexBindingType
+	{
+		IB_TYPE_UINT8,
+		IB_TYPE_UINT16,
+		IB_TYPE_UINT32
 	};
 
 	enum DrawBindingComponents
@@ -30,7 +37,7 @@ namespace Rocket
 	struct VertexBinding
 	{
 		int index;
-		DrawBindingType type;
+		VertexBindingType type;
 		DrawBindingComponents components;
 		Buffer* buffer;
         unsigned offset;
@@ -40,7 +47,7 @@ namespace Rocket
 
 	struct IndexBinding
 	{
-		DrawBindingType type;
+		IndexBindingType type;
 		Buffer* buffer;
         unsigned offet;
 	};

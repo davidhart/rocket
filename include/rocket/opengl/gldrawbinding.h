@@ -16,13 +16,15 @@ namespace Rocket
 			~GLDrawBinding();
 			bool Create(const DrawBindingDef& drawBindingDef);
 
-			GLuint GetNativeHandle();
-			unsigned GetNumElements();
+			void Draw();
 
 		private:
 			GLDrawBinding(const GLDrawBinding&);
 
-			DrawBindingDef m_def;
+			bool m_useIndexBuffer;
+			GLsizei m_numElements;
+			GLenum m_indexType;
+			unsigned m_indexOffset;
 			GLuint m_vao;
 		};
 	}
