@@ -4,10 +4,15 @@
 
 #include "renderer.h"
 #include "gameview.h"
-#include <queue>
+#include <vector>
 
 namespace Rocket
 {
+	namespace OpenGL
+	{
+		class GLRenderQueue;
+	}
+
     class BaseOpenGLRenderer : public Renderer, public IGameViewSizeObserver
     {
     protected:
@@ -38,22 +43,18 @@ namespace Rocket
         
         virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef);
         virtual void ReleaseDrawBinding(DrawBinding* drawBinding);
-        
-        virtual void RenderTemp(DrawBinding* drawBinding, Material* shader);
+
+		virtual RenderQueue* CreateRenderQueue(const char* name);
+		virtual RenderQueue* GetRenderQueue(const char* name);
+		virtual void ReleaseRenderQueue(const char* name);
+		virtual void ReleaseRenderQueue(RenderQueue* renderQueue);
         
         virtual void Present();
         
 		virtual void GameViewResized(const ivec2& vec);
 
     private:
-        
-        struct TempDraw
-        {
-            DrawBinding* binding;
-            Material* material;
-        };
-        
-        std::queue<TempDraw> m_tempDrawQueue;
+		std::vector<OpenGL::GLRenderQueue*> m_renderQueues;
     };
 }
 

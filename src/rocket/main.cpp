@@ -5,6 +5,7 @@
 #include "texture.h"
 #include "drawbinding.h"
 #include "material.h"
+#include "renderqueue.h"
 
 #include "vectormath.h"
 
@@ -217,6 +218,8 @@ int main(int, char**)
 
 	vec2 offset(0.0f, 0.0f);
 
+	RenderQueue* mainQueue = renderer->CreateRenderQueue("main");
+
 	while (view->IsClosed() == false)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
@@ -244,7 +247,8 @@ int main(int, char**)
 		mat4 modelmat = transform * transform2;
 		parameters->SetMat4("u_transform", projectionmat * viewmat * modelmat);
 
-		renderer->RenderTemp(binding, material);
+		mainQueue->Draw(binding, material);
+
 		renderer->Present();
 	}
 	

@@ -18,7 +18,7 @@ namespace Rocket
 	class DrawBinding;
 	struct DrawBindingDef;
 
-	class Material;
+	class RenderQueue;
 
 	class Renderer
 	{
@@ -43,7 +43,10 @@ namespace Rocket
 		virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef) = 0;
 		virtual void ReleaseDrawBinding(DrawBinding* drawBinding) = 0;
 
-		virtual void RenderTemp(DrawBinding* binding, Material* material) = 0;
+		virtual RenderQueue* CreateRenderQueue(const char* name) = 0;
+		virtual RenderQueue* GetRenderQueue(const char* name) = 0;
+		virtual void ReleaseRenderQueue(const char* name) = 0;
+		virtual void ReleaseRenderQueue(RenderQueue* renderQueue) = 0;
 
 		virtual void Present() = 0;
 	};

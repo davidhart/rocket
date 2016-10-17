@@ -1,10 +1,11 @@
 #include "opengl/baseopenglrenderer.h"
-#include "material.h"
-
 #include "opengl/glbuffer.h"
 #include "opengl/glshader.h"
 #include "opengl/gltexture.h"
 #include "opengl/gldrawbinding.h"
+#include "opengl/glrenderqueue.h"
+
+#include <cassert>
 
 using namespace Rocket;
 using namespace Rocket::OpenGL;
@@ -139,41 +140,54 @@ void BaseOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
     delete binding;
 }
 
-void BaseOpenGLRenderer::RenderTemp(DrawBinding* binding, Material* shader)
+RenderQueue* BaseOpenGLRenderer::CreateRenderQueue(const char* name)
 {
-	TempDraw draw = {
-		binding, shader
-	};
+	//TODO: assert name is not already in use
+	GLRenderQueue* queue = new GLRenderQueue(name);
+	m_renderQueues.push_back(queue);
+	return queue;
+}
 
-    m_tempDrawQueue.push(draw);
+RenderQueue* BaseOpenGLRenderer::GetRenderQueue(const char* name)
+{
+	for (size_t i = 0; i < m_renderQueues.size(); ++i)
+	{
+		if (strcmp(m_renderQueues[i]->Name(), name) == 0)
+		{
+			return m_renderQueues[i];
+		}
+	}
+
+	return nullptr;
+}
+
+void BaseOpenGLRenderer::ReleaseRenderQueue(const char* name)
+{
+	GLRenderQueue* queue = nullptr;
+	for (size_t i = 0; i < m_renderQueues.size(); ++i)
+	{
+		if (strcmp(m_renderQueues[i]->Name(), name) == 0)
+		{
+			queue = m_renderQueues[i];
+			m_renderQueues.erase(m_renderQueues.begin() + i);
+		}
+	}
+
+	assert(queue);
+	delete queue;
+}
+
+void BaseOpenGLRenderer::ReleaseRenderQueue(RenderQueue* renderQueue)
+{
+	ReleaseRenderQueue(renderQueue->Name());
 }
 
 void BaseOpenGLRenderer::Present()
 {
     ActivateContext();
-    
-    glClearColor(0.3f, 0.05f, 0.2f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
 
-    while (m_tempDrawQueue.empty() == false)
-    {
-        TempDraw draw = m_tempDrawQueue.front();
-
-		Material* material = draw.material;
-        
-        GLuint shaderhandle = ((GLShader*)material->GetShader())->GetNativeHandle();
-        glUseProgram(shaderhandle);
-
-		GLShaderParameters* parameters = (GLShaderParameters*)material->GetParameters();
-		parameters->MakeCurrent();
-
-		((GLDrawBinding*)draw.binding)->Draw();
-
-        m_tempDrawQueue.pop();
-    }
+	for (size_t i = 0; i < m_renderQueues.size(); ++i)
+		m_renderQueues[i]->FlushQueue();
     
 	glFlush();
     SwapBuffers();
