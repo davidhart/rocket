@@ -75,6 +75,8 @@ namespace Rocket
 	typedef tvec3<float> vec3;
 	typedef tvec4<float> vec4;
 
+	typedef tvec4<float> color;
+
 	typedef tvec2<int> ivec2;
 	typedef tvec3<int> ivec3;
 	typedef tvec4<int> ivec4;

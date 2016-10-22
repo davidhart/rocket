@@ -219,6 +219,10 @@ int main(int, char**)
 	vec2 offset(0.0f, 0.0f);
 
 	RenderQueue* mainQueue = renderer->CreateRenderQueue("main");
+	mainQueue->SetClearColorEnabled(true);
+	mainQueue->SetClearColor(color(1, 0, 0, 1));
+	mainQueue->SetClearDepthEnabled(true);
+	mainQueue->SetClearDepth(1.0f);
 
 	while (view->IsClosed() == false)
 	{

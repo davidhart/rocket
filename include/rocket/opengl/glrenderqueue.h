@@ -17,9 +17,21 @@ namespace Rocket
 
 			virtual void Draw(DrawBinding* drawBinding, Material* material);
 			virtual const char* Name() const;
+
 			virtual void SetEnabled(bool enabled);
 			virtual bool IsEnabled() const;
 
+			virtual void SetClearColorEnabled(bool enabled);
+			virtual bool IsClearColorEnabled() const;
+			virtual void SetClearColor(color color);
+
+			virtual void SetClearDepthEnabled(bool enabled);
+			virtual bool IsClearDepthEnabled() const;
+			virtual void SetClearDepth(float depth);
+
+			virtual void SetDepthTestEnabled(bool enabled);
+			virtual bool IsDepthTestEnabled() const;
+			
 			void FlushQueue();
 
 		private:
@@ -33,6 +45,12 @@ namespace Rocket
 			std::string m_name;
 			std::vector<QueueItem> m_drawQueue;
 			bool m_enabled;
+
+			bool m_clearColorEnabled;
+			color m_clearColor;
+			bool m_clearDepthEnabled;
+			float m_clearDepth;
+			bool m_depthTestEnabled;
 		};
 	}
 }

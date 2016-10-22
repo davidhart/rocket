@@ -10,7 +10,12 @@ using namespace Rocket::OpenGL;
 
 GLRenderQueue::GLRenderQueue(const char* name) :
 	m_name(name),
-	m_enabled(true)
+	m_enabled(true),
+	m_clearColorEnabled(false),
+	m_clearColor(0, 0, 0, 1),
+	m_clearDepthEnabled(false),
+	m_clearDepth(0.0f),
+	m_depthTestEnabled(true)
 {
 
 }
@@ -36,13 +41,71 @@ bool GLRenderQueue::IsEnabled() const
 	return m_enabled;
 }
 
+void GLRenderQueue::SetClearColorEnabled(bool enabled)
+{
+	m_clearColorEnabled = enabled;
+}
+
+bool GLRenderQueue::IsClearColorEnabled() const
+{
+	return m_clearColorEnabled;
+}
+
+void GLRenderQueue::SetClearColor(color color)
+{
+	m_clearColor = color;
+}
+
+void GLRenderQueue::SetClearDepthEnabled(bool enabled)
+{
+	m_clearDepthEnabled = enabled;
+}
+
+bool GLRenderQueue::IsClearDepthEnabled() const
+{
+	return m_clearDepthEnabled;
+}
+
+void GLRenderQueue::SetClearDepth(float depth)
+{
+	m_clearDepth = depth;
+}
+
+void GLRenderQueue::SetDepthTestEnabled(bool enabled)
+{
+	m_clearDepthEnabled = enabled;
+}
+
+bool GLRenderQueue::IsDepthTestEnabled() const
+{
+	return m_clearDepthEnabled;
+}
+
 void GLRenderQueue::FlushQueue()
 {
-	glClearColor(0.3f, 0.05f, 0.2f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	GLenum clearFlags = 0;
+
+	if (m_clearColorEnabled)
+	{
+		glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.z);
+		clearFlags |= GL_COLOR_BUFFER_BIT;
+	}
+
+	if (m_clearDepthEnabled)
+	{
+		glClearDepth(m_clearDepth);
+		clearFlags |= GL_DEPTH_BUFFER_BIT;
+	}
+	
+	if (clearFlags)
+	{
+		glClear(clearFlags);
+	}
+
+	if (m_depthTestEnabled)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
 
 	for (size_t i = 0; i < m_drawQueue.size(); ++i)
 	{

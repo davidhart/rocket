@@ -186,6 +186,9 @@ void BaseOpenGLRenderer::Present()
 {
     ActivateContext();
 
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
 	for (size_t i = 0; i < m_renderQueues.size(); ++i)
 		m_renderQueues[i]->FlushQueue();
     
