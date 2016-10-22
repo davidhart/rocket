@@ -182,8 +182,6 @@ bool OSXGameView::Create()
     windowRect.origin = CGPointMake(0.0f, 0.0f);
     windowRect.size = CGSizeMake(800.0f, 600.0f);
     
-    m_size = ivec2(800, 600);
-    
     NSWindowStyleMask windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
     
     RocketOSXWindow* window = [[RocketOSXWindow alloc]
@@ -212,6 +210,10 @@ bool OSXGameView::Create()
     
     m_window = (void*)window;
     m_view = (void*)view;
+    
+    // Size must be re-calculated from NSView backing format
+    NSRect backing = [view convertRectToBacking:[view bounds]];
+    m_size = ivec2(backing.size.width, backing.size.height);
     
     if (m_window == nil || m_view == nil)
     {
