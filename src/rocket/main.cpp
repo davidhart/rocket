@@ -92,9 +92,9 @@ DrawBinding* CreateTestDrawBinding(Renderer* renderer, Buffer* vertexbuffer, Buf
 {
 	VertexBinding vertexBindings[] =
 	{
-		{ 2, VB_TYPE_FLOAT, DB_COMPONENTS_2, vertexbuffer, 24, 32 },
-		{ 1, VB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 12, 32 },
 		{ 0, VB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 0, 32 },
+		{ 1, VB_TYPE_FLOAT, DB_COMPONENTS_3, vertexbuffer, 12, 32 },
+		{ 2, VB_TYPE_FLOAT, DB_COMPONENTS_2, vertexbuffer, 24, 32 },
 	};
 
 	IndexBinding indexBinding =

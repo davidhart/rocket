@@ -70,7 +70,7 @@ GLenum IndexBindingTypeToGLEnum(IndexBindingType type)
 	default:
 		assert(false); // Unsupported IndexBindingType
 	}
-	
+
 	return 0;
 }
 
@@ -85,38 +85,62 @@ GLDrawBinding::~GLDrawBinding()
 {
 }
 
+void BindAttributeSlot(unsigned slot, const DrawBindingDef& drawBindingDef)
+{
+	VertexBinding* binding = drawBindingDef.vertexAttributes + slot;
+	GLuint bufferHandle = ((GLBuffer*)binding->buffer)->GetNativeHandle();
+
+	GLuint attribIndex = (GLuint)binding->index;
+	GLint size = (GLuint)binding->components;
+	GLsizei stride = (GLsizei)binding->stride;
+	void* offset = reinterpret_cast<void*>(binding->offset);
+
+	glEnableVertexAttribArray(attribIndex);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
+
+	GLenum vertType = VertexBindingTypeToGLEnum(binding->type);
+
+	if (IsVertexIntegerType(binding->type))
+	{
+		glVertexAttribIPointer(attribIndex, size, vertType, stride, offset);
+	}
+	else
+	{
+		glVertexAttribPointer(attribIndex, size, vertType, GL_FALSE, stride, offset);
+	}
+}
+
 bool GLDrawBinding::Create(const DrawBindingDef& drawBindingDef)
 {
-    glGenVertexArrays(1, &m_vao);
+	glGenVertexArrays(1, &m_vao);
 	assert(m_vao);
-	
-	glBindVertexArray(m_vao);
 
-	for (unsigned i = 0; i < drawBindingDef.numVertexAttributes; ++i)
+	// OpenGL quirk, VAOs bind on setting the lowest attrib index (usually 0). This means we have to find that
+	//  entry and bind it last to ensure all attributes are initialised
+	unsigned slotForMinAttrib = 0;
+	int minIndex = drawBindingDef.vertexAttributes[0].index;
+
+	for (unsigned i = 1; i < drawBindingDef.numVertexAttributes; ++i)
 	{
-		VertexBinding* binding = drawBindingDef.vertexAttributes + i;
-		GLuint bufferHandle = ((GLBuffer*)binding->buffer)->GetNativeHandle();
-
-		GLuint attribIndex = (GLuint)binding->index;
-		GLint size = (GLuint)binding->components;
-		GLsizei stride = (GLsizei)binding->stride;
-		void* offset = reinterpret_cast<void*>(binding->offset);
-
-		glEnableVertexAttribArray(attribIndex);
-		glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
-
-		GLenum vertType = VertexBindingTypeToGLEnum(binding->type);
-		
-		if (IsVertexIntegerType(binding->type))
+		int currentIndex = drawBindingDef.vertexAttributes[i].index;
+		if (currentIndex < minIndex)
 		{
-			glVertexAttribIPointer(attribIndex, size, vertType, stride, offset);
-		}
-		else
-		{
-			glVertexAttribPointer(attribIndex, size, vertType, GL_FALSE, stride, offset);
+			slotForMinAttrib = i;
+			minIndex = currentIndex;
 		}
 	}
-    
+
+	glBindVertexArray(m_vao);
+	
+	for (unsigned i = 0; i < drawBindingDef.numVertexAttributes; ++i)
+	{
+		// Skip this entry, as it needs to be bound last
+		if (i == slotForMinAttrib)
+			continue;
+
+		BindAttributeSlot(i, drawBindingDef);
+	}
+
 	m_useIndexBuffer = drawBindingDef.indexAttributes != nullptr;
 	
 	if (m_useIndexBuffer)
@@ -133,6 +157,9 @@ bool GLDrawBinding::Create(const DrawBindingDef& drawBindingDef)
 		m_useIndexBuffer = false;
 	}
 	m_numElements = (GLsizei)drawBindingDef.length;
+
+	// Bind lowest slot index last of all, to commit the VAO
+	BindAttributeSlot(slotForMinAttrib, drawBindingDef);
 
 	glBindVertexArray(0);
 
