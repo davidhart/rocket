@@ -8,16 +8,16 @@
 using namespace Rocket;
 using namespace Rocket::OpenGL;
 
-GLRenderQueue::GLRenderQueue(const char* name) :
+GLRenderQueue::GLRenderQueue(const char* name, int priority) :
 	m_name(name),
+	m_priority(priority),
 	m_enabled(true),
 	m_clearColorEnabled(false),
 	m_clearColor(0, 0, 0, 1),
 	m_clearDepthEnabled(false),
-	m_clearDepth(0.0f),
+	m_clearDepth(1.0f),
 	m_depthTestEnabled(true)
 {
-
 }
 
 void GLRenderQueue::Draw(DrawBinding* drawBinding, Material* material)
@@ -32,10 +32,17 @@ const char* GLRenderQueue::Name() const
 {
 	return m_name.c_str();
 }
+
+int GLRenderQueue::Priority() const
+{
+	return m_priority;
+}
+
 void GLRenderQueue::SetEnabled(bool enabled)
 {
 	m_enabled = enabled;
 }
+
 bool GLRenderQueue::IsEnabled() const
 {
 	return m_enabled;
@@ -83,43 +90,46 @@ bool GLRenderQueue::IsDepthTestEnabled() const
 
 void GLRenderQueue::FlushQueue()
 {
-	GLenum clearFlags = 0;
-
-	if (m_clearColorEnabled)
+	if (m_enabled)
 	{
-		glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.z);
-		clearFlags |= GL_COLOR_BUFFER_BIT;
-	}
+		GLenum clearFlags = 0;
 
-	if (m_clearDepthEnabled)
-	{
-		glClearDepth(m_clearDepth);
-		clearFlags |= GL_DEPTH_BUFFER_BIT;
-	}
-	
-	if (clearFlags)
-	{
-		glClear(clearFlags);
-	}
+		if (m_clearColorEnabled)
+		{
+			glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.z);
+			clearFlags |= GL_COLOR_BUFFER_BIT;
+		}
 
-	if (m_depthTestEnabled)
-		glEnable(GL_DEPTH_TEST);
-	else
-		glDisable(GL_DEPTH_TEST);
+		if (m_clearDepthEnabled)
+		{
+			glClearDepth(m_clearDepth);
+			clearFlags |= GL_DEPTH_BUFFER_BIT;
+		}
 
-	for (size_t i = 0; i < m_drawQueue.size(); ++i)
-	{
-		QueueItem draw = m_drawQueue[i];
+		if (clearFlags)
+		{
+			glClear(clearFlags);
+		}
 
-		Material* material = draw.material;
+		if (m_depthTestEnabled)
+			glEnable(GL_DEPTH_TEST);
+		else
+			glDisable(GL_DEPTH_TEST);
 
-		GLuint shaderhandle = ((GLShader*)material->GetShader())->GetNativeHandle();
-		glUseProgram(shaderhandle);
+		for (size_t i = 0; i < m_drawQueue.size(); ++i)
+		{
+			QueueItem draw = m_drawQueue[i];
 
-		GLShaderParameters* parameters = (GLShaderParameters*)material->GetParameters();
-		parameters->MakeCurrent();
+			Material* material = draw.material;
 
-		((GLDrawBinding*)draw.binding)->Draw();
+			GLuint shaderhandle = ((GLShader*)material->GetShader())->GetNativeHandle();
+			glUseProgram(shaderhandle);
+
+			GLShaderParameters* parameters = (GLShaderParameters*)material->GetParameters();
+			parameters->MakeCurrent();
+
+			((GLDrawBinding*)draw.binding)->Draw();
+		}
 	}
 
 	m_drawQueue.clear();

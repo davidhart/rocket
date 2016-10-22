@@ -43,7 +43,7 @@ namespace Rocket
 		virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef) = 0;
 		virtual void ReleaseDrawBinding(DrawBinding* drawBinding) = 0;
 
-		virtual RenderQueue* CreateRenderQueue(const char* name) = 0;
+		virtual RenderQueue* CreateRenderQueue(const char* name, int priority) = 0;
 		virtual RenderQueue* GetRenderQueue(const char* name) = 0;
 		virtual void ReleaseRenderQueue(const char* name) = 0;
 		virtual void ReleaseRenderQueue(RenderQueue* renderQueue) = 0;

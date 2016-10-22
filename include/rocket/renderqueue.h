@@ -16,7 +16,8 @@ namespace Rocket
 		
 		virtual void Draw(DrawBinding* drawBinding, Material* material) = 0;
 		virtual const char* Name() const = 0;
-		
+		virtual int Priority() const = 0;
+
 		virtual void SetEnabled(bool enabled) = 0;
 		virtual bool IsEnabled() const = 0;
 

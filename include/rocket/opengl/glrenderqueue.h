@@ -13,10 +13,11 @@ namespace Rocket
 		class GLRenderQueue : public RenderQueue
 		{
 		public:
-			GLRenderQueue(const char* name);
+			GLRenderQueue(const char* name, int priority);
 
 			virtual void Draw(DrawBinding* drawBinding, Material* material);
 			virtual const char* Name() const;
+			virtual int Priority() const;
 
 			virtual void SetEnabled(bool enabled);
 			virtual bool IsEnabled() const;
@@ -43,6 +44,7 @@ namespace Rocket
 			};
 
 			std::string m_name;
+			int m_priority;
 			std::vector<QueueItem> m_drawQueue;
 			bool m_enabled;
 

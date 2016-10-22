@@ -140,10 +140,22 @@ void BaseOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
     delete binding;
 }
 
-RenderQueue* BaseOpenGLRenderer::CreateRenderQueue(const char* name)
+RenderQueue* BaseOpenGLRenderer::CreateRenderQueue(const char* name, int priority)
 {
 	//TODO: assert name is not already in use
-	GLRenderQueue* queue = new GLRenderQueue(name);
+	GLRenderQueue* queue = new GLRenderQueue(name, priority);
+
+	auto it = m_renderQueues.begin();
+
+	for (; it != m_renderQueues.end(); it++)
+	{
+		if (priority < (*it)->Priority())
+		{
+			m_renderQueues.insert(it, queue);
+			return queue;
+		}
+	}
+
 	m_renderQueues.push_back(queue);
 	return queue;
 }

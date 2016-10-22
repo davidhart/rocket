@@ -192,6 +192,11 @@ Texture2D* CreateTestTexture2D(Renderer* renderer)
 	return texture;
 }
 
+vec4 RandomColor()
+{
+	return vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
+}
+
 int main(int, char**)
 {
 	GameView* view = GameView::Create("test application");
@@ -210,33 +215,31 @@ int main(int, char**)
 	Material* material = new Material(shader);
 	ShaderParameters* parameters = material->GetParameters();
 
+	Material* material2 = new Material(shader);
+	ShaderParameters* parameters2 = material2->GetParameters();
+
 	parameters->SetTexture2D("s_texture", texture);
+	parameters2->SetTexture2D("s_texture", texture);
 
-	float angle = 0.0f;
-	float angle2 = 0.0f;
-
-
-	vec2 offset(0.0f, 0.0f);
-
-	RenderQueue* mainQueue = renderer->CreateRenderQueue("main");
+	RenderQueue* mainQueue = renderer->CreateRenderQueue("main", 0);
 	mainQueue->SetClearColorEnabled(true);
 	mainQueue->SetClearColor(color(1, 0, 0, 1));
 	mainQueue->SetClearDepthEnabled(true);
-	mainQueue->SetClearDepth(1.0f);
 
+	RenderQueue* secondaryQueue = renderer->CreateRenderQueue("secondary", 1);
+	secondaryQueue->SetClearDepthEnabled(true);
+
+	float angle = 0.0f;
+	float angle2 = 0.0f;
+	vec2 offset(0.0f, 0.0f);
+	
 	while (view->IsClosed() == false)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
 
-		vec4 random_color = vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
-		parameters->SetVec4("u_color", random_color);
-
 		offset.x += 0.01f;
 		offset.y += 0.0025f;
-
-		parameters->SetVec2("u_offset", offset);
-        
 		angle += 0.01f;
 		angle2 += 0.025f;
 
@@ -245,13 +248,25 @@ int main(int, char**)
 
 		mat4 projectionmat = mat4::Frustum(-1.0f * ratio, 1.0f * ratio, -1.0f, 1.0f, 1.5f, 1000.0f);
 		mat4 viewmat = mat4::Translate(vec3(0.0f, 0.0f, -5.5f));
-
 		mat4 transform = mat4::AxisAngle(vec3::Up(), angle);
 		mat4 transform2 = mat4::AxisAngle(vec3::Right(), angle2);
 		mat4 modelmat = transform * transform2;
+
+		parameters->SetVec4("u_color", RandomColor());
+		parameters->SetVec2("u_offset", offset);
 		parameters->SetMat4("u_transform", projectionmat * viewmat * modelmat);
 
 		mainQueue->Draw(binding, material);
+
+		modelmat = mat4::Translate(vec3(2, 0, 0)) * modelmat;
+
+		parameters2->SetVec4("u_color", RandomColor());
+		parameters2->SetVec2("u_offset", offset);
+		parameters2->SetMat4("u_transform", projectionmat * viewmat * modelmat);
+
+		secondaryQueue->Draw(binding, material2);
+
+		secondaryQueue->SetEnabled(!secondaryQueue->IsEnabled());
 
 		renderer->Present();
 	}
