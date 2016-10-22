@@ -8,6 +8,16 @@ namespace Rocket
 	// texture 1d array, 2d array
 	// non u8 rgba pixel formats
     
+	enum TextureFormat
+	{
+		TEXFMT_RGBA_32,
+		TEXFMT_RGB_24,
+		TEXFMT_FLOAT_16,
+		TEXFMT_FLOAT_32,
+		TEXFMT_DEPTH_16,
+		TEXFMT_DEPTH_32,
+	};
+
 	enum WrapMode
 	{
 		WRAP_CLAMP_TO_EDGE,
@@ -42,6 +52,7 @@ namespace Rocket
     struct TextureDef1D
     {
         unsigned width;
+		TextureFormat format;
 		TextureSamplerDef1D sampler;
         
         const void* data;
@@ -62,6 +73,7 @@ namespace Rocket
 	{
 		unsigned width;
 		unsigned height;
+		TextureFormat format;
 		TextureSamplerDef2D sampler;
 		
 		const void* data;
@@ -84,6 +96,7 @@ namespace Rocket
         unsigned width;
         unsigned height;
         unsigned depth;
+		TextureFormat format;
 		TextureSamplerDef3D sampler;
         
         const void* data;
@@ -95,8 +108,11 @@ namespace Rocket
 	protected:
 		Texture();
 
+
 	public:
 		virtual ~Texture();
+
+		static unsigned PixelSizeForFormat(TextureFormat format);
 
 	private:
 		Texture(const Texture&);

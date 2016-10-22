@@ -4,6 +4,7 @@
 #include "opengl/rocket_opengl.h"
 #include "opengl/glshader.h"
 #include "opengl/gldrawbinding.h"
+#include "opengl/glframebuffer.h"
 
 using namespace Rocket;
 using namespace Rocket::OpenGL;
@@ -16,7 +17,8 @@ GLRenderQueue::GLRenderQueue(const char* name, int priority) :
 	m_clearColor(0, 0, 0, 1),
 	m_clearDepthEnabled(false),
 	m_clearDepth(1.0f),
-	m_depthTestEnabled(true)
+	m_depthTestEnabled(true),
+	m_framebuffer(nullptr)
 {
 }
 
@@ -88,11 +90,42 @@ bool GLRenderQueue::IsDepthTestEnabled() const
 	return m_clearDepthEnabled;
 }
 
+void GLRenderQueue::SetFramebuffer(Framebuffer* framebuffer)
+{
+	m_framebuffer = framebuffer;
+}
+
+Framebuffer* GLRenderQueue::GetFramebuffer()
+{
+	return m_framebuffer;
+}
+
+void GLRenderQueue::SetViewport(const ViewportRect& viewport)
+{
+	m_viewport = viewport;
+}
+
+ViewportRect GLRenderQueue::GetViewport() const
+{
+	return m_viewport;
+}
+
 void GLRenderQueue::FlushQueue()
 {
 	if (m_enabled)
 	{
 		GLenum clearFlags = 0;
+
+		if (m_framebuffer)
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, ((GLFramebuffer*)m_framebuffer)->GetNativeHandle());
+		}
+		else
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+		
+		glViewport(m_viewport.origin.x, m_viewport.origin.y, m_viewport.size.x, m_viewport.size.y);
 
 		if (m_clearColorEnabled)
 		{

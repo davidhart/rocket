@@ -18,6 +18,9 @@ namespace Rocket
 	class DrawBinding;
 	struct DrawBindingDef;
 
+	class Framebuffer;
+	struct FramebufferDef;
+
 	class RenderQueue;
 
 	class Renderer
@@ -42,6 +45,9 @@ namespace Rocket
 
 		virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef) = 0;
 		virtual void ReleaseDrawBinding(DrawBinding* drawBinding) = 0;
+
+		virtual Framebuffer* CreateFramebuffer(const FramebufferDef& framebufferDef) = 0;
+		virtual void ReleaseFramebuffer(Framebuffer* framebuffer) = 0;
 
 		virtual RenderQueue* CreateRenderQueue(const char* name, int priority) = 0;
 		virtual RenderQueue* GetRenderQueue(const char* name) = 0;

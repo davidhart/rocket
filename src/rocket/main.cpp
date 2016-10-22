@@ -6,6 +6,7 @@
 #include "drawbinding.h"
 #include "material.h"
 #include "renderqueue.h"
+#include "framebuffer.h"
 
 #include "vectormath.h"
 
@@ -143,11 +144,12 @@ Shader* CreateTestShader(Renderer* renderer)
 
 	const char* frag =
 		"#version 140\n"
+		"#extension GL_ARB_explicit_attrib_location : enable\n"
 		"uniform vec2 u_offset;\n"
 		"uniform sampler2D s_texture;\n"
 		"in vec3 f_color;\n"
 		"in vec2 f_uv;\n"
-		"out vec4 frag;\n"
+		"layout(location = 0) out vec4 frag;\n"
 		"void main()\n"
 		"{\n"
 		"frag.xyz = texture(s_texture, f_uv + u_offset).xyz * f_color;\n"
@@ -179,10 +181,11 @@ Texture2D* CreateTestTexture2D(Renderer* renderer)
 	};
 
 	TextureDef2D def;
-	def.sampler.widthWrap = WRAP_REPEAT;
-	def.sampler.heightWrap = WRAP_REPEAT;
 	def.width = 2;
 	def.height = 2;
+	def.format = TEXFMT_RGBA_32;
+	def.sampler.widthWrap = WRAP_REPEAT;
+	def.sampler.heightWrap = WRAP_REPEAT;
 	def.data = bytes;
 	def.size = sizeof(bytes);
 
@@ -190,6 +193,134 @@ Texture2D* CreateTestTexture2D(Renderer* renderer)
 	assert(texture);
 
 	return texture;
+}
+
+Buffer* CreateScreenSpaceQuad(Renderer* renderer)
+{
+	float vertData[] =
+	{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f,
+		0.0f, 1.0f,
+	};
+
+	Buffer* buffer = renderer->CreateBuffer(sizeof(vertData), vertData);
+	assert(buffer);
+	return buffer;
+}
+
+Buffer* CreateScreenSpaceQuadIndices(Renderer* renderer)
+{
+	short indices[] =
+	{
+		0, 1, 2,
+		0, 2, 3,
+	};
+
+	Buffer* buffer = renderer->CreateBuffer(sizeof(indices), indices);
+	assert(buffer);
+	return buffer;
+}
+
+DrawBinding* CreateScreenSpaceQuadBinding(Renderer* renderer, Buffer* vertexbuffer, Buffer* indexbuffer)
+{
+	VertexBinding vertexBindings[] =
+	{
+		{ 0, VB_TYPE_FLOAT, DB_COMPONENTS_2, vertexbuffer, 0, 8 },
+	};
+
+	IndexBinding indexBinding =
+	{
+		IB_TYPE_UINT16,
+		indexbuffer,
+		0
+	};
+
+	DrawBindingDef bindingDef =
+	{
+		vertexBindings,
+		1,
+		&indexBinding,
+		6
+	};
+
+	DrawBinding* binding = renderer->CreateDrawBinding(bindingDef);
+	assert(binding);
+	return binding;
+}
+
+Shader* CreateBlitShader(Renderer* renderer)
+{
+	const char* vert =
+		"#version 140\n"
+		"#extension GL_ARB_explicit_attrib_location : enable\n"
+		"layout(location=0)in vec2 i_vertex;\n"
+		"out vec2 f_uv;\n"
+		"void main()\n"
+		"{\n"
+		"vec2 temp = i_vertex * vec2(2, 2) - vec2(1.0, 1.0);\n"
+		"gl_Position = vec4(temp.x, temp.y, 0, 1.0);\n"
+		"f_uv = i_vertex;\n"
+		"}";
+	unsigned vertSize = sizeof(vert);
+		
+	const char* frag =
+		"#version 140\n"
+		"#extension GL_ARB_explicit_attrib_location : enable\n"
+		"uniform sampler2D s_texture;\n"
+		"uniform sampler2D s_displace;\n"
+		"in vec2 f_uv;\n"
+		"layout(location = 0) out vec4 frag;\n"
+		"void main()\n"
+		"{\n"
+		"vec2 displace = texture(s_displace, f_uv * 20.0).xy * 0.01;"
+		"frag.xyz = texture(s_texture, f_uv + displace).xyz;\n"
+		"frag.w = 1;\n"
+		"}";
+	unsigned fragSize = sizeof(frag);
+
+	ShaderDef shaderSource =
+	{
+		vert,
+		vertSize,
+		frag,
+		fragSize
+	};
+
+	Shader* shader = renderer->CreateShader(shaderSource);
+
+	assert(shader);
+	return shader;
+}
+
+Framebuffer* CreateTestFramebuffer(GameView* view, Renderer* renderer)
+{
+	ivec2 viewSize = view->GetSize();
+
+	TextureSamplerDef2D sampler;
+
+	FramebufferColorAttachmentDef colorAttachments[] = 
+	{
+		{ TEXFMT_RGBA_32, sampler },
+	};
+	
+	FramebufferDepthAttachmentDef depthAttachment =
+	{
+		TEXFMT_DEPTH_16,
+		sampler
+	};
+
+	FramebufferDef def;
+	def.width = viewSize.x;
+	def.height = viewSize.y;
+	def.colorAttachments = colorAttachments;
+	def.numColorAttachements = 1;
+	def.depthAttachement = &depthAttachment;
+
+	Framebuffer* framebuffer = renderer->CreateFramebuffer(def);
+	assert(framebuffer);
+	return framebuffer;
 }
 
 vec4 RandomColor()
@@ -208,26 +339,37 @@ int main(int, char**)
 
 	Buffer* vertbuffer = CreateTestGeometry(renderer);
 	Buffer* indexbuffer = CreateTestIndices(renderer);
-	Shader* shader = CreateTestShader(renderer);
 	DrawBinding* binding = CreateTestDrawBinding(renderer, vertbuffer, indexbuffer);
+	Shader* shader = CreateTestShader(renderer);
 	Texture2D* texture = CreateTestTexture2D(renderer);
 
 	Material* material = new Material(shader);
 	ShaderParameters* parameters = material->GetParameters();
-
-	Material* material2 = new Material(shader);
-	ShaderParameters* parameters2 = material2->GetParameters();
-
 	parameters->SetTexture2D("s_texture", texture);
-	parameters2->SetTexture2D("s_texture", texture);
 
-	RenderQueue* mainQueue = renderer->CreateRenderQueue("main", 0);
+	Framebuffer* framebuffer = CreateTestFramebuffer(view, renderer);
+
+	RenderQueue* framebufferQueue = renderer->CreateRenderQueue("framebuffer", 0);
+	framebufferQueue->SetClearColorEnabled(true);
+	framebufferQueue->SetClearColor(color(0, 0, 0, 0));
+	framebufferQueue->SetClearDepthEnabled(true);
+	framebufferQueue->SetFramebuffer(framebuffer);
+	framebufferQueue->SetViewport(ViewportRect{ ivec2(0, 0), view->GetSize() });
+
+	Buffer* quadverts = CreateScreenSpaceQuad(renderer);
+	Buffer* quadindices = CreateScreenSpaceQuadIndices(renderer);
+	DrawBinding* quadbinding = CreateScreenSpaceQuadBinding(renderer, quadverts, quadindices);
+	Shader* blitshader = CreateBlitShader(renderer);
+	Material* blitMaterial = new Material(blitshader);
+
+	ShaderParameters* blitParameters = blitMaterial->GetParameters();
+	blitParameters->SetTexture2D("s_texture", framebuffer->GetColorAttachment(0));
+	blitParameters->SetTexture2D("s_displace", texture);
+
+	RenderQueue* mainQueue = renderer->CreateRenderQueue("composite", 1);
 	mainQueue->SetClearColorEnabled(true);
 	mainQueue->SetClearColor(color(1, 0, 0, 1));
 	mainQueue->SetClearDepthEnabled(true);
-
-	RenderQueue* secondaryQueue = renderer->CreateRenderQueue("secondary", 1);
-	secondaryQueue->SetClearDepthEnabled(true);
 
 	float angle = 0.0f;
 	float angle2 = 0.0f;
@@ -235,6 +377,11 @@ int main(int, char**)
 	
 	while (view->IsClosed() == false)
 	{
+		ViewportRect viewport;
+		viewport.origin = ivec2(0, 0);
+		viewport.size = view->GetSize();
+		mainQueue->SetViewport(viewport);
+
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
 
@@ -256,17 +403,9 @@ int main(int, char**)
 		parameters->SetVec2("u_offset", offset);
 		parameters->SetMat4("u_transform", projectionmat * viewmat * modelmat);
 
-		mainQueue->Draw(binding, material);
+		framebufferQueue->Draw(binding, material);
 
-		modelmat = mat4::Translate(vec3(2, 0, 0)) * modelmat;
-
-		parameters2->SetVec4("u_color", RandomColor());
-		parameters2->SetVec2("u_offset", offset);
-		parameters2->SetMat4("u_transform", projectionmat * viewmat * modelmat);
-
-		secondaryQueue->Draw(binding, material2);
-
-		secondaryQueue->SetEnabled(!secondaryQueue->IsEnabled());
+		mainQueue->Draw(quadbinding, blitMaterial);
 
 		renderer->Present();
 	}

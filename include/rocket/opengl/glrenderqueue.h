@@ -33,6 +33,12 @@ namespace Rocket
 			virtual void SetDepthTestEnabled(bool enabled);
 			virtual bool IsDepthTestEnabled() const;
 			
+			virtual void SetFramebuffer(Framebuffer* framebuffer);
+			virtual Framebuffer* GetFramebuffer();
+
+			virtual void SetViewport(const ViewportRect& viewport);
+			virtual ViewportRect GetViewport() const;
+
 			void FlushQueue();
 
 		private:
@@ -53,6 +59,9 @@ namespace Rocket
 			bool m_clearDepthEnabled;
 			float m_clearDepth;
 			bool m_depthTestEnabled;
+			Framebuffer* m_framebuffer;
+			
+			ViewportRect m_viewport;
 		};
 	}
 }

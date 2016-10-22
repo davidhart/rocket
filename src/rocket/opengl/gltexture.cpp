@@ -68,6 +68,93 @@ GLenum MagFilterToGLEnum(MagFilter filter)
 	return 0;
 }
 
+GLenum FormatToInternalFormat(TextureFormat format)
+{
+	switch (format)
+	{
+	case TEXFMT_RGBA_32:
+		return GL_RGBA;
+
+	case TEXFMT_RGB_24:
+		return GL_RGB;
+
+	case TEXFMT_FLOAT_16:
+		return GL_R16F;
+
+	case TEXFMT_FLOAT_32:
+		return GL_R32F;
+
+	case TEXFMT_DEPTH_16:
+		return GL_DEPTH_COMPONENT;
+
+	case TEXFMT_DEPTH_32:
+		return GL_DEPTH_COMPONENT;
+
+	default:
+		assert(false); // Unsupported format
+	}
+
+	return 0;
+}
+
+GLenum FormatToGLFormat(TextureFormat format)
+{
+	switch (format)
+	{
+	case TEXFMT_RGBA_32:
+		return GL_RGBA;
+
+	case TEXFMT_RGB_24:
+		return GL_RGB;
+
+	case TEXFMT_FLOAT_16:
+		return GL_RED;
+
+	case TEXFMT_FLOAT_32:
+		return GL_RED;
+
+	case TEXFMT_DEPTH_16:
+		return GL_DEPTH_COMPONENT;
+
+	case TEXFMT_DEPTH_32:
+		return GL_DEPTH_COMPONENT;
+		
+	default:
+		assert(false); // Unsupported format
+	}
+
+	return 0;
+}
+
+GLenum FormatToDataType(TextureFormat format)
+{
+	switch (format)
+	{
+	case TEXFMT_RGBA_32:
+		return GL_UNSIGNED_BYTE;
+
+	case TEXFMT_RGB_24:
+		return GL_UNSIGNED_BYTE;
+
+	case TEXFMT_FLOAT_16:
+		return GL_FLOAT;
+
+	case TEXFMT_FLOAT_32:
+		return GL_FLOAT;
+
+	case TEXFMT_DEPTH_16:
+		return GL_UNSIGNED_SHORT;
+
+	case TEXFMT_DEPTH_32:
+		return GL_UNSIGNED_INT;
+
+	default:
+		assert(false); // Unsupported format
+	}
+
+	return 0;
+}
+
 void ApplyMinMagSettings(GLenum target, MinFilter minFilter, MagFilter magFilter)
 {
 	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, MinFilterToGLEnum(minFilter));
@@ -101,8 +188,14 @@ bool GLTexture1D::Create(const TextureDef1D& textureData)
     
     GLsizei w = (GLsizei)textureData.width;
     
+	GLenum internal = FormatToInternalFormat(textureData.format);
+	GLenum format = FormatToGLFormat(textureData.format);
+	GLenum type = FormatToDataType(textureData.format);
+
+	assert(w*Texture::PixelSizeForFormat(textureData.format) == textureData.size); // Size mismatch
+
     glBindTexture(GL_TEXTURE_1D, m_texture);
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, w, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData.data);
+    glTexImage1D(GL_TEXTURE_1D, 0, internal, w, 0, format, type, textureData.data);
 	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_R, WrapModeToGLEnum(textureData.sampler.widthWrap));
 	ApplyMinMagSettings(GL_TEXTURE_1D, textureData.sampler.minFilter, textureData.sampler.magFilter);
 
@@ -134,8 +227,14 @@ bool GLTexture2D::Create(const TextureDef2D& textureData)
 	GLsizei w = (GLsizei)textureData.width;
 	GLsizei h = (GLsizei)textureData.height;
 
+	GLenum internal = FormatToInternalFormat(textureData.format);
+	GLenum format = FormatToGLFormat(textureData.format);
+	GLenum type = FormatToDataType(textureData.format);
+
+	assert(w * h * Texture::PixelSizeForFormat(textureData.format) == textureData.size); // Size mismatch
+
     glBindTexture(GL_TEXTURE_2D, m_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, internal, w, h, 0, format, type, textureData.data);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, WrapModeToGLEnum(textureData.sampler.widthWrap));
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, WrapModeToGLEnum(textureData.sampler.heightWrap));
 	ApplyMinMagSettings(GL_TEXTURE_2D, textureData.sampler.minFilter, textureData.sampler.magFilter);
@@ -168,9 +267,15 @@ bool GLTexture3D::Create(const TextureDef3D& textureData)
     GLsizei w = (GLsizei)textureData.width;
     GLsizei h = (GLsizei)textureData.height;
     GLsizei d = (GLsizei)textureData.depth;
+
+	GLenum internal = FormatToInternalFormat(textureData.format);
+	GLenum format = FormatToGLFormat(textureData.format);
+	GLenum type = FormatToDataType(textureData.format);
     
+	assert(w*h*d*Texture::PixelSizeForFormat(textureData.format) == textureData.size); // Size mismatch
+
     glBindTexture(GL_TEXTURE_3D, m_texture);
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, w, h, d, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData.data);
+    glTexImage3D(GL_TEXTURE_3D, 0, internal, w, h, d, 0, format, type, textureData.data);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, WrapModeToGLEnum(textureData.sampler.widthWrap));
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, WrapModeToGLEnum(textureData.sampler.heightWrap));
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, WrapModeToGLEnum(textureData.sampler.depthWrap));

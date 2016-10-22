@@ -4,6 +4,7 @@
 #include "opengl/gltexture.h"
 #include "opengl/gldrawbinding.h"
 #include "opengl/glrenderqueue.h"
+#include "opengl/glframebuffer.h"
 
 #include <cassert>
 
@@ -138,6 +139,24 @@ DrawBinding* BaseOpenGLRenderer::CreateDrawBinding(const DrawBindingDef& def)
 void BaseOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
 {
     delete binding;
+}
+
+Framebuffer* BaseOpenGLRenderer::CreateFramebuffer(const FramebufferDef& framebufferDef)
+{
+	GLFramebuffer* framebuffer = new GLFramebuffer();
+
+	if (framebuffer->Create(framebufferDef) == false)
+	{
+		delete framebuffer;
+		return nullptr;
+	}
+
+	return framebuffer;
+}
+
+void BaseOpenGLRenderer::ReleaseFramebuffer(Framebuffer* framebuffer)
+{
+	delete framebuffer;
 }
 
 RenderQueue* BaseOpenGLRenderer::CreateRenderQueue(const char* name, int priority)
