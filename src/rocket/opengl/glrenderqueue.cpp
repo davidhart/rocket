@@ -117,8 +117,6 @@ void GLRenderQueue::FlushQueue()
 	{
 		GLenum clearFlags = 0;
 
-		ViewportRect trueRect = m_viewport;
-
 		glBindFramebuffer(GL_FRAMEBUFFER, ((GLRenderTarget*)m_target)->GetNativeHandle());
 
 		ivec2 isize = m_target->GetSize();

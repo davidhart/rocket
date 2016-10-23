@@ -22,7 +22,6 @@ namespace Rocket
     
             virtual void SetIsResizable(bool isResizable);
             virtual bool GetIsResizable();
-            virtual ivec2 GetSize() const;
     
             virtual void FlushEvents();
             virtual bool IsClosed();
