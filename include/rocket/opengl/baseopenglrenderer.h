@@ -4,6 +4,7 @@
 
 #include "renderer.h"
 #include "gameview.h"
+#include "glrendertarget.h"
 #include <vector>
 
 namespace Rocket
@@ -26,6 +27,9 @@ namespace Rocket
     public:
         bool Create();
         
+		// Renderer implementation
+		virtual RenderTarget* GetPrimaryRenderTarget();
+
         virtual Buffer* CreateBuffer(unsigned size, void* data);
         virtual void ReleaseBuffer(Buffer* buffer);
         
@@ -44,8 +48,8 @@ namespace Rocket
         virtual DrawBinding* CreateDrawBinding(const DrawBindingDef& drawBindingDef);
         virtual void ReleaseDrawBinding(DrawBinding* drawBinding);
 
-		virtual Framebuffer* CreateFramebuffer(const FramebufferDef& framebufferDef);
-		virtual void ReleaseFramebuffer(Framebuffer* framebuffer);
+		virtual RenderTarget* CreateRenderTarget(const RenderTargetDef& targetDef);
+		virtual void ReleaseRenderTarget(RenderTarget* target);
 
 		virtual RenderQueue* CreateRenderQueue(const char* name, int priority);
 		virtual RenderQueue* GetRenderQueue(const char* name);
@@ -54,10 +58,12 @@ namespace Rocket
         
         virtual void Present();
         
-		virtual void GameViewResized(const ivec2& vec);
+		// IGameViewSizeObserver implementation
+		virtual void GameViewResized(const ivec2& size);
 
     private:
 		std::vector<OpenGL::GLRenderQueue*> m_renderQueues;
+		OpenGL::GLPrimaryRenderTarget m_primaryTarget;
     };
 }
 

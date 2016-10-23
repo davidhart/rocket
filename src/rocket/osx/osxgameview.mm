@@ -234,6 +234,7 @@ Renderer* OSXGameView::CreateRenderer()
         return nullptr;
     }
     
+	renderer->GameViewResized(m_size);
     AddSizeObserver(renderer);
     
     return renderer;
@@ -268,11 +269,6 @@ void OSXGameView::SetIsResizable(bool isResizable)
 bool OSXGameView::GetIsResizable()
 {
     return ([((id)m_window) styleMask] & NSResizableWindowMask) == NSResizableWindowMask;
-}
-
-ivec2 OSXGameView::GetSize() const
-{
-    return m_size;
 }
 
 void OSXGameView::FlushEvents()

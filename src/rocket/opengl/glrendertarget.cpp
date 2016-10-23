@@ -1,4 +1,4 @@
-#include "opengl/glframebuffer.h"
+#include "opengl/glrendertarget.h"
 #include "opengl/gltexture.h"
 #include "vectormath.h"
 #include <cassert>
@@ -6,13 +6,41 @@
 using namespace Rocket;
 using namespace Rocket::OpenGL;
 
-GLFramebuffer::GLFramebuffer() :
+Texture2D* GLPrimaryRenderTarget::GetColorAttachment(int)
+{
+	// TODO: make this impossible
+	assert(false); // Primary target does not expose attachment textures
+	return nullptr;
+}
+
+Texture2D* GLPrimaryRenderTarget::GetDepthAttachment()
+{
+	assert(false); // Primary target does not expose depth texture
+	return nullptr;
+}
+
+GLuint GLPrimaryRenderTarget::GetNativeHandle()
+{
+	return 0;
+}
+
+ivec2 GLPrimaryRenderTarget::GetSize() const
+{
+	return m_size;
+}
+
+void GLPrimaryRenderTarget::SetSize(const ivec2& size)
+{
+	m_size = size;
+}
+
+GLRenderTarget::GLRenderTarget() :
 	m_framebuffer(0),
 	m_depthAttachment(nullptr)
 {
 }
 
-GLFramebuffer::~GLFramebuffer()
+GLRenderTarget::~GLRenderTarget()
 {
 	if (m_framebuffer)
 	{
@@ -25,28 +53,28 @@ GLFramebuffer::~GLFramebuffer()
 	}
 }
 
-bool GLFramebuffer::Create(const FramebufferDef& framebufferDef)
+bool GLRenderTarget::Create(const RenderTargetDef& targetDef)
 {
 	glGenFramebuffers(1, &m_framebuffer);
 	assert(m_framebuffer);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 	
-	GLenum* drawBuffers = new GLenum[framebufferDef.numColorAttachements];
+	GLenum* drawBuffers = new GLenum[targetDef.numColorAttachements];
 
-	m_size = ivec2(framebufferDef.width, framebufferDef.height);
+	m_size = ivec2(targetDef.width, targetDef.height);
 
-	for (unsigned i = 0; i < framebufferDef.numColorAttachements; ++i)
+	for (unsigned i = 0; i < targetDef.numColorAttachements; ++i)
 	{
-		const FramebufferColorAttachmentDef attachmentDef = framebufferDef.colorAttachments[i];
+		const RenderTargetColorAttachmentDef attachmentDef = targetDef.colorAttachments[i];
 
 		TextureDef2D attachmentTextureDef;
-		attachmentTextureDef.width = framebufferDef.width;
-		attachmentTextureDef.height = framebufferDef.height;
+		attachmentTextureDef.width = targetDef.width;
+		attachmentTextureDef.height = targetDef.height;
 		attachmentTextureDef.format = attachmentDef.format;
 		attachmentTextureDef.sampler = attachmentDef.sampler;
 		attachmentTextureDef.data = nullptr;
-		attachmentTextureDef.size = framebufferDef.width * framebufferDef.height * Texture::PixelSizeForFormat(attachmentDef.format);
+		attachmentTextureDef.size = targetDef.width * targetDef.height * Texture::PixelSizeForFormat(attachmentDef.format);
 		
 		GLTexture2D* attachmentTexture = new GLTexture2D();
 
@@ -64,19 +92,19 @@ bool GLFramebuffer::Create(const FramebufferDef& framebufferDef)
 		m_framebufferAttachements.push_back(attachmentTexture);
 	}
 
-	if (framebufferDef.depthAttachement)
+	if (targetDef.depthAttachement)
 	{
-		TextureFormat format = framebufferDef.depthAttachement->format;
+		TextureFormat format = targetDef.depthAttachement->format;
 
 		assert(format == TEXFMT_DEPTH_16 || format == TEXFMT_DEPTH_32); // Unsupported depth format
 
 		TextureDef2D depthTextureDef;
-		depthTextureDef.width = framebufferDef.width;
-		depthTextureDef.height = framebufferDef.height;
+		depthTextureDef.width = targetDef.width;
+		depthTextureDef.height = targetDef.height;
 		depthTextureDef.format = format;
-		depthTextureDef.sampler = framebufferDef.depthAttachement->sampler;
+		depthTextureDef.sampler = targetDef.depthAttachement->sampler;
 		depthTextureDef.data = nullptr;
-		depthTextureDef.size = framebufferDef.width * framebufferDef.height * Texture::PixelSizeForFormat(format);
+		depthTextureDef.size = targetDef.width * targetDef.height * Texture::PixelSizeForFormat(format);
 
 		GLTexture2D* attachmentTexture = new GLTexture2D();
 		if (attachmentTexture->Create(depthTextureDef) == false)
@@ -88,7 +116,7 @@ bool GLFramebuffer::Create(const FramebufferDef& framebufferDef)
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, attachmentTexture->GetNativeHandle(), 0);
 	}
 
-	glDrawBuffers(framebufferDef.numColorAttachements, drawBuffers);
+	glDrawBuffers(targetDef.numColorAttachements, drawBuffers);
 	
 	assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 	
@@ -97,24 +125,24 @@ bool GLFramebuffer::Create(const FramebufferDef& framebufferDef)
 	return true;
 }
 
-Texture2D* GLFramebuffer::GetColorAttachment(int index)
+Texture2D* GLRenderTarget::GetColorAttachment(int index)
 {
 	assert(index >= 0 && (size_t)index < m_framebufferAttachements.size()); // Attachment not found
 
 	return m_framebufferAttachements[index];
 }
 
-Texture2D* GLFramebuffer::GetDepthAttachment()
+Texture2D* GLRenderTarget::GetDepthAttachment()
 {
 	return m_depthAttachment;
 }
 
-ivec2 GLFramebuffer::GetSize()
+ivec2 GLRenderTarget::GetSize() const
 {
 	return m_size;
 }
 
-GLuint GLFramebuffer::GetNativeHandle()
+GLuint GLRenderTarget::GetNativeHandle()
 {
 	return m_framebuffer;
 }

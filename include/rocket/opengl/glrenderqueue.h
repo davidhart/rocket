@@ -13,7 +13,7 @@ namespace Rocket
 		class GLRenderQueue : public RenderQueue
 		{
 		public:
-			GLRenderQueue(const char* name, int priority);
+			GLRenderQueue(const char* name, int priority, RenderTarget* defaultTarget);
 
 			virtual void Draw(DrawBinding* drawBinding, Material* material);
 			virtual const char* Name() const;
@@ -33,8 +33,8 @@ namespace Rocket
 			virtual void SetDepthTestEnabled(bool enabled);
 			virtual bool IsDepthTestEnabled() const;
 			
-			virtual void SetFramebuffer(Framebuffer* framebuffer);
-			virtual Framebuffer* GetFramebuffer();
+			virtual void SetTarget(RenderTarget* target);
+			virtual RenderTarget* GetTarget();
 
 			virtual void SetViewport(const ViewportRect& viewport);
 			virtual ViewportRect GetViewport() const;
@@ -59,7 +59,7 @@ namespace Rocket
 			bool m_clearDepthEnabled;
 			float m_clearDepth;
 			bool m_depthTestEnabled;
-			Framebuffer* m_framebuffer;
+			RenderTarget* m_target;
 			
 			ViewportRect m_viewport;
 		};

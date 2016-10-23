@@ -107,6 +107,8 @@ Renderer* WindowsGameView::CreateRenderer()
 		return nullptr;
 	}
 
+	renderer->GameViewResized(m_size);
+
 	AddSizeObserver(renderer);
 
 	return renderer;

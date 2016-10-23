@@ -4,12 +4,12 @@
 #include "opengl/rocket_opengl.h"
 #include "opengl/glshader.h"
 #include "opengl/gldrawbinding.h"
-#include "opengl/glframebuffer.h"
+#include "opengl/glrendertarget.h"
 
 using namespace Rocket;
 using namespace Rocket::OpenGL;
 
-GLRenderQueue::GLRenderQueue(const char* name, int priority) :
+GLRenderQueue::GLRenderQueue(const char* name, int priority, RenderTarget* defaultTarget) :
 	m_name(name),
 	m_priority(priority),
 	m_enabled(true),
@@ -18,8 +18,9 @@ GLRenderQueue::GLRenderQueue(const char* name, int priority) :
 	m_clearDepthEnabled(false),
 	m_clearDepth(1.0f),
 	m_depthTestEnabled(true),
-	m_framebuffer(nullptr)
+	m_target(defaultTarget)
 {
+	m_viewport = ViewportRect { vec2::Zero(), vec2::One() };
 }
 
 void GLRenderQueue::Draw(DrawBinding* drawBinding, Material* material)
@@ -90,14 +91,14 @@ bool GLRenderQueue::IsDepthTestEnabled() const
 	return m_clearDepthEnabled;
 }
 
-void GLRenderQueue::SetFramebuffer(Framebuffer* framebuffer)
+void GLRenderQueue::SetTarget(RenderTarget* target)
 {
-	m_framebuffer = framebuffer;
+	m_target = target;
 }
 
-Framebuffer* GLRenderQueue::GetFramebuffer()
+RenderTarget* GLRenderQueue::GetTarget()
 {
-	return m_framebuffer;
+	return m_target;
 }
 
 void GLRenderQueue::SetViewport(const ViewportRect& viewport)
@@ -116,16 +117,15 @@ void GLRenderQueue::FlushQueue()
 	{
 		GLenum clearFlags = 0;
 
-		if (m_framebuffer)
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, ((GLFramebuffer*)m_framebuffer)->GetNativeHandle());
-		}
-		else
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-		
-		glViewport(m_viewport.origin.x, m_viewport.origin.y, m_viewport.size.x, m_viewport.size.y);
+		ViewportRect trueRect = m_viewport;
+
+		glBindFramebuffer(GL_FRAMEBUFFER, ((GLRenderTarget*)m_target)->GetNativeHandle());
+
+		ivec2 isize = m_target->GetSize();
+		vec2 size = vec2((float)isize.x, (float)isize.y);
+		ViewportRect viewport = ViewportRect{ m_viewport.origin * size, m_viewport.size * size };
+
+		glViewport((GLint)viewport.origin.x, (GLint)viewport.origin.y, (GLint)viewport.size.x, (GLint)viewport.size.y);
 
 		if (m_clearColorEnabled)
 		{

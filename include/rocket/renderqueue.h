@@ -8,12 +8,12 @@ namespace Rocket
 {
 	class DrawBinding;
 	class Material;
-	class Framebuffer;
+	class RenderTarget;
 
 	struct ViewportRect
 	{
-		ivec2 origin;
-		ivec2 size;
+		vec2 origin;
+		vec2 size;
 	};
 
 	class RenderQueue
@@ -39,8 +39,8 @@ namespace Rocket
 		virtual void SetDepthTestEnabled(bool enabled) = 0;
 		virtual bool IsDepthTestEnabled() const = 0;
 
-		virtual void SetFramebuffer(Framebuffer* framebuffer) = 0;
-		virtual Framebuffer* GetFramebuffer() = 0;
+		virtual void SetTarget(RenderTarget* surface) = 0;
+		virtual RenderTarget* GetTarget() = 0;
 
 		virtual void SetViewport(const ViewportRect& viewport) = 0;
 		virtual ViewportRect GetViewport() const = 0;

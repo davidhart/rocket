@@ -6,7 +6,7 @@
 #include "drawbinding.h"
 #include "material.h"
 #include "renderqueue.h"
-#include "framebuffer.h"
+#include "rendertarget.h"
 
 #include "vectormath.h"
 
@@ -294,33 +294,33 @@ Shader* CreateBlitShader(Renderer* renderer)
 	return shader;
 }
 
-Framebuffer* CreateTestFramebuffer(GameView* view, Renderer* renderer)
+RenderTarget* CreateTestRenderTarget(Renderer* renderer)
 {
-	ivec2 viewSize = view->GetSize();
+	ivec2 viewSize = renderer->GetPrimaryRenderTarget()->GetSize();
 
 	TextureSamplerDef2D sampler;
 
-	FramebufferColorAttachmentDef colorAttachments[] = 
+	RenderTargetColorAttachmentDef colorAttachments[] =
 	{
 		{ TEXFMT_RGBA_32, sampler },
 	};
 	
-	FramebufferDepthAttachmentDef depthAttachment =
+	RenderTargetDepthAttachmentDef depthAttachment =
 	{
 		TEXFMT_DEPTH_16,
 		sampler
 	};
 
-	FramebufferDef def;
+	RenderTargetDef def;
 	def.width = viewSize.x;
 	def.height = viewSize.y;
 	def.colorAttachments = colorAttachments;
 	def.numColorAttachements = 1;
 	def.depthAttachement = &depthAttachment;
 
-	Framebuffer* framebuffer = renderer->CreateFramebuffer(def);
-	assert(framebuffer);
-	return framebuffer;
+	RenderTarget* target = renderer->CreateRenderTarget(def);
+	assert(target);
+	return target;
 }
 
 vec4 RandomColor()
@@ -347,14 +347,13 @@ int main(int, char**)
 	ShaderParameters* parameters = material->GetParameters();
 	parameters->SetTexture2D("s_texture", texture);
 
-	Framebuffer* framebuffer = CreateTestFramebuffer(view, renderer);
+	RenderTarget* renderTarget = CreateTestRenderTarget(renderer);
 
 	RenderQueue* framebufferQueue = renderer->CreateRenderQueue("framebuffer", 0);
 	framebufferQueue->SetClearColorEnabled(true);
 	framebufferQueue->SetClearColor(color(0, 0, 0, 0));
 	framebufferQueue->SetClearDepthEnabled(true);
-	framebufferQueue->SetFramebuffer(framebuffer);
-	framebufferQueue->SetViewport(ViewportRect{ ivec2(0, 0), view->GetSize() });
+	framebufferQueue->SetTarget(renderTarget);
 
 	Buffer* quadverts = CreateScreenSpaceQuad(renderer);
 	Buffer* quadindices = CreateScreenSpaceQuadIndices(renderer);
@@ -363,7 +362,7 @@ int main(int, char**)
 	Material* blitMaterial = new Material(blitshader);
 
 	ShaderParameters* blitParameters = blitMaterial->GetParameters();
-	blitParameters->SetTexture2D("s_texture", framebuffer->GetColorAttachment(0));
+	blitParameters->SetTexture2D("s_texture", renderTarget->GetColorAttachment(0));
 	blitParameters->SetTexture2D("s_displace", texture);
 
 	RenderQueue* mainQueue = renderer->CreateRenderQueue("composite", 1);
@@ -377,11 +376,6 @@ int main(int, char**)
 	
 	while (view->IsClosed() == false)
 	{
-		ViewportRect viewport;
-		viewport.origin = ivec2(0, 0);
-		viewport.size = view->GetSize();
-		mainQueue->SetViewport(viewport);
-
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		view->FlushEvents();
 
@@ -390,7 +384,7 @@ int main(int, char**)
 		angle += 0.01f;
 		angle2 += 0.025f;
 
-		ivec2 size = view->GetSize();
+		ivec2 size = renderer->GetPrimaryRenderTarget()->GetSize();
 		float ratio = (float)size.x / (float)size.y;
 
 		mat4 projectionmat = mat4::Frustum(-1.0f * ratio, 1.0f * ratio, -1.0f, 1.0f, 1.5f, 1000.0f);

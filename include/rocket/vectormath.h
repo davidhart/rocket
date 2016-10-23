@@ -21,6 +21,9 @@ namespace Rocket
 		T* data();
 		const T* data() const;
 
+		tvec2<T> operator* (const tvec2<T>& rhs) const;
+		const tvec2<T>& operator*= (const tvec2<T>& rhs);
+
 		static tvec2<T> Zero();
 		static tvec2<T> One();
 	};
@@ -39,6 +42,9 @@ namespace Rocket
 
 		T* data();
 		const T* data() const;
+
+		tvec3<T> operator* (const tvec3<T>& rhs) const;
+		const tvec3<T>& operator*= (const tvec3<T>& rhs);
 
 		static tvec3<T> Right();
 		static tvec3<T> Up();
@@ -65,7 +71,10 @@ namespace Rocket
 
 		T* data();
 		const T* data() const;
-		
+	
+		tvec4<T> operator* (const tvec4<T>& rhs) const;
+		const tvec4<T>& operator*= (const tvec4<T>& rhs);
+
 		static T Dot(const tvec4<T>& lhs, const tvec4<T>& rhs);
 		static tvec4<T> Zero();
 		static tvec4<T> One();
@@ -148,6 +157,19 @@ namespace Rocket
 		return &x;
 	}
 
+	template<typename T> inline tvec2<T> tvec2<T>::operator*(const tvec2<T>& rhs) const
+	{
+		return tvec2<T>(x*rhs.x, y*rhs.y);
+	}
+
+	template<typename T> inline const tvec2<T>& tvec2<T>::operator*=(const tvec2<T>& rhs)
+	{
+		x *= rhs.x;
+		y *= rhs.y;
+
+		return *this;
+	}
+
 	template<typename T> inline tvec2<T> tvec2<T>::Zero()
 	{
 		return tvec2<T>(0, 0);
@@ -187,6 +209,20 @@ namespace Rocket
 	template<typename T> inline const T* tvec3<T>::data() const
 	{
 		return &x;
+	}
+
+	template<typename T> inline tvec3<T> tvec3<T>::operator*(const tvec3<T>& rhs) const
+	{
+		return tvec3<T>(x * rhs.x, y * rhs.y, z * rhs.z);
+	}
+
+	template<typename T> inline const tvec3<T>& tvec3<T>::operator*=(const tvec3<T>& rhs)
+	{
+		x *= rhs.x;
+		y *= rhs.y;
+		z *= rhs.z;
+
+		return *this;
 	}
 
 	template<typename T> inline tvec3<T> tvec3<T>::Right()
@@ -253,6 +289,21 @@ namespace Rocket
 	template<typename T> inline const T* tvec4<T>::data() const
 	{
 		return &x;
+	}
+
+	template<typename T> inline tvec4<T> tvec4<T>::operator*(const tvec4<T>& rhs) const
+	{
+		return tvec4<T>(x * rhs.x, y * rhs.y, z * rhs.z, w * rhs.w);
+	}
+
+	template<typename T> inline const tvec4<T>& tvec4<T>::operator*=(const tvec4<T>& rhs)
+	{
+		x *= rhs.x;
+		y *= rhs.y;
+		z *= rhs.z;
+		w *= rhs.w;
+
+		return *this;
 	}
 
 	template<typename T> inline T tvec4<T>::Dot(const tvec4<T>& lhs, const tvec4<T>& rhs)

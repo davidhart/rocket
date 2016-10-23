@@ -4,7 +4,7 @@
 #include "opengl/gltexture.h"
 #include "opengl/gldrawbinding.h"
 #include "opengl/glrenderqueue.h"
-#include "opengl/glframebuffer.h"
+#include "opengl/glrendertarget.h"
 
 #include <cassert>
 
@@ -18,6 +18,11 @@ BaseOpenGLRenderer::BaseOpenGLRenderer()
 bool BaseOpenGLRenderer::Create()
 {
     return CreateContext();
+}
+
+RenderTarget* BaseOpenGLRenderer::GetPrimaryRenderTarget()
+{
+	return &m_primaryTarget;
 }
 
 Buffer* BaseOpenGLRenderer::CreateBuffer(unsigned size, void* data)
@@ -141,11 +146,11 @@ void BaseOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
     delete binding;
 }
 
-Framebuffer* BaseOpenGLRenderer::CreateFramebuffer(const FramebufferDef& framebufferDef)
+RenderTarget* BaseOpenGLRenderer::CreateRenderTarget(const RenderTargetDef& targetDef)
 {
-	GLFramebuffer* framebuffer = new GLFramebuffer();
+	GLRenderTarget* framebuffer = new GLRenderTarget();
 
-	if (framebuffer->Create(framebufferDef) == false)
+	if (framebuffer->Create(targetDef) == false)
 	{
 		delete framebuffer;
 		return nullptr;
@@ -154,15 +159,15 @@ Framebuffer* BaseOpenGLRenderer::CreateFramebuffer(const FramebufferDef& framebu
 	return framebuffer;
 }
 
-void BaseOpenGLRenderer::ReleaseFramebuffer(Framebuffer* framebuffer)
+void BaseOpenGLRenderer::ReleaseRenderTarget(RenderTarget* target)
 {
-	delete framebuffer;
+	delete target;
 }
 
 RenderQueue* BaseOpenGLRenderer::CreateRenderQueue(const char* name, int priority)
 {
 	//TODO: assert name is not already in use
-	GLRenderQueue* queue = new GLRenderQueue(name, priority);
+	GLRenderQueue* queue = new GLRenderQueue(name, priority, GetPrimaryRenderTarget());
 
 	auto it = m_renderQueues.begin();
 
@@ -228,9 +233,7 @@ void BaseOpenGLRenderer::Present()
     DeactivateContext();
 }
 
-void BaseOpenGLRenderer::GameViewResized(const ivec2& vec)
+void BaseOpenGLRenderer::GameViewResized(const ivec2& size)
 {
-	ActivateContext();
-	glViewport(0, 0, vec.x, vec.y);
-	DeactivateContext();
+	m_primaryTarget.SetSize(size);
 }
