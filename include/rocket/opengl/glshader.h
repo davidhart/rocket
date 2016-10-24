@@ -29,6 +29,7 @@ namespace Rocket
 
 		private:
 
+			bool CreateInternal(const ShaderDef& source);
 			GLuint CreateSubShader(GLenum type, unsigned size, const void* data);
 
 			GLuint m_program;

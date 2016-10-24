@@ -17,7 +17,7 @@ BaseOpenGLRenderer::BaseOpenGLRenderer()
 
 bool BaseOpenGLRenderer::Create()
 {
-    return CreateContext();
+	return CreateContext();
 }
 
 RenderTarget* BaseOpenGLRenderer::GetPrimaryRenderTarget()
@@ -42,6 +42,8 @@ Buffer* BaseOpenGLRenderer::CreateBuffer(unsigned size, void* data)
 
 void BaseOpenGLRenderer::ReleaseBuffer(Buffer* buffer)
 {
+	ActivateContext();
+
     delete buffer;
 }
 
@@ -53,8 +55,9 @@ Shader* BaseOpenGLRenderer::CreateShader(const ShaderDef& def)
     
     if (shader->Create(def) == false)
     {
+		// Should never happen, failed to create error shader!
         delete shader;
-        return nullptr;
+		return nullptr;
     }
     
     return shader;
@@ -62,6 +65,8 @@ Shader* BaseOpenGLRenderer::CreateShader(const ShaderDef& def)
 
 void BaseOpenGLRenderer::ReleaseShader(Shader* shader)
 {
+	ActivateContext();
+
     delete shader;
 }
 
@@ -83,6 +88,8 @@ Texture1D* BaseOpenGLRenderer::CreateTexture(const TextureDef1D& def)
 
 void BaseOpenGLRenderer::ReleaseTexture(Texture1D* texture)
 {
+	ActivateContext();
+
     delete texture;
 }
 
@@ -103,6 +110,8 @@ Texture2D* BaseOpenGLRenderer::CreateTexture(const TextureDef2D& def)
 
 void BaseOpenGLRenderer::ReleaseTexture(Texture2D* texture)
 {
+	ActivateContext();
+
     delete texture;
 }
 
@@ -123,6 +132,8 @@ Texture3D* BaseOpenGLRenderer::CreateTexture(const TextureDef3D& def)
 
 void BaseOpenGLRenderer::ReleaseTexture(Texture3D* texture)
 {
+	ActivateContext();
+
     delete texture;
 }
 
@@ -143,6 +154,8 @@ DrawBinding* BaseOpenGLRenderer::CreateDrawBinding(const DrawBindingDef& def)
 
 void BaseOpenGLRenderer::ReleaseDrawBinding(DrawBinding* binding)
 {
+	ActivateContext();
+
     delete binding;
 }
 
@@ -161,6 +174,8 @@ RenderTarget* BaseOpenGLRenderer::CreateRenderTarget(const RenderTargetDef& targ
 
 void BaseOpenGLRenderer::ReleaseRenderTarget(RenderTarget* target)
 {
+	ActivateContext();
+
 	delete target;
 }
 
