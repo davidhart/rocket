@@ -21,16 +21,21 @@ void* getProcAddress(const char* name)
 void APIENTRY DebugMessageCallback(GLenum, GLenum, GLuint, GLenum severity, GLsizei, const GLchar *message, const void *)
 {
 	char* severitystr;
+	bool log = false;
+
 	switch (severity)
 	{
 	case GL_DEBUG_SEVERITY_LOW:
 		severitystr = "LOW";
+		log = true;
 		break;
 	case GL_DEBUG_SEVERITY_MEDIUM:
 		severitystr = "MED";
+		log = true;
 		break;
 	case GL_DEBUG_SEVERITY_HIGH:
 		severitystr = "HIGH";
+		log = true;
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		severitystr = "INFO";
@@ -40,7 +45,8 @@ void APIENTRY DebugMessageCallback(GLenum, GLenum, GLuint, GLenum severity, GLsi
 	}
 
 	// TODO: hookup with logging system
-	std::fprintf(stderr, "[OpenGL][%s]%s\n", severitystr, message);
+	if (log)
+		std::fprintf(stderr, "[OpenGL][%s]%s\n", severitystr, message);
 }
 
 WindowsOpenGLRenderer::WindowsOpenGLRenderer(HWND hwnd) :
