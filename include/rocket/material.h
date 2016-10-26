@@ -2,6 +2,8 @@
 #ifndef ROCKET_MATERIAL_INCLUDED
 #define ROCKET_MATERIAL_INCLUDED
 
+#include "api.h"
+
 namespace Rocket
 {
 	class Shader;
@@ -10,12 +12,12 @@ namespace Rocket
 	class Material
 	{
 	public:
-		Material(Shader* shader);
-		Material(const Material& material);
-		~Material();
+		ROCKET_API Material(Shader* shader);
+		ROCKET_API Material(const Material& material);
+		ROCKET_API ~Material();
 
-		Shader* GetShader();
-		ShaderParameters* GetParameters();
+		ROCKET_API Shader* GetShader();
+		ROCKET_API ShaderParameters* GetParameters();
 
 	private:
 		Shader* m_shader;

@@ -2,6 +2,8 @@
 #ifndef ROCKET_INCLUDED_TEXTURE
 #define ROCKET_INCLUDED_TEXTURE
 
+#include "api.h"
+
 namespace Rocket
 {
 	// TODO: support:
@@ -46,7 +48,7 @@ namespace Rocket
 		MinFilter minFilter;
 		MagFilter magFilter;
 
-		TextureSamplerDef1D();
+		ROCKET_API TextureSamplerDef1D();
 	};
 
     struct TextureDef1D
@@ -66,7 +68,7 @@ namespace Rocket
         MinFilter minFilter;
 		MagFilter magFilter;
 
-		TextureSamplerDef2D();
+		ROCKET_API TextureSamplerDef2D();
 	};
 
 	struct TextureDef2D
@@ -88,7 +90,7 @@ namespace Rocket
         MinFilter minFilter;
 		MagFilter magFilter;
 
-		TextureSamplerDef3D();
+		ROCKET_API TextureSamplerDef3D();
 	};
     
     struct TextureDef3D
@@ -112,7 +114,7 @@ namespace Rocket
 	public:
 		virtual ~Texture();
 
-		static unsigned PixelSizeForFormat(TextureFormat format);
+		ROCKET_API static unsigned PixelSizeForFormat(TextureFormat format);
 
 	private:
 		Texture(const Texture&);

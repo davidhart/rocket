@@ -2,6 +2,7 @@
 #ifndef ROCKET_INCLUDED_GAMEVIEW
 #define ROCKET_INCLUDED_GAMEVIEW
 
+#include "api.h"
 #include "vectormath.h"
 
 namespace Rocket
@@ -18,8 +19,8 @@ namespace Rocket
 	{
 	public:
 		
-		static GameView* Create(const char* title);
-		static void Release(GameView* view);
+		ROCKET_API static GameView* Create(const char* title);
+		ROCKET_API static void Release(GameView* view);
 		virtual ~GameView();
 
 		virtual Renderer* CreateRenderer() = 0;
