@@ -24,9 +24,16 @@ OSXGameModule::~OSXGameModule()
 
 bool OSXGameModule::Create(const char *name)
 {
-    std::string realname = std::string(name);
+    std::string tempname;
     
-    m_handle = dlopen(realname.c_str(), RTLD_LAZY);
+    if (dlopen_preflight(name) == false)
+    {
+        tempname = std::string(name) + std::string(".dylib");
+        
+        name = tempname.c_str();
+    }
+    
+    m_handle = dlopen(name, RTLD_LAZY);
     assert(m_handle);
     
     if (m_handle == nullptr)
