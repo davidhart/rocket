@@ -4,6 +4,10 @@
 #include "windows/windowsgamemodule.h"
 #endif
 
+#if defined (__APPLE__)
+#include "osx/osxgamemodule.h"
+#endif
+
 using namespace Rocket;
 
 GameModule::~GameModule()
@@ -19,13 +23,31 @@ GameModule* GameModule::Load(const char* name)
 	{
 		Windows::WindowsGameModule* winmodule = new Windows::WindowsGameModule();
 
-		if (winmodule->Create(name) == false)
+		if (winmodule->Create(name))
 		{
-			delete winmodule;
+            module = winmodule;
 		}
-
-		module = winmodule;
+        else
+        {
+            delete winmodule;
+        }
 	}
+#endif
+    
+#if defined(__APPLE__)
+    if (module == nullptr)
+    {
+        OSX::OSXGameModule* osxmodule = new OSX::OSXGameModule();
+        
+        if (osxmodule->Create(name))
+        {
+            module = osxmodule;
+        }
+        else
+        {
+            delete osxmodule;
+        }
+    }
 #endif
 
 	return module;

@@ -1,6 +1,6 @@
 #include "osx/osxgameview.h"
 
-#if __APPLE__
+#if defined(__APPLE__)
 
 #include "osx/osxopenglrenderer.h"
 #import <Cocoa/Cocoa.h>

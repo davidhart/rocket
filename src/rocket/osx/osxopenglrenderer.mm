@@ -1,7 +1,7 @@
 #include "osx/osxopenglrenderer.h"
 #include "opengl/rocket_opengl.h"
 
-#if __APPLE__
+#if defined(__APPLE__)
 
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>

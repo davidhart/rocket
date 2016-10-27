@@ -27,7 +27,7 @@ class ExampleGame : public Rocket::Game
 {
 public:
 	ExampleGame(Rocket::Renderer* renderer);
-	~ExampleGame();
+	virtual ~ExampleGame();
 	void Update(float dt);
 
 private:

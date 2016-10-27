@@ -1,7 +1,7 @@
 #include "windows/windowsgameview.h"
 #include "windows/windowsopenglrenderer.h"
 
-#if _WIN32
+#if defined(_WIN32)
 
 #define WINDOWCLASSNAME "GameViewWindowClass"
 

@@ -2,6 +2,8 @@
 #ifndef ROCKET_WINDOWSGAMEMODULE_INCLUDED
 #define ROCKET_WINDOWSGAMEMODULE_INCLUDED
 
+#if defined(_WIN32)
+
 #include "gamemodule.h"
 #include <Windows.h>
 
@@ -13,7 +15,7 @@ namespace Rocket
 		{
 		public:
 			WindowsGameModule();
-			~WindowsGameModule();
+			virtual ~WindowsGameModule();
 
 			bool Create(const char* name);
 
@@ -27,5 +29,7 @@ namespace Rocket
 		};
 	}
 }
+
+#endif
 
 #endif

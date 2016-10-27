@@ -1,6 +1,6 @@
 #include "windows/windowsopenglrenderer.h"
 
-#if _WIN32
+#if defined(_WIN32)
 
 #include "opengl/rocket_opengl.h"
 #include "windows/wglext.h"

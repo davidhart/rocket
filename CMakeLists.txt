@@ -53,3 +53,6 @@ target_include_directories("example_game" PRIVATE "include/example_game")
 define_source_root_groups("src" "src/example_game")
 define_source_root_groups("include" "include/example_game")
 add_dependencies("rocket_bootstrap" "example_game")
+set_target_properties("example_game" PROPERTIES
+    PREFIX ""
+    SUFFIX "")

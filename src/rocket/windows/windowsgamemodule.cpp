@@ -1,6 +1,7 @@
 #include "windows/windowsgamemodule.h"
 
-#include <windows.h>
+#if defined(_WIN32)
+
 #include <cassert>
 
 using namespace Rocket;
@@ -45,3 +46,5 @@ void WindowsGameModule::ReleaseGame(Game* game)
 {
 	m_releaseproc(game);
 }
+
+#endif
