@@ -1,10 +1,10 @@
 #include "gameview.h"
 
-#if _WIN32
+#if defined(_WIN32)
 #include "windows/windowsgameview.h"
 #endif
 
-#if __APPLE__
+#if defined(__APPLE__)
 #include "osx/osxgameview.h"
 #endif
 

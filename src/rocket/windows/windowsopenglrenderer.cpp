@@ -126,6 +126,9 @@ bool WindowsOpenGLRenderer::CreateContext()
 		Platform::Initialize(getProcAddress);
 	}
 
+	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+	wglSwapIntervalEXT(0);
+
 	wglMakeCurrent(NULL, NULL);
 	wglDeleteContext(tempHglrc);
 	
@@ -191,7 +194,6 @@ bool WindowsOpenGLRenderer::CreateContext()
 		wglMakeCurrent(NULL, NULL);
 	}
 #endif
-
 	return true;
 }
 
