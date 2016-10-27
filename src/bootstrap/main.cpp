@@ -28,21 +28,19 @@ int main(int argc, char** argv)
 
 	Game* game = module->CreateGame(renderer);
 	
-	high_resolution_clock::time_point prevTime = steady_clock::now();
+    steady_clock::time_point prevTime = steady_clock::now();
 
 	while (view->IsClosed() == false)
 	{
 		std::this_thread::sleep_for(seconds(0));
 
-		high_resolution_clock::time_point currentTime = steady_clock::now();
+        steady_clock::time_point currentTime = steady_clock::now();
 		
 		view->FlushEvents();
 
-		nanoseconds ns = duration_cast<nanoseconds>(currentTime - prevTime);
+        duration<float> delta = duration<float>(currentTime - prevTime);
 
-		float delta = (float)((double)ns.count() / (double)nanoseconds::period::den);
-
-		game->Update(delta);
+		game->Update(delta.count());
 
 		renderer->Present();
 
