@@ -16,7 +16,7 @@ namespace Rocket
         ROCKET_API Bootstrap();
         ROCKET_API ~Bootstrap();
         ROCKET_API bool Start(const char* name);
-        ROCKET_API void Run(Game* game);
+        ROCKET_API int Run(Game* game);
 
         ROCKET_API Renderer* GetRenderer();
         ROCKET_API GameView* GetGameView();

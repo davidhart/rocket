@@ -41,7 +41,7 @@ bool Bootstrap::Start(const char* name)
     return true;
 }
 
-void Bootstrap::Run(Game* game)
+int Bootstrap::Run(Game* game)
 {
     steady_clock::time_point prevTime = steady_clock::now();
 
@@ -61,6 +61,9 @@ void Bootstrap::Run(Game* game)
 
         prevTime = currentTime;
     }
+
+    // TODO: provide api for exiting with error code
+    return 0;
 }
 
 Renderer* Bootstrap::GetRenderer()

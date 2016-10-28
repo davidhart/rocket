@@ -7,12 +7,6 @@ int main(int, char**)
 {
     Bootstrap bootstrap;
     bootstrap.Start("example_game");
-
-    Game* game = new ExampleGame(bootstrap.GetRenderer());
-	
-    bootstrap.Run(game);
-
-    delete game;
-
-	return 0;
+    ExampleGame game(bootstrap.GetRenderer());
+    return bootstrap.Run(&game);
 }
