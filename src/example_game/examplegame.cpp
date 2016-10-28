@@ -3,19 +3,6 @@
 
 using namespace Rocket;
 
-extern "C"
-{
-	Game* CreateGame(Renderer* renderer)
-	{
-		return new ExampleGame(renderer);
-	}
-
-	void ReleaseGame(Game* game)
-	{
-		delete reinterpret_cast<ExampleGame*>(game);
-	}
-}
-
 Buffer* CreateTestGeometry(Renderer* renderer)
 {
 	// Create a buffer with data, map it and compare with original data

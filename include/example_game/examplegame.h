@@ -1,4 +1,3 @@
-#include "api.h"
 #include "game.h"
 
 #include "renderer.h"
@@ -10,18 +9,6 @@
 #include "renderqueue.h"
 #include "rendertarget.h"
 #include "vectormath.h"
-
-#if defined(_WIN32)
-	#define EXAMPLE_GAME_EXPORT __declspec(dllexport)
-#else
-	#define EXAMPLE_GAME_EXPORT
-#endif
-
-extern "C"
-{
-	EXAMPLE_GAME_EXPORT Rocket::Game* CreateGame(Rocket::Renderer* renderer);
-	EXAMPLE_GAME_EXPORT void ReleaseGame(Rocket::Game* game);
-}
 
 class ExampleGame : public Rocket::Game
 {
