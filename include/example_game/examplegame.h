@@ -1,5 +1,5 @@
 #include "game.h"
-
+#include "gameview.h"
 #include "renderer.h"
 #include "buffer.h"
 #include "shader.h"
@@ -9,11 +9,16 @@
 #include "renderqueue.h"
 #include "rendertarget.h"
 #include "vectormath.h"
+#include "input.h"
 
 class ExampleGame : public Rocket::Game
 {
 public:
-	ExampleGame(Rocket::Renderer* renderer);
+	ExampleGame();
+
+    void InitGraphics(Rocket::Renderer* renderer);
+    void InitView(Rocket::GameView* view);
+
 	virtual ~ExampleGame();
 	void Update(float dt);
 
@@ -39,7 +44,11 @@ private:
 	Rocket::ShaderParameters* m_blitParameters;
 	Rocket::RenderQueue* m_mainQueue;
 
+    Rocket::GameView* m_view;
+    Rocket::Input::IPressAction* m_bumpAction;
+
 	float m_angle;
 	float m_angle2;
 	Rocket::vec2 m_offset;
+    float m_bump;
 };

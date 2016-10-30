@@ -316,10 +316,17 @@ vec4 RandomColor()
 	return vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
 }
 
-ExampleGame::ExampleGame(Renderer* renderer) :
-	m_renderer(renderer)
+ExampleGame::ExampleGame() :
+    m_renderer(nullptr),
+    m_view(nullptr),
+    m_bumpAction(nullptr)
 {
-	// TODO: constructor should not do this work
+}
+
+void ExampleGame::InitGraphics(Renderer* renderer)
+{
+    m_renderer = renderer;
+
 	m_vertbuffer = CreateTestGeometry(renderer);
 	m_indexbuffer = CreateTestIndices(renderer);
 	m_binding = CreateTestDrawBinding(renderer, m_vertbuffer, m_indexbuffer);
@@ -358,8 +365,18 @@ ExampleGame::ExampleGame(Renderer* renderer) :
 	m_offset = vec2(0.0f, 0.0f);
 }
 
+void ExampleGame::InitView(GameView* view)
+{
+    m_view = view;
+
+    m_bumpAction = view->AddPressAction("bump");
+    view->SetKeyboardMapping("bump", view->GetKey(KEY_SPACE));
+}
+
 ExampleGame::~ExampleGame()
 {
+    m_view->RemovePressAction("bump");
+
 	m_renderer->ReleaseRenderQueue(m_mainQueue);
 	m_renderer->ReleaseRenderQueue(m_framebufferQueue);
 
@@ -387,6 +404,12 @@ void ExampleGame::Update(float dt)
 	m_angle += 144.0f * 0.01f * dt;
 	m_angle2 += 144.0f * 0.025f * dt;
 
+    if (m_bumpAction->Pressed())
+        m_bump = 2;
+
+    m_bump -= 10 * dt;
+    if (m_bump < 1) m_bump = 1;
+
 	ivec2 size = m_renderer->GetPrimaryRenderTarget()->GetSize();
 	float ratio = (float)size.x / (float)size.y;
 
@@ -394,7 +417,8 @@ void ExampleGame::Update(float dt)
 	mat4 viewmat = mat4::Translate(vec3(0.0f, 0.0f, -5.5f));
 	mat4 transform = mat4::AxisAngle(vec3::Up(), m_angle);
 	mat4 transform2 = mat4::AxisAngle(vec3::Right(), m_angle2);
-	mat4 modelmat = transform * transform2;
+    mat4 scale = mat4::Scale(vec3(m_bump, m_bump, m_bump));
+    mat4 modelmat = transform * transform2 * scale;;
 
 	m_parameters->SetVec4("u_color", RandomColor());
 	m_parameters->SetVec2("u_offset", m_offset);

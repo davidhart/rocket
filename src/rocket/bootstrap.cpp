@@ -51,11 +51,11 @@ int Bootstrap::Run(Game* game)
 
         steady_clock::time_point currentTime = steady_clock::now();
 
-        m_view->FlushEvents();
+        float delta = duration<float>(currentTime - prevTime).count();
 
-        duration<float> delta = duration<float>(currentTime - prevTime);
+        m_view->Update(delta);
 
-        game->Update(delta.count());
+        game->Update(delta);
 
         m_renderer->Present();
 

@@ -109,6 +109,7 @@ namespace Rocket
 
 		static tmat4<T> Identity();
 		static tmat4<T> Translate(const tvec3<T>& offset);
+        static tmat4<T> Scale(const tvec3<T>& scale);
 		static tmat4<T> AxisAngle(const tvec3<T>& axis, T angle);
 		static tmat4<T> Ortho(T left, T right, T top, T bottom, T near, T far);
 		static tmat4<T> Frustum(T left, T right, T top, T bottom, T near, T far);
@@ -438,6 +439,19 @@ namespace Rocket
 
 		return tmat4<T>(def);
 	}
+
+    template<typename T> inline tmat4<T> tmat4<T>::Scale(const tvec3<T>& scale)
+    {
+        T def[] =
+        {
+            scale.x, 0, 0, 0,
+            0, scale.y, 0, 0,
+            0, 0, scale.z, 0,
+            0, 0, 0, 1
+        };
+
+        return tmat4<T>(def);
+    }
 
 	template<typename T> inline tmat4<T> tmat4<T>::AxisAngle(const tvec3<T>& axis, T angle)
 	{

@@ -8,6 +8,7 @@
 #include "vectormath.h"
 #include "implementation/basegameview.h"
 #include <Windows.h>
+#include <map>
 
 namespace Rocket
 {
@@ -24,8 +25,12 @@ namespace Rocket
 			virtual void ReleaseRenderer(Renderer* renderer);
 
 			virtual void SetTitle(const char* title);
-			virtual void FlushEvents();
+			virtual void Update(float delta);
 			virtual bool IsClosed();
+
+            virtual void SetKeyboardMapping(const char* name, IKey* key);
+            virtual IKey* GetKey(KeyCode code);
+
 			virtual void SetIsResizable(bool isResizable);
 			virtual bool GetIsResizable();
 			virtual ivec2 GetSize() const;
@@ -39,6 +44,8 @@ namespace Rocket
 			bool m_isWindowClosed;
 			bool m_isResizable;
 			ivec2 m_size;
+
+            std::map<void*, Input::PressAction*> m_keyboardMapping;
 		};
 	}
 }

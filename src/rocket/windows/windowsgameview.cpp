@@ -1,6 +1,8 @@
 #include "windows/windowsgameview.h"
 #include "windows/windowsopenglrenderer.h"
 
+#include "input.h"
+
 #if defined(_WIN32)
 
 #define WINDOWCLASSNAME "GameViewWindowClass"
@@ -126,8 +128,10 @@ void WindowsGameView::SetTitle(const char* title)
 	SetWindowTextA(m_hwnd, title);
 }
 
-void WindowsGameView::FlushEvents()
+void WindowsGameView::Update(float delta)
 {
+    BaseGameView::Update(delta);
+
 	MSG msg;
 	while (PeekMessageW(&msg, m_hwnd, 0, 0, PM_REMOVE))
 	{
@@ -139,6 +143,18 @@ void WindowsGameView::FlushEvents()
 bool WindowsGameView::IsClosed()
 {
 	return m_isWindowClosed;
+}
+
+void WindowsGameView::SetKeyboardMapping(const char* name, IKey* key)
+{
+    Input::PressAction* action = GetPressActionInternal(name);
+    
+    m_keyboardMapping[key] = action;
+}
+
+IKey* WindowsGameView::GetKey(KeyCode code)
+{
+    return reinterpret_cast<IKey*>(VK_SPACE);
 }
 
 void WindowsGameView::SetIsResizable(bool isResizable)
@@ -181,6 +197,29 @@ LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpa
 		m_size = ivec2(LOWORD(lparam), HIWORD(lparam));
 		NotifySizeObservers(m_size);
 		break;
+
+    case WM_KEYDOWN:
+        {
+            auto it = m_keyboardMapping.find(reinterpret_cast<void*>(wparam));
+
+            if (it != m_keyboardMapping.end())
+            {
+                it->second->Down();
+            }
+        }
+        break;
+
+    case WM_KEYUP:
+        {
+            auto it = m_keyboardMapping.find(reinterpret_cast<void*>(wparam));
+
+            if (it != m_keyboardMapping.end())
+            {
+                it->second->Up();
+            }
+        }
+        break;
+
 	}
 
 	return DefWindowProc(hwnd, umsg, wparam, lparam);
