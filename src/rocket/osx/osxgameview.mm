@@ -3,6 +3,7 @@
 #if defined(__APPLE__)
 
 #include "osx/osxopenglrenderer.h"
+#include "input.h"
 #import <Cocoa/Cocoa.h>
 
 using namespace Rocket;
@@ -18,6 +19,7 @@ using namespace Rocket::OSX;
 
 - (void)empty:(id)object
 {
+    
 }
 
 @end
@@ -88,6 +90,8 @@ using namespace Rocket::OSX;
 }
 -(id)initWithGameView:(OSXGameView*)view;
 -(void)windowWillClose:(NSNotification*)notif;
+-(void)keyDown:(NSEvent *)event;
+-(void)keyUp:(NSEvent *)event;
 @end
 
 @implementation RocketOSXView
@@ -132,7 +136,26 @@ using namespace Rocket::OSX;
     gameView->NotifySizeObservers(ivec2((int)backing.size.width, (int)backing.size.height));
 }
 
-// TODO: respond to input events here
+-(void)keyDown:(NSEvent *)event
+{
+    short kc = [event keyCode];
+    gameView->KeyDown(reinterpret_cast<IKey*>(kc));
+    
+    [super keyDown: event];
+}
+
+-(void)keyUp:(NSEvent *)event
+{
+    short kc = [event keyCode];
+    gameView->KeyUp(reinterpret_cast<IKey*>(kc));
+    
+    [super keyUp: event];
+}
+
+-(BOOL)acceptsFirstResponder
+{
+    return YES;
+}
 
 @end
 
@@ -271,8 +294,10 @@ bool OSXGameView::GetIsResizable()
     return ([((id)m_window) styleMask] & NSResizableWindowMask) == NSResizableWindowMask;
 }
 
-void OSXGameView::FlushEvents()
+void OSXGameView::Update(float dt)
 {
+    BaseGameView::Update(dt);
+    
     for (;;)
     {
         NSEvent* event = [NSApp nextEventMatchingMask:NSAnyEventMask
@@ -300,6 +325,38 @@ void OSXGameView::NotifySizeObservers(const ivec2 &size)
 {
     m_size = size;
     BaseGameView::NotifySizeObservers(size);
+}
+
+IKey* OSXGameView::GetKey(KeyCode code)
+{
+    return reinterpret_cast<IKey*>(49);
+}
+
+void OSXGameView::SetKeyboardMapping(const char* name, IKey* key)
+{
+    Input::PressAction* action = GetPressActionInternal(name);
+    
+    m_keyboardMapping[key] = action;
+}
+
+void OSXGameView::KeyDown(IKey* key)
+{
+    auto it = m_keyboardMapping.find(key);
+    
+    if (it != m_keyboardMapping.end())
+    {
+        it->second->Down();
+    }
+}
+
+void OSXGameView::KeyUp(IKey* key)
+{
+    auto it = m_keyboardMapping.find(key);
+    
+    if (it != m_keyboardMapping.end())
+    {
+        it->second->Up();
+    }
 }
 
 #endif

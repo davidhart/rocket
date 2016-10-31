@@ -11,6 +11,7 @@ namespace Rocket
         class IPressAction
         {
         public:
+            virtual ~IPressAction();
             virtual bool IsDown() = 0;
             virtual bool Pressed() = 0;
             virtual bool Released() = 0;

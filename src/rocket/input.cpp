@@ -2,6 +2,10 @@
 
 using namespace Rocket::Input;
 
+IPressAction::~IPressAction()
+{
+}
+
 PressAction::PressAction() :
     m_down(false),
     m_pressed(false),
