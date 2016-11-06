@@ -9,13 +9,11 @@
 
 namespace Rocket
 {
-    namespace Input
-    {
-        class PressAction;
-    }
-
 	namespace Implementation
 	{
+        class ControlScheme;
+        class RuntimeControls;
+
 		class BaseGameView : public GameView
 		{
 		public:
@@ -26,17 +24,23 @@ namespace Rocket
 			virtual void RemoveSizeObserver(IGameViewSizeObserver* observer);
 			virtual void NotifySizeObservers(const ivec2& size);
 
-            virtual Input::IPressAction* AddPressAction(const char* name);
-            virtual Input::IPressAction* GetPressAction(const char* name);
-            virtual void RemovePressAction(const char* name);
-            
 
-        protected:
-            virtual Input::PressAction* GetPressActionInternal(const char* name);
+            virtual Input::IControlScheme* AddControlScheme(const char* name);
+            virtual Input::IControlScheme* GetControlScheme(const char* name);
+            virtual void RemoveControlScheme(const char* name);
+
+            virtual Input::IRuntimeControls* ActivateControlScheme(const char* name);
+            virtual Input::IRuntimeControls* GetActiveControlScheme(const char* name);
+            virtual void DeactivateControlScheme(const char* name);
+
+            virtual void RuntimeControlsActivated(RuntimeControls* controls, ControlScheme* scheme) = 0;
+            virtual void RuntimeControlsDeactivated(RuntimeControls* controls) = 0;
 
 		private:
-			std::vector<IGameViewSizeObserver*> m_sizeObservers;
-            std::map<std::string, Input::PressAction*> m_pressActions;
+            std::vector<IGameViewSizeObserver*> m_sizeObservers;
+
+            std::map<std::string, ControlScheme*> m_controlSchemes;
+            std::map<std::string, RuntimeControls*> m_runtimeControls;
 		};
 	}
 }

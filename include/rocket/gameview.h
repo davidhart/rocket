@@ -8,9 +8,12 @@
 namespace Rocket
 {
 	class Renderer;
+
     namespace Input
     {
-        class IPressAction;
+        class IControlScheme;
+        class IRuntimeControls;
+        enum KeyCode;
     }
 
 	class IGameViewSizeObserver
@@ -18,16 +21,6 @@ namespace Rocket
 	public:
 		virtual void GameViewResized(const ivec2& size) = 0;
 	};
-
-    class IKey
-    {
-
-    };
-
-    enum KeyCode
-    {
-        KEY_SPACE
-    };
 
 	class GameView
 	{
@@ -51,12 +44,13 @@ namespace Rocket
 		virtual void AddSizeObserver(IGameViewSizeObserver* observer) = 0;
 		virtual void RemoveSizeObserver(IGameViewSizeObserver* observer) = 0;
 
-        virtual Input::IPressAction* AddPressAction(const char* name) = 0;
-        virtual Input::IPressAction* GetPressAction(const char* name) = 0;
-        virtual void RemovePressAction(const char* name) = 0;
+        virtual Input::IControlScheme* AddControlScheme(const char* name) = 0;
+        virtual Input::IControlScheme* GetControlScheme(const char* name) = 0;
+        virtual void RemoveControlScheme(const char* name) = 0;
 
-        virtual void SetKeyboardMapping(const char* name, IKey* key) = 0;
-        virtual IKey* GetKey(KeyCode code) = 0;
+        virtual Input::IRuntimeControls* ActivateControlScheme(const char* name) = 0;
+        virtual Input::IRuntimeControls* GetActiveControlScheme(const char* name) =0;
+        virtual void DeactivateControlScheme(const char* name) = 0;
 	};
 
 }

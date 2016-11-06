@@ -45,10 +45,11 @@ private:
 	Rocket::RenderQueue* m_mainQueue;
 
     Rocket::GameView* m_view;
-    Rocket::Input::IPressAction* m_bumpAction;
+    Rocket::Input::IButton* m_bumpButton;
 
 	float m_angle;
 	float m_angle2;
 	Rocket::vec2 m_offset;
     float m_bump;
+
 };

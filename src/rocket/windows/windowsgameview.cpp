@@ -1,7 +1,8 @@
 #include "windows/windowsgameview.h"
 #include "windows/windowsopenglrenderer.h"
-
-#include "input.h"
+#include "implementation/runtimecontrols.h"
+#include "implementation/controlscheme.h"
+#include <cassert>
 
 #if defined(_WIN32)
 
@@ -9,6 +10,25 @@
 
 using namespace Rocket;
 using namespace Rocket::Windows;
+using namespace Rocket::Input;
+using namespace Rocket::Implementation;
+
+int KeyCodeToNative(KeyCode code)
+{
+    if (code >= KEY_A && code <= KEY_Z)
+        return 0x41 + (code - KEY_A);
+
+    if (code >= KEY_0 && code <= KEY_9)
+        return 0x30 + (code - KEY_0);
+
+    switch (code)
+    {
+    case KEY_SPACE:
+        return VK_SPACE;
+    }
+
+    return -1;
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
@@ -24,6 +44,69 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 	}
 }
 
+
+
+WindowsRuntimeControls::WindowsRuntimeControls(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme) :
+    m_controls(controls)
+{
+    for (size_t i = 0; i < scheme->GetNumButtonKeyMaps(); ++i)
+    {
+        const ButtonKeyMap* map = scheme->GetButtonKeyMap(i);
+
+        int native = KeyCodeToNative(map->Key);
+
+        Button* button = controls->GetButtonInternal(map->Name.c_str());
+
+        m_keyDown[native] = std::bind(ButtonDown, button);
+        m_keyUp[native] = std::bind(ButtonUp, button);
+    }
+
+    /*
+    for (size_t i = 0; i < scheme->GetNumAxisKeyMaps(); ++i)
+    {
+        const AxisKeyMap* map = scheme->GetAxisKeyMap(i);
+
+        int nativeUp = KeyCodeToNative(map->Up);
+        int nativedown = KeyCodeToNative(map->Down);
+
+        Axis* axis = controls->geTAxisInternal(map->Name.c - str());
+
+
+    }
+    */
+}
+
+const Implementation::RuntimeControls* WindowsRuntimeControls::RuntimeControls() const
+{
+    return m_controls;
+}
+
+void WindowsRuntimeControls::ButtonDown(Button* button)
+{
+    button->OnButtonDown();
+}
+
+void WindowsRuntimeControls::ButtonUp(Button* button)
+{
+    button->OnButtonUp();
+}
+
+void WindowsRuntimeControls::KeyDown(int nativeCode)
+{
+    auto it = m_keyDown.find(nativeCode);
+
+    if (it != m_keyDown.end())
+        it->second();
+}
+
+void WindowsRuntimeControls::KeyUp(int nativeCode)
+{
+    auto it = m_keyUp.find(nativeCode);
+
+    if (it != m_keyUp.end())
+        it->second();
+}
+
 WindowsGameView::WindowsGameView() :
 	m_hwnd(0),
 	m_isClassRegistered(false),
@@ -34,6 +117,11 @@ WindowsGameView::WindowsGameView() :
 
 WindowsGameView::~WindowsGameView()
 {
+    for (auto it = m_controls.begin(); it != m_controls.end(); ++it)
+    {
+        delete *it;
+    }
+
 	if (m_hwnd != NULL)
 	{
 		CloseWindow(m_hwnd);
@@ -145,18 +233,6 @@ bool WindowsGameView::IsClosed()
 	return m_isWindowClosed;
 }
 
-void WindowsGameView::SetKeyboardMapping(const char* name, IKey* key)
-{
-    Input::PressAction* action = GetPressActionInternal(name);
-    
-    m_keyboardMapping[key] = action;
-}
-
-IKey* WindowsGameView::GetKey(KeyCode code)
-{
-    return reinterpret_cast<IKey*>(VK_SPACE);
-}
-
 void WindowsGameView::SetIsResizable(bool isResizable)
 {
 	LONG style = GetWindowLongA(m_hwnd, GWL_STYLE);
@@ -185,6 +261,28 @@ ivec2 WindowsGameView::GetSize() const
 	return m_size;
 }
 
+void WindowsGameView::RuntimeControlsActivated(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme)
+{
+    WindowsRuntimeControls* wincontrols = new WindowsRuntimeControls(controls, scheme);
+
+    m_controls.push_back(wincontrols);
+}
+
+void WindowsGameView::RuntimeControlsDeactivated(Implementation::RuntimeControls* controls)
+{
+    for (auto it = m_controls.begin(); it != m_controls.end(); ++it)
+    {
+        if ((*it)->RuntimeControls() == controls)
+        {
+            delete *it;
+            m_controls.erase(it);
+            return;
+        }
+    }
+
+    assert(false); // Deactivating controls that are not active
+}
+
 LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	switch (umsg)
@@ -200,26 +298,21 @@ LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpa
 
     case WM_KEYDOWN:
         {
-            auto it = m_keyboardMapping.find(reinterpret_cast<void*>(wparam));
-
-            if (it != m_keyboardMapping.end())
+            for (size_t i = 0; i < m_controls.size(); ++i)
             {
-                it->second->Down();
+                m_controls[i]->KeyDown(wparam);
             }
         }
         break;
 
     case WM_KEYUP:
         {
-            auto it = m_keyboardMapping.find(reinterpret_cast<void*>(wparam));
-
-            if (it != m_keyboardMapping.end())
+            for (size_t i = 0; i < m_controls.size(); ++i)
             {
-                it->second->Up();
+                m_controls[i]->KeyUp(wparam);
             }
         }
         break;
-
 	}
 
 	return DefWindowProc(hwnd, umsg, wparam, lparam);

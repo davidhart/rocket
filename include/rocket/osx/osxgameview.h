@@ -5,6 +5,8 @@
 #include "implementation/basegameview.h"
 #include <map>
 
+#if defined (__APPLE__)
+
 namespace Rocket
 {
     namespace OSX
@@ -31,19 +33,15 @@ namespace Rocket
             
             virtual void NotifySizeObservers(const ivec2& size);
             
-            virtual void SetKeyboardMapping(const char* name, IKey* key);
-            virtual IKey* GetKey(KeyCode code);
-            
-            void KeyDown(IKey* key);
-            void KeyUp(IKey* key);
-            
         private:
             void* m_window;
             void* m_view;
             bool m_open;
             ivec2 m_size;
-            std::map<IKey*,Input::PressAction*> m_keyboardMapping;
         };
     }
 }
+
+#endif
+
 #endif

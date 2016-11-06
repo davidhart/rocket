@@ -2,6 +2,7 @@
 #include <cassert>
 
 using namespace Rocket;
+using namespace Rocket::Input;
 
 Buffer* CreateTestGeometry(Renderer* renderer)
 {
@@ -316,10 +317,7 @@ vec4 RandomColor()
 	return vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
 }
 
-ExampleGame::ExampleGame() :
-    m_renderer(nullptr),
-    m_view(nullptr),
-    m_bumpAction(nullptr)
+ExampleGame::ExampleGame()
 {
 }
 
@@ -369,13 +367,18 @@ void ExampleGame::InitView(GameView* view)
 {
     m_view = view;
 
-    m_bumpAction = view->AddPressAction("bump");
-    view->SetKeyboardMapping("bump", view->GetKey(KEY_SPACE));
+    IControlScheme* controlScheme = view->AddControlScheme("controls");
+    controlScheme->AddButton("bump");
+    controlScheme->AddButtonKeyboardMapping("bump", KeyCode::KEY_SPACE);
+    controlScheme->AddButtonKeyboardMapping("bump", KeyCode::KEY_A);
+
+    IRuntimeControls* controls = view->ActivateControlScheme("controls");
+    m_bumpButton = controls->GetButton("bump");
 }
 
 ExampleGame::~ExampleGame()
 {
-    m_view->RemovePressAction("bump");
+    m_view->DeactivateControlScheme("controls");
 
 	m_renderer->ReleaseRenderQueue(m_mainQueue);
 	m_renderer->ReleaseRenderQueue(m_framebufferQueue);
@@ -404,7 +407,7 @@ void ExampleGame::Update(float dt)
 	m_angle += 144.0f * 0.01f * dt;
 	m_angle2 += 144.0f * 0.025f * dt;
 
-    if (m_bumpAction->Pressed())
+    if (m_bumpButton->WasJustPressed())
         m_bump = 2;
 
     m_bump -= 10 * dt;
