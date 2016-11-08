@@ -44,7 +44,11 @@ namespace Rocket
             KEY_7,
             KEY_8,
             KEY_9,
-            KEY_SPACE
+            KEY_SPACE,
+            KEY_LEFT,
+            KEY_RIGHT,
+            KEY_UP,
+            KEY_DOWN
         };
 
         class IButton
@@ -78,7 +82,6 @@ namespace Rocket
             virtual void AddButtonKeyboardMapping(const char* name, KeyCode keycode) = 0;
             virtual void AddAxisKeyboardMapping(const char* name, KeyCode down, KeyCode up) = 0;
         };
-
     }
 }
 

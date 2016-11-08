@@ -8,36 +8,12 @@
 #include "vectormath.h"
 #include "implementation/basegameview.h"
 #include <Windows.h>
-#include <map>
-#include <functional>
 
 namespace Rocket
 {
-    namespace Implementation
-    {
-        class Button;
-        
-    }
-
 	namespace Windows
 	{
-        class WindowsRuntimeControls
-        {
-        public:
-            WindowsRuntimeControls(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme);
-            const Implementation::RuntimeControls* RuntimeControls() const;
-
-            static void ButtonDown(Implementation::Button* button);
-            static void ButtonUp(Implementation::Button* button);
-
-            void KeyDown(int nativeCode);
-            void KeyUp(int nativeCode);
-
-        private:
-            const Implementation::RuntimeControls* m_controls;
-            std::map<int, std::function<void()>> m_keyDown;
-            std::map<int, std::function<void()>> m_keyUp;
-        };
+        class WindowsKeyboard;
 
 		class WindowsGameView : public Implementation::BaseGameView 
 		{
@@ -70,7 +46,7 @@ namespace Rocket
 			bool m_isResizable;
 			ivec2 m_size;
 
-            std::vector<WindowsRuntimeControls*> m_controls;
+            std::vector<WindowsKeyboard*> m_keyboardControls;
 		};
 	}
 }

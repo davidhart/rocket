@@ -46,6 +46,8 @@ private:
 
     Rocket::GameView* m_view;
     Rocket::Input::IButton* m_bumpButton;
+    Rocket::Input::IAxis* m_spinAxisX;
+    Rocket::Input::IAxis* m_spinAxisY;
 
 	float m_angle;
 	float m_angle2;

@@ -51,19 +51,22 @@ void Button::OnButtonUp()
 }
 
 Axis::Axis() : 
-    m_value(0)
+    m_provider(nullptr)
 {
 
 }
 
 float Axis::Value()
 {
-    return m_value;
+    if (m_provider == nullptr)
+        return 0.0f;
+
+    return m_provider->Value();
 }
 
-void Axis::SetValue(float value)
+void Axis::SetProvider(IAxisProvider* provider)
 {
-    m_value = value;
+    m_provider = provider;
 }
 
 RuntimeControls::RuntimeControls(ControlScheme* scheme)
@@ -122,4 +125,33 @@ Axis* RuntimeControls::GetAxisInternal(const char* name)
     auto it = m_axis.find(key);
     assert(it != m_axis.end()); // Axis not found
     return it->second;
+}
+
+KeyboardAxisProvider::KeyboardAxisProvider() :
+    m_upKey(false),
+    m_downKey(false)
+{
+}
+
+float KeyboardAxisProvider::Value()
+{
+    float val = 0;
+
+    if (m_upKey)
+        val += 1.0f;
+
+    if (m_downKey)
+        val -= 1.0f;
+
+    return val;
+}
+
+void KeyboardAxisProvider::SetUpKeyState(bool pressed)
+{
+    m_upKey = pressed;
+}
+
+void KeyboardAxisProvider::SetDownKeyState(bool pressed)
+{
+    m_downKey = pressed;
 }

@@ -370,10 +370,18 @@ void ExampleGame::InitView(GameView* view)
     IControlScheme* controlScheme = view->AddControlScheme("controls");
     controlScheme->AddButton("bump");
     controlScheme->AddButtonKeyboardMapping("bump", KeyCode::KEY_SPACE);
-    controlScheme->AddButtonKeyboardMapping("bump", KeyCode::KEY_A);
+
+    controlScheme->AddAxis("spinX");
+    controlScheme->AddAxisKeyboardMapping("spinX", KeyCode::KEY_A, KeyCode::KEY_D);
+    controlScheme->AddAxisKeyboardMapping("spinX", KeyCode::KEY_LEFT, KeyCode::KEY_RIGHT);
+    controlScheme->AddAxis("spinY");
+    controlScheme->AddAxisKeyboardMapping("spinY", KeyCode::KEY_S, KeyCode::KEY_W);
+    controlScheme->AddAxisKeyboardMapping("spinY", KeyCode::KEY_DOWN, KeyCode::KEY_UP);
 
     IRuntimeControls* controls = view->ActivateControlScheme("controls");
     m_bumpButton = controls->GetButton("bump");
+    m_spinAxisX = controls->GetAxis("spinX");
+    m_spinAxisY = controls->GetAxis("spinY");
 }
 
 ExampleGame::~ExampleGame()
@@ -404,8 +412,8 @@ void ExampleGame::Update(float dt)
 {
 	m_offset.x += 144.0f * 0.01f * dt;
 	m_offset.y += 144.0f * 0.0025f * dt;
-	m_angle += 144.0f * 0.01f * dt;
-	m_angle2 += 144.0f * 0.025f * dt;
+	m_angle += m_spinAxisX->Value() * dt * 10.0f;
+	m_angle2 += m_spinAxisY->Value() * dt * 10.0f;
 
     if (m_bumpButton->WasJustPressed())
         m_bump = 2;

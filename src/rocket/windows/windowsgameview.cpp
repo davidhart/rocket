@@ -1,5 +1,6 @@
 #include "windows/windowsgameview.h"
 #include "windows/windowsopenglrenderer.h"
+#include "windows/windowskeyboard.h"
 #include "implementation/runtimecontrols.h"
 #include "implementation/controlscheme.h"
 #include <cassert>
@@ -12,23 +13,6 @@ using namespace Rocket;
 using namespace Rocket::Windows;
 using namespace Rocket::Input;
 using namespace Rocket::Implementation;
-
-int KeyCodeToNative(KeyCode code)
-{
-    if (code >= KEY_A && code <= KEY_Z)
-        return 0x41 + (code - KEY_A);
-
-    if (code >= KEY_0 && code <= KEY_9)
-        return 0x30 + (code - KEY_0);
-
-    switch (code)
-    {
-    case KEY_SPACE:
-        return VK_SPACE;
-    }
-
-    return -1;
-}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
@@ -44,69 +28,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 	}
 }
 
-
-
-WindowsRuntimeControls::WindowsRuntimeControls(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme) :
-    m_controls(controls)
-{
-    for (size_t i = 0; i < scheme->GetNumButtonKeyMaps(); ++i)
-    {
-        const ButtonKeyMap* map = scheme->GetButtonKeyMap(i);
-
-        int native = KeyCodeToNative(map->Key);
-
-        Button* button = controls->GetButtonInternal(map->Name.c_str());
-
-        m_keyDown[native] = std::bind(ButtonDown, button);
-        m_keyUp[native] = std::bind(ButtonUp, button);
-    }
-
-    /*
-    for (size_t i = 0; i < scheme->GetNumAxisKeyMaps(); ++i)
-    {
-        const AxisKeyMap* map = scheme->GetAxisKeyMap(i);
-
-        int nativeUp = KeyCodeToNative(map->Up);
-        int nativedown = KeyCodeToNative(map->Down);
-
-        Axis* axis = controls->geTAxisInternal(map->Name.c - str());
-
-
-    }
-    */
-}
-
-const Implementation::RuntimeControls* WindowsRuntimeControls::RuntimeControls() const
-{
-    return m_controls;
-}
-
-void WindowsRuntimeControls::ButtonDown(Button* button)
-{
-    button->OnButtonDown();
-}
-
-void WindowsRuntimeControls::ButtonUp(Button* button)
-{
-    button->OnButtonUp();
-}
-
-void WindowsRuntimeControls::KeyDown(int nativeCode)
-{
-    auto it = m_keyDown.find(nativeCode);
-
-    if (it != m_keyDown.end())
-        it->second();
-}
-
-void WindowsRuntimeControls::KeyUp(int nativeCode)
-{
-    auto it = m_keyUp.find(nativeCode);
-
-    if (it != m_keyUp.end())
-        it->second();
-}
-
 WindowsGameView::WindowsGameView() :
 	m_hwnd(0),
 	m_isClassRegistered(false),
@@ -117,7 +38,7 @@ WindowsGameView::WindowsGameView() :
 
 WindowsGameView::~WindowsGameView()
 {
-    for (auto it = m_controls.begin(); it != m_controls.end(); ++it)
+    for (auto it = m_keyboardControls.begin(); it != m_keyboardControls.end(); ++it)
     {
         delete *it;
     }
@@ -263,19 +184,19 @@ ivec2 WindowsGameView::GetSize() const
 
 void WindowsGameView::RuntimeControlsActivated(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme)
 {
-    WindowsRuntimeControls* wincontrols = new WindowsRuntimeControls(controls, scheme);
+    WindowsKeyboard* winkeys = new WindowsKeyboard(controls, scheme);
 
-    m_controls.push_back(wincontrols);
+    m_keyboardControls.push_back(winkeys);
 }
 
 void WindowsGameView::RuntimeControlsDeactivated(Implementation::RuntimeControls* controls)
 {
-    for (auto it = m_controls.begin(); it != m_controls.end(); ++it)
+    for (auto it = m_keyboardControls.begin(); it != m_keyboardControls.end(); ++it)
     {
-        if ((*it)->RuntimeControls() == controls)
+        if ((*it)->ActiveControls() == controls)
         {
             delete *it;
-            m_controls.erase(it);
+            m_keyboardControls.erase(it);
             return;
         }
     }
@@ -298,18 +219,18 @@ LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpa
 
     case WM_KEYDOWN:
         {
-            for (size_t i = 0; i < m_controls.size(); ++i)
+            for (size_t i = 0; i < m_keyboardControls.size(); ++i)
             {
-                m_controls[i]->KeyDown(wparam);
+                m_keyboardControls[i]->KeyDown(wparam);
             }
         }
         break;
 
     case WM_KEYUP:
         {
-            for (size_t i = 0; i < m_controls.size(); ++i)
+            for (size_t i = 0; i < m_keyboardControls.size(); ++i)
             {
-                m_controls[i]->KeyUp(wparam);
+                m_keyboardControls[i]->KeyUp(wparam);
             }
         }
         break;

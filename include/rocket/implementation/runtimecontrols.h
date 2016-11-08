@@ -30,15 +30,21 @@ namespace Rocket
             bool m_wasReleased;
         };
 
+        class IAxisProvider
+        {
+        public:
+            virtual float Value() = 0;
+        };
+
         class Axis : public Input::IAxis
         {
         public:
             Axis();
             virtual float Value();
-            void SetValue(float value);
+            void SetProvider(IAxisProvider* provider);
 
         private:
-            float m_value;
+            IAxisProvider* m_provider;
         };
 
         class RuntimeControls : public Input::IRuntimeControls
@@ -56,6 +62,19 @@ namespace Rocket
         private:
             std::map<std::string, Button*> m_buttons;
             std::map<std::string, Axis*> m_axis;
+        };
+
+        class KeyboardAxisProvider : public IAxisProvider
+        {
+        public:
+            KeyboardAxisProvider();
+            virtual float Value();
+            void SetUpKeyState(bool pressed);
+            void SetDownKeyState(bool pressed);
+
+        private:
+            bool m_upKey;
+            bool m_downKey;
         };
     }
 }
