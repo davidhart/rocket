@@ -12,7 +12,7 @@ namespace Rocket
     {
         class ControlScheme;
 
-        class Button : public Input::IButton
+        class Button final : public Input::IButton
         {
         public:
             Button();
@@ -36,7 +36,7 @@ namespace Rocket
             virtual float Value() = 0;
         };
 
-        class Axis : public Input::IAxis
+        class Axis final : public Input::IAxis
         {
         public:
             Axis();
@@ -47,7 +47,7 @@ namespace Rocket
             IAxisProvider* m_provider;
         };
 
-        class RuntimeControls : public Input::IRuntimeControls
+        class RuntimeControls final : public Input::IRuntimeControls
         {
         public:
             RuntimeControls(ControlScheme* scheme);
@@ -64,7 +64,7 @@ namespace Rocket
             std::map<std::string, Axis*> m_axis;
         };
 
-        class KeyboardAxisProvider : public IAxisProvider
+        class KeyboardAxisProvider final : public IAxisProvider
         {
         public:
             KeyboardAxisProvider();

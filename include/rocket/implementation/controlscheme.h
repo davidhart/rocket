@@ -23,7 +23,7 @@ namespace Rocket
             Input::KeyCode KeyUp;
         };
 
-        class ControlScheme : public Input::IControlScheme
+        class ControlScheme final : public Input::IControlScheme
         {
         public:
             ControlScheme(const char* name);

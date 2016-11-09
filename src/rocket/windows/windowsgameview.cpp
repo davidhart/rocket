@@ -1,8 +1,8 @@
 #include "windows/windowsgameview.h"
 #include "windows/windowsopenglrenderer.h"
-#include "windows/windowskeyboard.h"
 #include "implementation/runtimecontrols.h"
 #include "implementation/controlscheme.h"
+#include "implementation/runtimekeyboard.h"
 #include <cassert>
 
 #if defined(_WIN32)
@@ -13,6 +13,32 @@ using namespace Rocket;
 using namespace Rocket::Windows;
 using namespace Rocket::Input;
 using namespace Rocket::Implementation;
+
+int KeyCodeToNative(KeyCode code)
+{
+    if (code >= KEY_A && code <= KEY_Z)
+        return 0x41 + (code - KEY_A);
+    
+    if (code >= KEY_0 && code <= KEY_9)
+        return 0x30 + (code - KEY_0);
+    
+    switch (code)
+    {
+        case KEY_SPACE:
+            return VK_SPACE;
+        case KEY_LEFT:
+            return VK_LEFT;
+        case KEY_RIGHT:
+            return VK_RIGHT;
+        case KEY_DOWN:
+            return VK_DOWN;
+        case KEY_UP:
+            return VK_UP;
+    }
+    
+    assert(false); // Unsupported keycode
+    return -1;
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
@@ -184,9 +210,9 @@ ivec2 WindowsGameView::GetSize() const
 
 void WindowsGameView::RuntimeControlsActivated(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme)
 {
-    WindowsKeyboard* winkeys = new WindowsKeyboard(controls, scheme);
+    RuntimeKeyboard* keyboard = new RuntimeKeyboard(controls, scheme, std::bind(KeyCodeToNative));
 
-    m_keyboardControls.push_back(winkeys);
+    m_keyboardControls.push_back(keyboard);
 }
 
 void WindowsGameView::RuntimeControlsDeactivated(Implementation::RuntimeControls* controls)

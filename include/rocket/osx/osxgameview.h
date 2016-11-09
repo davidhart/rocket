@@ -33,6 +33,8 @@ namespace Rocket
             
             virtual void NotifySizeObservers(const ivec2& size);
             
+            virtual int TranslateKeyCodeToNative(Input::KeyCode code);
+            
         private:
             void* m_window;
             void* m_view;

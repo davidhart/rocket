@@ -5,10 +5,12 @@
 #include "osx/osxopenglrenderer.h"
 #include "input.h"
 #import <Cocoa/Cocoa.h>
+#import <Carbon/Carbon.h>
 
 using namespace Rocket;
 using namespace Rocket::OSX;
-
+using namespace Rocket::Implementation;
+using namespace Rocket::Input;
 
 @interface RocketApplication : NSApplication
 {
@@ -138,16 +140,14 @@ using namespace Rocket::OSX;
 
 -(void)keyDown:(NSEvent *)event
 {
-    short kc = [event keyCode];
-    gameView->KeyDown(reinterpret_cast<IKey*>(kc));
+    gameView->NativeKeyDown((int)[event keyCode]);
     
     [super keyDown: event];
 }
 
 -(void)keyUp:(NSEvent *)event
 {
-    short kc = [event keyCode];
-    gameView->KeyUp(reinterpret_cast<IKey*>(kc));
+    gameView->NativeKeyUp((int)[event keyCode]);
     
     [super keyUp: event];
 }
@@ -327,36 +327,61 @@ void OSXGameView::NotifySizeObservers(const ivec2 &size)
     BaseGameView::NotifySizeObservers(size);
 }
 
-IKey* OSXGameView::GetKey(KeyCode code)
+int OSXGameView::TranslateKeyCodeToNative(Input::KeyCode keycode)
 {
-    return reinterpret_cast<IKey*>(49);
-}
-
-void OSXGameView::SetKeyboardMapping(const char* name, IKey* key)
-{
-    Input::PressAction* action = GetPressActionInternal(name);
-    
-    m_keyboardMapping[key] = action;
-}
-
-void OSXGameView::KeyDown(IKey* key)
-{
-    auto it = m_keyboardMapping.find(key);
-    
-    if (it != m_keyboardMapping.end())
+    // Apple virtual keycodes are all over the place so this seems to be
+    // the correct way to map them. Untested on exotic keyboard layouts
+    switch(keycode)
     {
-        it->second->Down();
+        case KEY_A: return kVK_ANSI_A;
+        case KEY_B: return kVK_ANSI_B;
+        case KEY_C: return kVK_ANSI_C;
+        case KEY_D: return kVK_ANSI_D;
+        case KEY_E: return kVK_ANSI_E;
+        case KEY_F: return kVK_ANSI_F;
+        case KEY_G: return kVK_ANSI_G;
+        case KEY_H: return kVK_ANSI_H;
+        case KEY_I: return kVK_ANSI_I;
+        case KEY_J: return kVK_ANSI_J;
+        case KEY_K: return kVK_ANSI_K;
+        case KEY_L: return kVK_ANSI_L;
+        case KEY_M: return kVK_ANSI_M;
+        case KEY_N: return kVK_ANSI_N;
+        case KEY_O: return kVK_ANSI_O;
+        case KEY_P: return kVK_ANSI_P;
+        case KEY_Q: return kVK_ANSI_Q;
+        case KEY_R: return kVK_ANSI_R;
+        case KEY_S: return kVK_ANSI_S;
+        case KEY_T: return kVK_ANSI_T;
+        case KEY_U: return kVK_ANSI_U;
+        case KEY_V: return kVK_ANSI_V;
+        case KEY_W: return kVK_ANSI_W;
+        case KEY_X: return kVK_ANSI_X;
+        case KEY_Y: return kVK_ANSI_Y;
+        case KEY_Z: return kVK_ANSI_Z;
+        case KEY_0: return kVK_ANSI_0;
+        case KEY_1: return kVK_ANSI_1;
+        case KEY_2: return kVK_ANSI_2;
+        case KEY_3: return kVK_ANSI_3;
+        case KEY_4: return kVK_ANSI_4;
+        case KEY_5: return kVK_ANSI_5;
+        case KEY_6: return kVK_ANSI_6;
+        case KEY_7: return kVK_ANSI_7;
+        case KEY_8: return kVK_ANSI_8;
+        case KEY_9: return kVK_ANSI_9;
+            
+        case KEY_SPACE: return kVK_Space;
+        case KEY_LEFT: return kVK_LeftArrow;
+        case KEY_RIGHT: return kVK_RightArrow;
+        case KEY_UP: return kVK_UpArrow;
+        case KEY_DOWN: return kVK_DownArrow;
+            
+        default: break;
     }
-}
-
-void OSXGameView::KeyUp(IKey* key)
-{
-    auto it = m_keyboardMapping.find(key);
     
-    if (it != m_keyboardMapping.end())
-    {
-        it->second->Up();
-    }
+    assert(false); // Unsupported KeyCode
+    
+    return 0;
 }
 
 #endif

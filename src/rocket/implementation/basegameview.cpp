@@ -3,6 +3,7 @@
 #include "implementation/runtimecontrols.h"
 
 #include <cassert>
+#include <algorithm>
 
 using namespace Rocket;
 using namespace Rocket::Implementation;
@@ -82,11 +83,12 @@ IRuntimeControls* BaseGameView::ActivateControlScheme(const char* name)
     auto schemeIt = m_controlSchemes.find(name);
     assert(schemeIt != m_controlSchemes.end()); // Control scheme not found
     assert(m_runtimeControls.find(key) == m_runtimeControls.end()); // Control scheme already active
-
+    
     ControlScheme* scheme = schemeIt->second;
     RuntimeControls* controls = new RuntimeControls(scheme);
-    RuntimeControlsActivated(controls, scheme);
-
+    
+    m_keyboards.push_back(new RuntimeKeyboard(controls, scheme, this));
+    
     m_runtimeControls[key] = controls;
     return controls;
 }
@@ -100,12 +102,29 @@ IRuntimeControls* BaseGameView::GetActiveControlScheme(const char* name)
 
 void BaseGameView::DeactivateControlScheme(const char* name)
 {
-    auto it = m_runtimeControls.find(name);
-    assert(it != m_runtimeControls.end()); // Control scheme not active
+    auto controls_it = m_runtimeControls.find(name);
+    assert(controls_it != m_runtimeControls.end()); // Control scheme not active
 
-    RuntimeControls* controls = it->second;
-    m_runtimeControls.erase(it);
+    RuntimeControls* controls = controls_it->second;
+    m_runtimeControls.erase(controls_it);
 
-    RuntimeControlsDeactivated(controls);
+    auto kb_it = std::find_if(m_keyboards.begin(), m_keyboards.end(), [controls] (RuntimeKeyboard* k) { return k->ActiveControls() == controls; });
+    assert(kb_it != m_keyboards.end());
+    
+    delete *kb_it;
+    m_keyboards.erase(kb_it);
+    
     delete controls;
+}
+
+void BaseGameView::NativeKeyDown(int key)
+{
+    for (size_t i = 0; i < m_keyboards.size(); ++i)
+        m_keyboards[i]->KeyDown(key);
+}
+
+void BaseGameView::NativeKeyUp(int key)
+{
+    for (size_t i = 0; i < m_keyboards.size(); ++i)
+        m_keyboards[i]->KeyUp(key);
 }

@@ -13,7 +13,6 @@ namespace Rocket
     {
         class IControlScheme;
         class IRuntimeControls;
-        enum KeyCode;
     }
 
 	class IGameViewSizeObserver

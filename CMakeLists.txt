@@ -21,8 +21,9 @@ find_package(OpenGL REQUIRED)
 target_link_libraries("rocket" ${OPENGL_LIBRARIES})
 
 if (APPLE)
-    set(COCOA_LIBRARIES "-framework Cocoa -framework CoreFoundation")
-    target_link_libraries("rocket" ${COCOA_LIBRARIES})
+    target_link_libraries("rocket" "-framework Cocoa")
+    target_link_libraries("rocket" "-framework Carbon")
+    target_link_libraries("rocket" "-framework CoreFoundation")
 endif()
 
 

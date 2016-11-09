@@ -1,51 +1,24 @@
-#include "windows/windowskeyboard.h"
-
-#if defined(_WIN32)
+#include "implementation/runtimekeyboard.h"
 
 #include "implementation/controlscheme.h"
 #include "input.h"
-#include <Windows.h>
 #include <cassert>
 
 using namespace Rocket;
 using namespace Rocket::Input;
 using namespace Rocket::Implementation;
-using namespace Rocket::Windows;
 
-int KeyCodeToNative(KeyCode code)
-{
-    if (code >= KEY_A && code <= KEY_Z)
-        return 0x41 + (code - KEY_A);
-
-    if (code >= KEY_0 && code <= KEY_9)
-        return 0x30 + (code - KEY_0);
-
-    switch (code)
-    {
-    case KEY_SPACE:
-        return VK_SPACE;
-    case KEY_LEFT:
-        return VK_LEFT;
-    case KEY_RIGHT:
-        return VK_RIGHT;
-    case KEY_DOWN:
-        return VK_DOWN;
-    case KEY_UP:
-        return VK_UP;
-    }
-
-    assert(false); // Unsupported keycode
-    return -1;
-}
-
-WindowsKeyboard::WindowsKeyboard(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme) :
+RuntimeKeyboard::RuntimeKeyboard(
+    RuntimeControls* controls,
+    ControlScheme* scheme,
+    IRuntimeKeyboardTranslator* translator) :
     m_controls(controls)
 {
     for (size_t i = 0; i < scheme->GetNumButtonKeyMaps(); ++i)
     {
         const ButtonKeyMap* map = scheme->GetButtonKeyMap(i);
 
-        int native = KeyCodeToNative(map->Key);
+        int native = translator->TranslateKeyCodeToNative(map->Key);
 
         Button* button = controls->GetButtonInternal(map->Name.c_str());
 
@@ -60,8 +33,8 @@ WindowsKeyboard::WindowsKeyboard(Implementation::RuntimeControls* controls, Impl
     {
         const AxisKeyMap* map = scheme->GetAxisKeyMap(i);
 
-        int nativeUp = KeyCodeToNative(map->KeyUp);
-        int nativeDown = KeyCodeToNative(map->KeyDown);
+        int nativeUp = translator->TranslateKeyCodeToNative(map->KeyUp);
+        int nativeDown = translator->TranslateKeyCodeToNative(map->KeyDown);
 
         Axis* axis = controls->GetAxisInternal(map->Name.c_str());
         KeyboardAxisProvider* axisProvider = m_keyboardAxis.data() + i;
@@ -74,34 +47,34 @@ WindowsKeyboard::WindowsKeyboard(Implementation::RuntimeControls* controls, Impl
     }
 }
 
-const Implementation::RuntimeControls* WindowsKeyboard::ActiveControls() const
+const RuntimeControls* RuntimeKeyboard::ActiveControls() const
 {
     return m_controls;
 }
 
-void WindowsKeyboard::ButtonDown(Button* button)
+void RuntimeKeyboard::ButtonDown(Button* button)
 {
     button->OnButtonDown();
 }
 
-void WindowsKeyboard::ButtonUp(Button* button)
+void RuntimeKeyboard::ButtonUp(Button* button)
 {
     button->OnButtonUp();
 }
 
-void WindowsKeyboard::AxisUp(Axis* axis, KeyboardAxisProvider* provider, bool pressed)
+void RuntimeKeyboard::AxisUp(Axis* axis, KeyboardAxisProvider* provider, bool pressed)
 {
     axis->SetProvider(provider);
     provider->SetUpKeyState(pressed);
 }
 
-void WindowsKeyboard::AxisDown(Axis* axis, KeyboardAxisProvider* provider, bool pressed)
+void RuntimeKeyboard::AxisDown(Axis* axis, KeyboardAxisProvider* provider, bool pressed)
 {
     axis->SetProvider(provider);
     provider->SetDownKeyState(pressed);
 }
 
-void WindowsKeyboard::KeyDown(int nativeCode)
+void RuntimeKeyboard::KeyDown(int nativeCode)
 {
     auto it = m_keyDown.find(nativeCode);
 
@@ -109,7 +82,7 @@ void WindowsKeyboard::KeyDown(int nativeCode)
         it->second();
 }
 
-void WindowsKeyboard::KeyUp(int nativeCode)
+void RuntimeKeyboard::KeyUp(int nativeCode)
 {
     auto it = m_keyUp.find(nativeCode);
 
@@ -117,4 +90,3 @@ void WindowsKeyboard::KeyUp(int nativeCode)
         it->second();
 }
 
-#endif
