@@ -33,8 +33,7 @@ namespace Rocket
 			virtual bool GetIsResizable();
 			virtual ivec2 GetSize() const;
 
-            virtual void RuntimeControlsActivated(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme);
-            virtual void RuntimeControlsDeactivated(Implementation::RuntimeControls* controls);
+            virtual int TranslateKeyCodeToNative(Input::KeyCode code);
 
 			LRESULT WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
             

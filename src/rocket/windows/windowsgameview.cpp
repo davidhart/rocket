@@ -14,32 +14,6 @@ using namespace Rocket::Windows;
 using namespace Rocket::Input;
 using namespace Rocket::Implementation;
 
-int KeyCodeToNative(KeyCode code)
-{
-    if (code >= KEY_A && code <= KEY_Z)
-        return 0x41 + (code - KEY_A);
-    
-    if (code >= KEY_0 && code <= KEY_9)
-        return 0x30 + (code - KEY_0);
-    
-    switch (code)
-    {
-        case KEY_SPACE:
-            return VK_SPACE;
-        case KEY_LEFT:
-            return VK_LEFT;
-        case KEY_RIGHT:
-            return VK_RIGHT;
-        case KEY_DOWN:
-            return VK_DOWN;
-        case KEY_UP:
-            return VK_UP;
-    }
-    
-    assert(false); // Unsupported keycode
-    return -1;
-}
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
 	if (umsg == WM_NCCREATE)
@@ -208,26 +182,30 @@ ivec2 WindowsGameView::GetSize() const
 	return m_size;
 }
 
-void WindowsGameView::RuntimeControlsActivated(Implementation::RuntimeControls* controls, Implementation::ControlScheme* scheme)
+int WindowsGameView::TranslateKeyCodeToNative(KeyCode code)
 {
-    RuntimeKeyboard* keyboard = new RuntimeKeyboard(controls, scheme, std::bind(KeyCodeToNative));
+    if (code >= KEY_A && code <= KEY_Z)
+        return 0x41 + (code - KEY_A);
 
-    m_keyboardControls.push_back(keyboard);
-}
+    if (code >= KEY_0 && code <= KEY_9)
+        return 0x30 + (code - KEY_0);
 
-void WindowsGameView::RuntimeControlsDeactivated(Implementation::RuntimeControls* controls)
-{
-    for (auto it = m_keyboardControls.begin(); it != m_keyboardControls.end(); ++it)
+    switch (code)
     {
-        if ((*it)->ActiveControls() == controls)
-        {
-            delete *it;
-            m_keyboardControls.erase(it);
-            return;
-        }
+    case KEY_SPACE:
+        return VK_SPACE;
+    case KEY_LEFT:
+        return VK_LEFT;
+    case KEY_RIGHT:
+        return VK_RIGHT;
+    case KEY_DOWN:
+        return VK_DOWN;
+    case KEY_UP:
+        return VK_UP;
     }
 
-    assert(false); // Deactivating controls that are not active
+    assert(false); // Unsupported keycode
+    return -1;
 }
 
 LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
@@ -245,19 +223,13 @@ LRESULT WindowsGameView::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lpa
 
     case WM_KEYDOWN:
         {
-            for (size_t i = 0; i < m_keyboardControls.size(); ++i)
-            {
-                m_keyboardControls[i]->KeyDown(wparam);
-            }
+            NativeKeyDown((int)wparam);
         }
         break;
 
     case WM_KEYUP:
         {
-            for (size_t i = 0; i < m_keyboardControls.size(); ++i)
-            {
-                m_keyboardControls[i]->KeyUp(wparam);
-            }
+            NativeKeyUp((int)wparam);
         }
         break;
 	}
