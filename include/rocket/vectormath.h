@@ -279,7 +279,7 @@ namespace Rocket
 
     template<typename T> inline tvec2<T> tvec2<T>::operator-(const tvec2<T>& rhs) const
     {
-        return tvec2<T>(x - rhx.x, y - rhs.y);
+        return tvec2<T>(x - rhs.x, y - rhs.y);
     }
 
     template<typename T> inline const tvec2<T>& tvec2<T>::operator-=(const tvec2<T>& rhs)
