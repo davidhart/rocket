@@ -23,6 +23,24 @@ namespace Rocket
 
 		tvec2<T> operator* (const tvec2<T>& rhs) const;
 		const tvec2<T>& operator*= (const tvec2<T>& rhs);
+        tvec2<T> operator* (T rhs) const;
+        const tvec2<T>& operator*= (T rhs);
+
+        tvec2<T> operator/ (const tvec2<T>& rhs) const;
+        const tvec2<T>& operator/= (const tvec2<T>& rhs);
+        tvec2<T> operator/ (T rhs) const;
+        const tvec2<T>& operator/= (T rhs);
+
+        tvec2<T> operator+ (const tvec2<T>& rhs) const;
+        const tvec2<T>& operator+= (const tvec2<T>& rhs);
+        
+        tvec2<T> operator- (const tvec2<T>& rhs) const;
+        const tvec2<T>& operator-= (const tvec2<T>& rhs);
+
+        T Magnitude() const;
+        T MagnitudeSqr() const;
+        tvec2<T> Normalized() const;
+        void Normalize();
 
 		static tvec2<T> Zero();
 		static tvec2<T> One();
@@ -45,6 +63,24 @@ namespace Rocket
 
 		tvec3<T> operator* (const tvec3<T>& rhs) const;
 		const tvec3<T>& operator*= (const tvec3<T>& rhs);
+        tvec3<T> operator* (T rhs) const;
+        const tvec3<T>& operator*= (T rhs);
+
+        tvec3<T> operator/ (const tvec3<T>& rhs) const;
+        const tvec3<T>& operator/= (const tvec3<T>& ths);
+        tvec3<T> operator/ (T rhs) const;
+        const tvec3<T>& operator/=(T rhs);
+
+        tvec3<T> operator+ (const tvec3<T>& rhs) const;
+        const tvec3<T>& operator+= (const tvec3<T>& rhs);
+
+        tvec3<T> operator- (const tvec3<T>& rhs) const;
+        const tvec3<T>& operator-= (const tvec3<T>& rhs);
+
+        T Magnitude() const;
+        T MagnitudeSqr() const;
+        tvec3<T> Normalized() const;
+        void Normalize();
 
 		static tvec3<T> Right();
 		static tvec3<T> Up();
@@ -74,6 +110,24 @@ namespace Rocket
 	
 		tvec4<T> operator* (const tvec4<T>& rhs) const;
 		const tvec4<T>& operator*= (const tvec4<T>& rhs);
+        tvec4<T> operator* (T rhs) const;
+        const tvec4<T>& operator*= (T rhs);
+
+        tvec4<T> operator/ (const tvec4<T>& rhs) const;
+        const tvec4<T>& operator/= (const tvec4<T>& rhs);
+        tvec4<T> operator/ (T rhs) const;
+        const tvec4<T>& operator/= (T rhs);
+
+        tvec4<T> operator+ (const tvec4<T>& rhs) const;
+        const tvec4<T>& operator+= (const tvec4<T>& rhs);
+
+        tvec4<T> operator- (const tvec4<T>& rhs) const;
+        const tvec4<T>& operator-= (const tvec4<T>& rhs);
+
+        T Magnitude() const;
+        T MagnitudeSqr() const;
+        tvec4<T> Normalized() const;
+        void Normalize();
 
 		static T Dot(const tvec4<T>& lhs, const tvec4<T>& rhs);
 		static tvec4<T> Zero();
@@ -160,7 +214,7 @@ namespace Rocket
 
 	template<typename T> inline tvec2<T> tvec2<T>::operator*(const tvec2<T>& rhs) const
 	{
-		return tvec2<T>(x*rhs.x, y*rhs.y);
+		return tvec2<T>(x * rhs.x, y * rhs.y);
 	}
 
 	template<typename T> inline const tvec2<T>& tvec2<T>::operator*=(const tvec2<T>& rhs)
@@ -170,6 +224,91 @@ namespace Rocket
 
 		return *this;
 	}
+
+    template<typename T> inline tvec2<T> tvec2<T>::operator*(T rhs) const
+    {
+        return tvec2<T>(x * rhs, y * rhs);
+    }
+
+    template<typename T> inline const tvec2<T>& tvec2<T>::operator*=(T rhs)
+    {
+        x *= rhs;
+        y *= rhs;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec2<T> tvec2<T>::operator/(const tvec2<T>& rhs) const
+    {
+        return tvec2<T>(x / rhs.x, y / rhs.y);
+    }
+
+    template<typename T> inline const tvec2<T>& tvec2<T>::operator/=(const tvec2<T>& rhs)
+    {
+        x /= rhs.x;
+        y /= rhs.y;
+        
+        return *this;
+    }
+
+    template<typename T> inline tvec2<T> tvec2<T>::operator/(T rhs) const
+    {
+        return tvec2<T>(x / rhs, y / rhs);
+    }
+
+    template<typename T> inline const tvec2<T>& tvec2<T>::operator/=(T rhs)
+    {
+        x /= rhs;
+        y /= rhs;
+        
+        return *this;
+    }
+
+    template<typename T> inline tvec2<T> tvec2<T>::operator+(const tvec2<T>& rhs) const
+    {
+        return tvec2<T>(x + rhs.x, y + rhs.y);
+    }
+
+    template <typename T> inline const tvec2<T>& tvec2<T>::operator+=(const tvec2<T>& rhs)
+    {
+        x += rhs.y;
+        y += rhs.y;
+        
+        return *this;
+    }
+
+    template<typename T> inline tvec2<T> tvec2<T>::operator-(const tvec2<T>& rhs) const
+    {
+        return tvec2<T>(x - rhx.x, y - rhs.y);
+    }
+
+    template<typename T> inline const tvec2<T>& tvec2<T>::operator-=(const tvec2<T>& rhs)
+    {
+        x -= rhs.x;
+        y -= rhs.y;
+
+        return *this;
+    }
+
+    template<typename T> inline T tvec2<T>::Magnitude() const
+    {
+        return sqrt(MagnitudeSqr());
+    }
+
+    template<typename T> inline T tvec2<T>::MagnitudeSqr() const
+    {
+        return x * x + y * y;
+    }
+
+    template<typename T> inline tvec2<T> tvec2<T>::Normalized() const
+    {
+        return *this / Magnitude();
+    }
+
+    template<typename T> inline void tvec2<T>::Normalize()
+    {
+        *this /= Magnitude();
+    }
 
 	template<typename T> inline tvec2<T> tvec2<T>::Zero()
 	{
@@ -225,6 +364,96 @@ namespace Rocket
 
 		return *this;
 	}
+
+    template<typename T> inline tvec3<T> tvec3<T>::operator*(T rhs) const
+    {
+        return tvec3<T>(x * rhs, y * rhs, z * rhs);
+    }
+
+    template<typename T> inline const tvec3<T>& tvec3<T>::operator*=(T rhs)
+    {
+        x *= rhs;
+        y *= rhs;
+        z *= rhs;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec3<T> tvec3<T>::operator/(const tvec3<T>& rhs) const
+    {
+        return tvec3<T>(x / rhs.x, y / rhs.y, z / rhs.z);
+    }
+
+    template<typename T> inline const tvec3<T>& tvec3<T>::operator/=(const tvec3<T>& rhs)
+    {
+        x /= rhs.x;
+        y /= rhs.y;
+        z /= rhs.z;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec3<T> tvec3<T>::operator/(T rhs) const
+    {
+        return tvec3<T>(x / rhs, y / rhs, z / rhs);
+    }
+
+    template<typename T> inline const tvec3<T>& tvec3<T>::operator/=(T rhs)
+    {
+        x /= rhs;
+        y /= rhs;
+        z /= rhs;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec3<T> tvec3<T>::operator+(const tvec3<T>& rhs) const
+    {
+        return tvec3<T>(x + rhs.x, y + rhs.y, z + rhs.z);
+    }
+
+    template<typename T> inline const tvec3<T>& tvec3<T>::operator+=(const tvec3<T>& rhs)
+    {
+        x += rhs.x;
+        y += rhs.y;
+        z += rhs.z;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec3<T> tvec3<T>::operator-(const tvec3<T>& rhs) const
+    {
+        return tvec3<T>(x - rhs.x, y - rhs.y, z - rhs.z);
+    }
+
+    template<typename T> inline const tvec3<T>& tvec3<T>::operator-=(const tvec3<T>& rhs)
+    {
+        x -= rhs.x;
+        y -= rhs.y;
+        z -= rhs.z;
+
+        return *this;
+    }
+
+    template<typename T> inline T tvec3<T>::Magnitude() const
+    {
+        return sqrt(MagnitudeSqr());
+    }
+
+    template<typename T> inline T tvec3<T>::MagnitudeSqr() const
+    {
+        return x * x + y * y + z * z;
+    }
+
+    template<typename T> inline tvec3<T> tvec3<T>::Normalized() const
+    {
+        return *this / Magnitude();
+    }
+
+    template<typename T> inline void tvec3<T>::Normalize()
+    {
+        *this /= Magnitude();
+    }
 
 	template<typename T> inline tvec3<T> tvec3<T>::Right()
 	{
@@ -306,6 +535,101 @@ namespace Rocket
 
 		return *this;
 	}
+
+    template<typename T> inline tvec4<T> tvec4<T>::operator*(T rhs) const
+    {
+        return tvec4<T>(x * rhs, y * rhs, z * rhs, w * rhs);
+    }
+
+    template<typename T> inline const tvec4<T>& tvec4<T>::operator*=(T rhs)
+    {
+        x *= rhs;
+        y *= rhs;
+        z *= rhs;
+        w *= rhs;
+        
+        return *this;
+    }
+
+    template<typename T> inline tvec4<T> tvec4<T>::operator/(const tvec4<T>& rhs) const
+    {
+        return tvec4<T>(x / rhs.x, y / rhs.y, z / rhs.z, w / rhs.w);
+    }
+
+    template<typename T> inline const tvec4<T>& tvec4<T>::operator/=(const tvec4<T>& rhs)
+    {
+        x /= rhs.x;
+        y /= rhs.y;
+        z /= rhs.z;
+        w /= rhs.w;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec4<T> tvec4<T>::operator/(T rhs) const
+    {
+        return tvec4<T>(x / rhs, y / rhs, z / rhs, w / rhs);
+    }
+
+    template<typename T> inline const tvec4<T>& tvec4<T>::operator/=(T rhs)
+    {
+        x /= rhs;
+        y /= rhs;
+        z /= rhs;
+        w /= rhs;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec4<T> tvec4<T>::operator+(const tvec4<T>& rhs) const
+    {
+        return tvec4<T>(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w);
+    }
+
+    template<typename T> inline const tvec4<T>& tvec4<T>::operator+=(const tvec4<T>& rhs)
+    {
+        x += rhs.x;
+        y += rhs.y;
+        z += rhs.z;
+        w += rhs.w;
+
+        return *this;
+    }
+
+    template<typename T> inline tvec4<T> tvec4<T>::operator-(const tvec4<T>& rhs) const
+    {
+        return tvec4<T>(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
+    }
+
+    template<typename T> inline const tvec4<T>& tvec4<T>::operator-=(const tvec4<T>& rhs)
+    {
+        x -= rhs.x;
+        y -= rhs.y;
+        z -= rhs.z;
+        w -= rhs.w;
+
+        return *this;
+    }
+
+    template<typename T> inline T tvec4<T>::Magnitude() const
+    {
+        return sqrt(MagnitudeSqr());
+    }
+
+    template<typename T> inline T tvec4<T>::MagnitudeSqr() const
+    {
+        return x * x + y * y + z * z + w * w;
+    }
+
+    template<typename T> inline tvec4<T> tvec4<T>::Normalized() const
+    {
+        return *this / Magnitude();
+    }
+
+    template<typename T> inline void tvec4<T>::Normalize()
+    {
+        *this /= Magnitude();
+    }
 
 	template<typename T> inline T tvec4<T>::Dot(const tvec4<T>& lhs, const tvec4<T>& rhs)
 	{
