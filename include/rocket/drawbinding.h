@@ -28,7 +28,7 @@ namespace Rocket
 
 	enum DrawBindingComponents
 	{
-		DB_COMPONETNS_1 = 1,
+		DB_COMPONENTS_1 = 1,
 		DB_COMPONENTS_2 = 2,
 		DB_COMPONENTS_3 = 3,
 		DB_COMPONENTS_4 = 4
