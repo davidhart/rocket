@@ -1,3 +1,7 @@
+#pragma once
+#ifndef ROCKET_EXAMPLEGAME_INCLUDED
+#define ROCKET_EXAMPLEGAME_INCLUDED
+
 #include "game.h"
 #include "gameview.h"
 #include "renderer.h"
@@ -55,3 +59,5 @@ private:
     float m_bump;
 
 };
+
+#endif
