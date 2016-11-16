@@ -18,16 +18,13 @@
 class ExampleGame : public Rocket::Game
 {
 public:
-	ExampleGame();
-
-    void InitGraphics(Rocket::Renderer* renderer);
-    void InitView(Rocket::GameView* view);
-
-	virtual ~ExampleGame();
-	void Update(float dt);
+    virtual void Startup(Rocket::GameServices* services);
+    virtual void Shutdown(Rocket::GameServices* services);
+	virtual void Update(float dt);
 
 private:
-	Rocket::Renderer* m_renderer;
+
+    Rocket::RenderTarget* m_primaryTarget;
 
 	Rocket::Buffer* m_vertbuffer;
 	Rocket::Buffer* m_indexbuffer;

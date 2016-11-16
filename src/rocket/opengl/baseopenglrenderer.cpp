@@ -245,7 +245,9 @@ void BaseOpenGLRenderer::Present()
     
 	glFlush();
     SwapBuffers();
-    DeactivateContext();
+
+    // Damn, map needs this
+    //DeactivateContext();
 }
 
 void BaseOpenGLRenderer::GameViewResized(const ivec2& size)

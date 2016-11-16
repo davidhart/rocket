@@ -317,13 +317,33 @@ vec4 RandomColor()
 	return vec4((float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX, (float)rand() / (float)RAND_MAX);
 }
 
-ExampleGame::ExampleGame()
-{
-}
 
-void ExampleGame::InitGraphics(Renderer* renderer)
+
+void ExampleGame::Startup(GameServices* services)
 {
-    m_renderer = renderer;
+    // Setup input
+    GameView* view = services->GameView();
+
+    IControlScheme* controlScheme = view->AddControlScheme("controls");
+    controlScheme->AddButton("bump");
+    controlScheme->AddButtonKeyboardMapping("bump", KeyCode::KEY_SPACE);
+
+    controlScheme->AddAxis("spinX");
+    controlScheme->AddAxisKeyboardMapping("spinX", KeyCode::KEY_A, KeyCode::KEY_D);
+    controlScheme->AddAxisKeyboardMapping("spinX", KeyCode::KEY_LEFT, KeyCode::KEY_RIGHT);
+    controlScheme->AddAxis("spinY");
+    controlScheme->AddAxisKeyboardMapping("spinY", KeyCode::KEY_S, KeyCode::KEY_W);
+    controlScheme->AddAxisKeyboardMapping("spinY", KeyCode::KEY_DOWN, KeyCode::KEY_UP);
+
+    IRuntimeControls* controls = view->ActivateControlScheme("controls");
+    m_bumpButton = controls->GetButton("bump");
+    m_spinAxisX = controls->GetAxis("spinX");
+    m_spinAxisY = controls->GetAxis("spinY");
+
+    // Setup graphics
+    Renderer* renderer = services->Renderer();
+
+    m_primaryTarget = renderer->GetPrimaryRenderTarget();
 
 	m_vertbuffer = CreateTestGeometry(renderer);
 	m_indexbuffer = CreateTestIndices(renderer);
@@ -363,49 +383,30 @@ void ExampleGame::InitGraphics(Renderer* renderer)
 	m_offset = vec2(0.0f, 0.0f);
 }
 
-void ExampleGame::InitView(GameView* view)
+void ExampleGame::Shutdown(GameServices* services)
 {
-    m_view = view;
+    GameView* view = services->GameView();
+    view->DeactivateControlScheme("controls");
 
-    IControlScheme* controlScheme = view->AddControlScheme("controls");
-    controlScheme->AddButton("bump");
-    controlScheme->AddButtonKeyboardMapping("bump", KeyCode::KEY_SPACE);
-
-    controlScheme->AddAxis("spinX");
-    controlScheme->AddAxisKeyboardMapping("spinX", KeyCode::KEY_A, KeyCode::KEY_D);
-    controlScheme->AddAxisKeyboardMapping("spinX", KeyCode::KEY_LEFT, KeyCode::KEY_RIGHT);
-    controlScheme->AddAxis("spinY");
-    controlScheme->AddAxisKeyboardMapping("spinY", KeyCode::KEY_S, KeyCode::KEY_W);
-    controlScheme->AddAxisKeyboardMapping("spinY", KeyCode::KEY_DOWN, KeyCode::KEY_UP);
-
-    IRuntimeControls* controls = view->ActivateControlScheme("controls");
-    m_bumpButton = controls->GetButton("bump");
-    m_spinAxisX = controls->GetAxis("spinX");
-    m_spinAxisY = controls->GetAxis("spinY");
-}
-
-ExampleGame::~ExampleGame()
-{
-    m_view->DeactivateControlScheme("controls");
-
-	m_renderer->ReleaseRenderQueue(m_mainQueue);
-	m_renderer->ReleaseRenderQueue(m_framebufferQueue);
+    Renderer* renderer = services->Renderer();
+	renderer->ReleaseRenderQueue(m_mainQueue);
+	renderer->ReleaseRenderQueue(m_framebufferQueue);
 
 	delete m_material;
 	delete m_blitMaterial;
 
-	m_renderer->ReleaseShader(m_shader);
-	m_renderer->ReleaseShader(m_blitshader);
+	renderer->ReleaseShader(m_shader);
+	renderer->ReleaseShader(m_blitshader);
 
-	m_renderer->ReleaseDrawBinding(m_binding);
-	m_renderer->ReleaseDrawBinding(m_quadbinding);
+	renderer->ReleaseDrawBinding(m_binding);
+	renderer->ReleaseDrawBinding(m_quadbinding);
 
-	m_renderer->ReleaseBuffer(m_indexbuffer);
-	m_renderer->ReleaseBuffer(m_vertbuffer);
-	m_renderer->ReleaseBuffer(m_quadverts);
-	m_renderer->ReleaseBuffer(m_quadindices);
+	renderer->ReleaseBuffer(m_indexbuffer);
+	renderer->ReleaseBuffer(m_vertbuffer);
+	renderer->ReleaseBuffer(m_quadverts);
+	renderer->ReleaseBuffer(m_quadindices);
 
-	m_renderer->ReleaseTexture(m_texture);
+	renderer->ReleaseTexture(m_texture);
 }
 
 void ExampleGame::Update(float dt)
@@ -421,7 +422,7 @@ void ExampleGame::Update(float dt)
     m_bump -= 10 * dt;
     if (m_bump < 1) m_bump = 1;
 
-	ivec2 size = m_renderer->GetPrimaryRenderTarget()->GetSize();
+	ivec2 size = m_primaryTarget->GetSize();
 	float ratio = (float)size.x / (float)size.y;
 
 	mat4 projectionmat = mat4::Frustum(-1.0f * ratio, 1.0f * ratio, -1.0f, 1.0f, 1.5f, 1000.0f);
