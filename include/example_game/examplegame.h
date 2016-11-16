@@ -44,8 +44,7 @@ private:
 	Rocket::Material* m_blitMaterial;
 	Rocket::ShaderParameters* m_blitParameters;
 	Rocket::RenderQueue* m_mainQueue;
-
-    Rocket::GameView* m_view;
+    
     Rocket::Input::IButton* m_bumpButton;
     Rocket::Input::IAxis* m_spinAxisX;
     Rocket::Input::IAxis* m_spinAxisY;
