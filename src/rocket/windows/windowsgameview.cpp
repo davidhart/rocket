@@ -38,11 +38,6 @@ WindowsGameView::WindowsGameView() :
 
 WindowsGameView::~WindowsGameView()
 {
-    for (auto it = m_keyboardControls.begin(); it != m_keyboardControls.end(); ++it)
-    {
-        delete *it;
-    }
-
 	if (m_hwnd != NULL)
 	{
 		CloseWindow(m_hwnd);

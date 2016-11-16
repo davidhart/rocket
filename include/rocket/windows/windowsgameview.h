@@ -13,8 +13,6 @@ namespace Rocket
 {
 	namespace Windows
 	{
-        class WindowsKeyboard;
-
 		class WindowsGameView : public Implementation::BaseGameView 
 		{
 		public:
@@ -44,8 +42,6 @@ namespace Rocket
 			bool m_isWindowClosed;
 			bool m_isResizable;
 			ivec2 m_size;
-
-            std::vector<WindowsKeyboard*> m_keyboardControls;
 		};
 	}
 }
