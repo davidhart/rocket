@@ -20,8 +20,6 @@ namespace Rocket
         BaseOpenGLRenderer();
         
         virtual bool CreateContext() = 0;
-        virtual void ActivateContext() = 0;
-        virtual void DeactivateContext() = 0;
         virtual void SwapBuffers() = 0;
         
     public:

@@ -19,8 +19,6 @@ namespace Rocket
 			WindowsOpenGLRenderer(HWND hwnd);
 			virtual ~WindowsOpenGLRenderer();
 			virtual bool CreateContext();
-            virtual void ActivateContext();
-            virtual void DeactivateContext();
             virtual void SwapBuffers();
 
 		private:

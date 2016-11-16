@@ -17,9 +17,7 @@ namespace Rocket
             OSXOpenGLRenderer(void* view);
             virtual ~OSXOpenGLRenderer();
             
-            virtual bool CreateContext();
-            virtual void ActivateContext();
-            virtual void DeactivateContext();
+            virtual bool CreateContext()
             virtual void SwapBuffers();
             
             virtual void GameViewResized(const ivec2& size);

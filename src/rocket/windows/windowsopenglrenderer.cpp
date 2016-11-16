@@ -12,7 +12,6 @@ using namespace Rocket;
 using namespace Rocket::Windows;
 using namespace Rocket::OpenGL;
 
-
 void* getProcAddress(const char* name)
 {
 	return (void*)wglGetProcAddress(name);
@@ -176,9 +175,9 @@ bool WindowsOpenGLRenderer::CreateContext()
 		return false;
 	}
 
+	wglMakeCurrent(m_hdc, m_hglrc);
 #if _DEBUG
 	{
-		wglMakeCurrent(m_hdc, m_hglrc);
 
 		PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARB = (PFNGLDEBUGMESSAGECALLBACKARBPROC)wglGetProcAddress("glDebugMessageCallbackARB");
 		if (glDebugMessageCallbackARB != nullptr)
@@ -187,21 +186,10 @@ bool WindowsOpenGLRenderer::CreateContext()
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 		}
-
-		wglMakeCurrent(NULL, NULL);
 	}
 #endif
+
 	return true;
-}
-
-void WindowsOpenGLRenderer::ActivateContext()
-{
-    wglMakeCurrent(m_hdc, m_hglrc);
-}
-
-void WindowsOpenGLRenderer::DeactivateContext()
-{
-    wglMakeCurrent(NULL, NULL);
 }
 
 void WindowsOpenGLRenderer::SwapBuffers()

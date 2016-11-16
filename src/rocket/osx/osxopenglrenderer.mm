@@ -69,26 +69,14 @@ bool OSXOpenGLRenderer::CreateContext()
     m_pixelformat = (void*)pixelformat;
     m_nsglcontext = (void*)nsglcontext;
     
-    ActivateContext();
-    
+    [((id)m_nsglcontext) makeCurrentContext];
+
     if (Platform::IsInitialized() == false)
     {
         Platform::Initialize((Platform::GetProcImpl)getProcAddress);
     }
     
-    DeactivateContext();
-    
     return true;
-}
-
-void OSXOpenGLRenderer::ActivateContext()
-{
-    [((id)m_nsglcontext) makeCurrentContext];
-}
-
-void OSXOpenGLRenderer::DeactivateContext()
-{
-    [NSOpenGLContext clearCurrentContext];
 }
 
 void OSXOpenGLRenderer::SwapBuffers()
