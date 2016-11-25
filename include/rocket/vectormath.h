@@ -5,8 +5,13 @@
 #include <cmath>
 #include <cstring>
 
+#define ROCKET_PI 3.14159265358979323846
+
 namespace Rocket
 {
+    float DegreesToRadians(float degrees);
+    float RadiansToDegrees(float radians);
+
 #pragma pack(push, 1)
 	template<typename T> class tvec2
 	{
@@ -176,6 +181,16 @@ namespace Rocket
 #pragma pack(pop)
 
 	// util
+    inline float DegreesToRadians(float degrees)
+    {
+        return degrees * (float)ROCKET_PI / 180.0f;
+    }
+
+    inline float RadiansToDegrees(float radians)
+    {
+        return radians / (float)ROCKET_PI * 180.0f;
+    }
+
 	template <typename T> inline T rocket_dot(T x0, T y0, T z0, T x1, T y1, T z1)
 	{
 		return x0 * x1 + y0 * y1 + z0 * z1;
