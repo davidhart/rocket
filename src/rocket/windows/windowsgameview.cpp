@@ -76,24 +76,33 @@ bool WindowsGameView::Create()
 		return false;
 	}
 
+    DWORD windowStyle = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+    DWORD windowExStyle = WS_EX_APPWINDOW;
+
+    ivec2 contentSize(800, 600);
+    RECT windowRect;
+    windowRect.left = 0;
+    windowRect.top = 0;
+    windowRect.right = contentSize.x;
+    windowRect.bottom = contentSize.y;
+    AdjustWindowRectEx(&windowRect, windowStyle, FALSE, windowExStyle);
+
 	m_hwnd = CreateWindowExA(
-		WS_EX_APPWINDOW,
+		windowExStyle,
 		WINDOWCLASSNAME,
 		"",
-		WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
+		windowStyle,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		800,
-		600,
+		windowRect.right - windowRect.left,
+		windowRect.bottom - windowRect.top,
 		NULL,
 		NULL,
 		hinstance,
 		this
 	);
 
-	// TODO: correct window to be actually the right size
-
-	m_size = ivec2(800, 600);
+	m_size = contentSize;
 
 	if (m_hwnd == NULL)
 	{
