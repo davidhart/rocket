@@ -83,12 +83,12 @@ void GLRenderQueue::SetClearDepth(float depth)
 
 void GLRenderQueue::SetDepthTestEnabled(bool enabled)
 {
-	m_clearDepthEnabled = enabled;
+	m_depthTestEnabled = enabled;
 }
 
 bool GLRenderQueue::IsDepthTestEnabled() const
 {
-	return m_clearDepthEnabled;
+	return m_depthTestEnabled;
 }
 
 void GLRenderQueue::SetTarget(RenderTarget* target)
