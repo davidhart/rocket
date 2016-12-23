@@ -351,7 +351,7 @@ void ExampleGame::Startup(GameServices* services)
 	m_shader = CreateTestShader(renderer);
 	m_texture = CreateTestTexture2D(renderer);
 
-	m_material = new Material(m_shader);
+	m_material = renderer->CreateMaterial(m_shader);
 	m_parameters = m_material->GetParameters();
 	m_parameters->SetTexture2D("s_texture", m_texture);
 
@@ -367,7 +367,7 @@ void ExampleGame::Startup(GameServices* services)
 	m_quadindices = CreateScreenSpaceQuadIndices(renderer);
 	m_quadbinding = CreateScreenSpaceQuadBinding(renderer, m_quadverts, m_quadindices);
 	m_blitshader = CreateBlitShader(renderer);
-	m_blitMaterial = new Material(m_blitshader);
+	m_blitMaterial = renderer->CreateMaterial(m_blitshader);
 
 	m_blitParameters = m_blitMaterial->GetParameters();
 	m_blitParameters->SetTexture2D("s_texture", m_renderTarget->GetColorAttachment(0));
@@ -392,8 +392,8 @@ void ExampleGame::Shutdown(GameServices* services)
 	renderer->ReleaseRenderQueue(m_mainQueue);
 	renderer->ReleaseRenderQueue(m_framebufferQueue);
 
-	delete m_material;
-	delete m_blitMaterial;
+	renderer->ReleaseMaterial(m_material);
+	renderer->ReleaseMaterial(m_blitMaterial);
 
 	renderer->ReleaseShader(m_shader);
 	renderer->ReleaseShader(m_blitshader);

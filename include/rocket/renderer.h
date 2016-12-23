@@ -6,6 +6,7 @@ namespace Rocket
 {
 	class Buffer;
 	class Shader;
+    class Material;
 	struct ShaderDef;
     
 	class Texture1D;
@@ -35,6 +36,10 @@ namespace Rocket
 
 		virtual Shader* CreateShader(const ShaderDef& shaderSource) = 0;
 		virtual void ReleaseShader(Shader* shader) = 0;
+        
+        virtual Material* CreateMaterial(Shader* shader) = 0;
+        virtual Material* CreateMaterial(Material* material) = 0;
+        virtual void ReleaseMaterial(Material* material) = 0;
 
         virtual Texture1D* CreateTexture(const TextureDef1D& textureData) = 0;
         virtual void ReleaseTexture(Texture1D* texture) = 0;

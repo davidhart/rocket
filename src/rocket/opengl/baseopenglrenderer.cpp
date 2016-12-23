@@ -5,6 +5,7 @@
 #include "opengl/gldrawbinding.h"
 #include "opengl/glrenderqueue.h"
 #include "opengl/glrendertarget.h"
+#include "opengl/glmaterial.h"
 
 #include <cassert>
 
@@ -69,6 +70,21 @@ Shader* BaseOpenGLRenderer::CreateShader(const ShaderDef& def)
 void BaseOpenGLRenderer::ReleaseShader(Shader* shader)
 {
     delete shader;
+}
+
+Material* BaseOpenGLRenderer::CreateMaterial(Shader* shader)
+{
+    return new GLMaterial(shader);
+}
+
+Material* BaseOpenGLRenderer::CreateMaterial(Material* material)
+{
+    return new GLMaterial(material);
+}
+
+void BaseOpenGLRenderer::ReleaseMaterial(Material* material)
+{
+    delete material;
 }
 
 Texture1D* BaseOpenGLRenderer::CreateTexture(const TextureDef1D& def)
