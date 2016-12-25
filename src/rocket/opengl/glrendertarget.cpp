@@ -59,9 +59,9 @@ bool GLRenderTarget::Create(const RenderTargetDef& targetDef)
 	assert(m_framebuffer);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
-	
-	GLenum* drawBuffers = new GLenum[targetDef.numColorAttachements];
-
+    
+    std::vector<GLenum> drawBuffers(targetDef.numColorAttachements);
+    
 	m_size = ivec2(targetDef.width, targetDef.height);
 
 	for (unsigned i = 0; i < targetDef.numColorAttachements; ++i)
@@ -116,7 +116,7 @@ bool GLRenderTarget::Create(const RenderTargetDef& targetDef)
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, attachmentTexture->GetNativeHandle(), 0);
 	}
 
-	glDrawBuffers(targetDef.numColorAttachements, drawBuffers);
+	glDrawBuffers(targetDef.numColorAttachements, drawBuffers.data());
 	
 	assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 	

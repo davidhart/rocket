@@ -100,7 +100,7 @@ using namespace Rocket::Input;
 
 -(id)initWithGameView:(OSXGameView *)view
 {
-    [super init];
+    self = [super init];
     if (self != nil)
     {
         self->gameView = view;
