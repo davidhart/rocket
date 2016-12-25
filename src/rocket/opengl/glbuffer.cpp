@@ -68,6 +68,7 @@ void* GLBuffer::Map(Buffer::MapUsage usage)
 		break;
 	case Buffer::MAP_READ_AND_WRITE:
 		glaccess = GL_READ_WRITE;
+        break;
 	default:
 		assert(false); // GLVertexBuffer MapUsage type not implemented
 		return nullptr;

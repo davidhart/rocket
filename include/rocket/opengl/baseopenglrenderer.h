@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "gameview.h"
 #include "glrendertarget.h"
+#include "glshaderglobals.h"
 #include <vector>
 
 namespace Rocket
@@ -25,7 +26,6 @@ namespace Rocket
     public:
         bool Create();
         
-		// Renderer implementation
 		virtual RenderTarget* GetPrimaryRenderTarget();
 
         virtual Buffer* CreateBuffer(unsigned size, void* data);
@@ -58,14 +58,41 @@ namespace Rocket
 		virtual void ReleaseRenderQueue(const char* name);
 		virtual void ReleaseRenderQueue(RenderQueue* renderQueue);
         
+        virtual int GetShaderPropertyID(const char* name);
+        virtual void SetShaderGlobal(const char* name, float value);
+        virtual void SetShaderGlobal(const char* name, const vec2& value);
+        virtual void SetShaderGlobal(const char* name, const vec3& value);
+        virtual void SetShaderGlobal(const char* name, const vec4& value);
+        virtual void SetShaderGlobal(const char* name, const mat4& value);
+        virtual void SetShaderGlobal(const char* name, int value);
+        virtual void SetShaderGlobal(const char* name, const ivec2& value);
+        virtual void SetShaderGlobal(const char* name, const ivec3& value);
+        virtual void SetShaderGlobal(const char* name, const ivec4& value);
+        virtual void SetShaderGlobal(const char* name, Texture1D* texture);
+        virtual void SetShaderGlobal(const char* name, Texture2D* texture);
+        virtual void SetShaderGlobal(const char* name, Texture3D* texture);
+        
+        virtual void SetShaderGlobal(int propertyID, float value);
+        virtual void SetShaderGlobal(int propertyID, const vec2& value);
+        virtual void SetShaderGlobal(int propertyID, const vec3& value);
+        virtual void SetShaderGlobal(int propertyID, const vec4& value);
+        virtual void SetShaderGlobal(int propertyID, const mat4& value);
+        virtual void SetShaderGlobal(int propertyID, int value);
+        virtual void SetShaderGlobal(int propertyID, const ivec2& value);
+        virtual void SetShaderGlobal(int propertyID, const ivec3& value);
+        virtual void SetShaderGlobal(int propertyID, const ivec4& value);
+        virtual void SetShaderGlobal(int propertyID, Texture1D* texture);
+        virtual void SetShaderGlobal(int propertyID, Texture2D* texture);
+        virtual void SetShaderGlobal(int propertyID, Texture3D* texture);
+        
         virtual void Present();
         
-		// IGameViewSizeObserver implementation
 		virtual void GameViewResized(const ivec2& size);
 
     private:
 		std::vector<OpenGL::GLRenderQueue*> m_renderQueues;
 		OpenGL::GLPrimaryRenderTarget m_primaryTarget;
+        OpenGL::GLShaderGlobals m_globals;
     };
 }
 

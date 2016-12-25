@@ -39,26 +39,26 @@ namespace Rocket
 			std::map<std::string, int> m_shaderParameterLocations;
 		};
 
-		union ParameterValue
-		{
-			float f;
-			vec2 v2;
-			vec3 v3;
-			vec4 v4;
-
-			int i;
-			ivec2 iv2;
-			ivec3 iv3;
-			ivec4 iv4;
-
-			mat4 mat4;
-
-			ParameterValue();
-		};
-
 		struct ParameterData;
 		typedef void(*SetFunc)(const ParameterData& parameter);
 
+        union ParameterValue
+        {
+            float f;
+            vec2 v2;
+            vec3 v3;
+            vec4 v4;
+            
+            int i;
+            ivec2 iv2;
+            ivec3 iv3;
+            ivec4 iv4;
+            
+            mat4 mat4;
+            
+            ParameterValue();
+        };
+        
 		struct ParameterData
 		{
 			GLint location;
