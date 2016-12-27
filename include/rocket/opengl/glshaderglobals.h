@@ -59,6 +59,13 @@ namespace Rocket
         class GLShaderGlobals
         {
         public:
+            struct Property
+            {
+                std::string name;
+                GLShaderValue value;
+                GLShaderValueType type;
+            };
+            
             int AddProperty(const char* name);
             int GetPropertyID(const char* name);
             
@@ -88,14 +95,10 @@ namespace Rocket
             void SetValue(int propertyID, Texture2D* texture);
             void SetValue(int propertyID, Texture3D* texture);
             
-        private:
             
-            struct Property
-            {
-                std::string name;
-                GLShaderValue value;
-                GLShaderValueType type;
-            };
+            const Property* GetProperty(int propertyID) const;
+            
+        private:
             
             std::vector<Property> m_properties;
             std::map<std::string, int> m_nameToIndex;

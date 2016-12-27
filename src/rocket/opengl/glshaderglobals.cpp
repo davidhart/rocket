@@ -191,3 +191,8 @@ void GLShaderGlobals::SetValue(int propertyID, Texture3D* texture)
     p.value.t3d = texture;
     p.type = VT_TEXTURE3D;
 }
+
+const GLShaderGlobals::Property* GLShaderGlobals::GetProperty(int propertyID) const
+{
+    return &m_properties[propertyID];
+}

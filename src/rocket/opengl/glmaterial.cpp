@@ -1,6 +1,7 @@
 #include "opengl/glmaterial.h"
 #include "opengl/glshader.h"
 #include "opengl/gltexture.h"
+#include "opengl/glshaderglobals.h"
 #include <cassert>
 
 using namespace Rocket;
@@ -246,89 +247,107 @@ void GLMaterial::MakeCurrent(GLShaderGlobals* globals)
         Parameter& parameter = m_parameters[i];
         GLint location = parameter.location;
         
-        switch (parameter.type)
+        GLShaderValueType type = parameter.type;
+        const GLShaderValue* value = &parameter.value;
+        
+        if (type == VT_UNSET)
+        {
+            // get from globals
+            const GLShaderGlobals::Property* global = globals->GetProperty(parameter.globalID);
+            type = global->type;
+            value = &global->value;
+        }
+        
+        // TODO: type should be set with uniforms not per value set
+        switch (type)
         {
             case VT_FLOAT:
             {
-                glUniform1f(location, parameter.value.f);
+                glUniform1f(location, value->f);
                 break;
             }
                 
             case VT_VEC2:
             {
-                glUniform2fv(location, 1, &parameter.value.v2.x);
+                glUniform2fv(location, 1, &value->v2.x);
                 break;
             }
                 
             case VT_VEC3:
             {
-                glUniform3fv(location, 1, &parameter.value.v3.x);
+                glUniform3fv(location, 1, &value->v3.x);
                 break;
             }
                 
             case VT_VEC4:
             {
-                glUniform4fv(location, 1, &parameter.value.v4.x);
+                glUniform4fv(location, 1, &value->v4.x);
                 break;
             }
                 
             case VT_MAT4:
             {
-                glUniformMatrix4fv(location, 1, GL_TRUE, parameter.value.mat4.data());
+                glUniformMatrix4fv(location, 1, GL_TRUE, value->mat4.data());
                 break;
             }
                 
             case VT_INT:
             {
-                glUniform1i(location, parameter.value.i);
+                glUniform1i(location, value->i);
                 break;
             }
                 
             case VT_IVEC2:
             {
-                glUniform2iv(location, 1, &parameter.value.iv2.x);
+                glUniform2iv(location, 1, &value->iv2.x);
                 break;
             }
                 
             case VT_IVEC3:
             {
-                glUniform3iv(location, 1, &parameter.value.iv3.x);
+                glUniform3iv(location, 1, &value->iv3.x);
                 break;
             }
                 
             case VT_IVEC4:
             {
-                glUniform4iv(location, 1, &parameter.value.iv4.x);
+                glUniform4iv(location, 1, &value->iv4.x);
                 break;
             }
                 
             case VT_TEXTURE1D:
             {
-                GLint native = ((GLTexture1D*)parameter.value.t1d)->GetNativeHandle();
+                GLint native = ((GLTexture1D*)value->t1d)->GetNativeHandle();
                 glActiveTexture(GL_TEXTURE0+activeTexture);
                 glBindTexture(GL_TEXTURE_1D, native);
-                glUniform1i(parameter.location, activeTexture);
+                glUniform1i(location, activeTexture);
                 activeTexture++;
                 break;
             }
                 
             case VT_TEXTURE2D:
             {
-                GLint native = ((GLTexture2D*)parameter.value.t2d)->GetNativeHandle();
+                GLint native = ((GLTexture2D*)value->t2d)->GetNativeHandle();
                 glActiveTexture(GL_TEXTURE0+activeTexture);
                 glBindTexture(GL_TEXTURE_2D, native);
-                glUniform1i(parameter.location, activeTexture);
+                glUniform1i(location, activeTexture);
                 activeTexture++;
                 break;
             }
                 
             case VT_TEXTURE3D:
             {
-                GLint native = ((GLTexture3D*)parameter.value.t3d)->GetNativeHandle();
+                GLint native = ((GLTexture3D*)value->t3d)->GetNativeHandle();
                 glActiveTexture(GL_TEXTURE0+activeTexture);
                 glBindTexture(GL_TEXTURE_3D, native);
-                glUniform1i(parameter.location, activeTexture);
+                glUniform1i(location, activeTexture);
                 activeTexture++;
+                break;
+            }
+            
+            case VT_UNSET:
+            {
+                // Unassigned parameter
                 break;
             }
                 

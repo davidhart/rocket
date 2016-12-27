@@ -369,8 +369,8 @@ void ExampleGame::Startup(GameServices* services)
 	m_blitMaterial = renderer->CreateMaterial(m_blitshader);
     
 	m_blitMaterial->SetTexture2D("s_texture", m_renderTarget->GetColorAttachment(0));
-	m_blitMaterial->SetTexture2D("s_displace", m_texture);
-
+    m_blitMaterial->SetTexture2D("s_displace", m_texture);
+    
 	m_mainQueue = renderer->CreateRenderQueue("composite", 1);
 	m_mainQueue->SetClearColorEnabled(true);
 	m_mainQueue->SetClearColor(color(1, 0, 0, 1));

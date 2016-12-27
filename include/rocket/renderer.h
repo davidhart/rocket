@@ -63,31 +63,31 @@ namespace Rocket
 		virtual void ReleaseRenderQueue(RenderQueue* renderQueue) = 0;
         
         virtual int GetShaderPropertyID(const char* name) = 0;
-        virtual void SetShaderGlobal(const char* name, float value) = 0;
-        virtual void SetShaderGlobal(const char* name, const vec2& value) = 0;
-        virtual void SetShaderGlobal(const char* name, const vec3& value) = 0;
-        virtual void SetShaderGlobal(const char* name, const vec4& value) = 0;
-        virtual void SetShaderGlobal(const char* name, const mat4& value) = 0;
-        virtual void SetShaderGlobal(const char* name, int value) = 0;
-        virtual void SetShaderGlobal(const char* name, const ivec2& value) = 0;
-        virtual void SetShaderGlobal(const char* name, const ivec3& value) = 0;
-        virtual void SetShaderGlobal(const char* name, const ivec4& value) = 0;
-        virtual void SetShaderGlobal(const char* name, Texture1D* texture) = 0;
-        virtual void SetShaderGlobal(const char* name, Texture2D* texture) = 0;
-        virtual void SetShaderGlobal(const char* name, Texture3D* texture) = 0;
+        virtual void SetGlobalFloat(const char* name, float value) = 0;
+        virtual void SetGlobalVec2(const char* name, const vec2& value) = 0;
+        virtual void SetGlobalVec3(const char* name, const vec3& value) = 0;
+        virtual void SetGlobalVec4(const char* name, const vec4& value) = 0;
+        virtual void SetGlobalMat4(const char* name, const mat4& value) = 0;
+        virtual void SetGlobalInt(const char* name, int value) = 0;
+        virtual void SetGlobalIVec2(const char* name, const ivec2& value) = 0;
+        virtual void SetGlobalIVec3(const char* name, const ivec3& value) = 0;
+        virtual void SetGlobalIVec4(const char* name, const ivec4& value) = 0;
+        virtual void SetGlobalTexture1D(const char* name, Texture1D* texture) = 0;
+        virtual void SetGlobalTexture2D(const char* name, Texture2D* texture) = 0;
+        virtual void SetGlobalTexture3D(const char* name, Texture3D* texture) = 0;
         
-        virtual void SetShaderGlobal(int propertyID, float value) = 0;
-        virtual void SetShaderGlobal(int propertyID, const vec2& value) = 0;
-        virtual void SetShaderGlobal(int propertyID, const vec3& value) = 0;
-        virtual void SetShaderGlobal(int propertyID, const vec4& value) = 0;
-        virtual void SetShaderGlobal(int propertyID, const mat4& value) = 0;
-        virtual void SetShaderGlobal(int propertyID, int value) = 0;
-        virtual void SetShaderGlobal(int propertyID, const ivec2& value) = 0;
-        virtual void SetShaderGlobal(int propertyID, const ivec3& value) = 0;
-        virtual void SetShaderGlobal(int propertyID, const ivec4& value) = 0;
-        virtual void SetShaderGlobal(int propertyID, Texture1D* texture) = 0;
-        virtual void SetShaderGlobal(int propertyID, Texture2D* texture) = 0;
-        virtual void SetShaderGlobal(int propertyID, Texture3D* texture) = 0;
+        virtual void SetGlobalFloat(int propertyID, float value) = 0;
+        virtual void SetGlobalVec2(int propertyID, const vec2& value) = 0;
+        virtual void SetGlobalVec3(int propertyID, const vec3& value) = 0;
+        virtual void SetGlobalVec4(int propertyID, const vec4& value) = 0;
+        virtual void SetGlobalMat4(int propertyID, const mat4& value) = 0;
+        virtual void SetGlobalInt(int propertyID, int value) = 0;
+        virtual void SetGlobalIVec2(int propertyID, const ivec2& value) = 0;
+        virtual void SetGlobalIVec3(int propertyID, const ivec3& value) = 0;
+        virtual void SetGlobalIVec4(int propertyID, const ivec4& value) = 0;
+        virtual void SetGlobalTexture1D(int propertyID, Texture1D* texture) = 0;
+        virtual void SetGlobalTexture2D(int propertyID, Texture2D* texture) = 0;
+        virtual void SetGlobalTexture3D(int propertyID, Texture3D* texture) = 0;
 
         
 		virtual void Present() = 0;

@@ -233,122 +233,122 @@ int BaseOpenGLRenderer::GetShaderPropertyID(const char* name)
     return m_globals.GetPropertyID(name);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, float value)
+void BaseOpenGLRenderer::SetGlobalFloat(const char* name, float value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, const vec2& value)
+void BaseOpenGLRenderer::SetGlobalVec2(const char* name, const vec2& value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, const vec3& value)
+void BaseOpenGLRenderer::SetGlobalVec3(const char* name, const vec3& value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, const vec4& value)
+void BaseOpenGLRenderer::SetGlobalVec4(const char* name, const vec4& value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, const mat4& value)
+void BaseOpenGLRenderer::SetGlobalMat4(const char* name, const mat4& value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, int value)
+void BaseOpenGLRenderer::SetGlobalInt(const char* name, int value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, const ivec2& value)
+void BaseOpenGLRenderer::SetGlobalIVec2(const char* name, const ivec2& value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, const ivec3& value)
+void BaseOpenGLRenderer::SetGlobalIVec3(const char* name, const ivec3& value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, const ivec4& value)
+void BaseOpenGLRenderer::SetGlobalIVec4(const char* name, const ivec4& value)
 {
     m_globals.SetValue(name, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, Texture1D* texture)
+void BaseOpenGLRenderer::SetGlobalTexture1D(const char* name, Texture1D* texture)
 {
     m_globals.SetValue(name, texture);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, Texture2D* texture)
+void BaseOpenGLRenderer::SetGlobalTexture2D(const char* name, Texture2D* texture)
 {
     m_globals.SetValue(name, texture);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(const char* name, Texture3D* texture)
+void BaseOpenGLRenderer::SetGlobalTexture3D(const char* name, Texture3D* texture)
 {
     m_globals.SetValue(name, texture);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, float value)
+void BaseOpenGLRenderer::SetGlobalFloat(int propertyID, float value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, const vec2& value)
+void BaseOpenGLRenderer::SetGlobalVec2(int propertyID, const vec2& value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, const vec3& value)
+void BaseOpenGLRenderer::SetGlobalVec3(int propertyID, const vec3& value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, const vec4& value)
+void BaseOpenGLRenderer::SetGlobalVec4(int propertyID, const vec4& value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, const mat4& value)
+void BaseOpenGLRenderer::SetGlobalMat4(int propertyID, const mat4& value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, int value)
+void BaseOpenGLRenderer::SetGlobalInt(int propertyID, int value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, const ivec2& value)
+void BaseOpenGLRenderer::SetGlobalIVec2(int propertyID, const ivec2& value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, const ivec3& value)
+void BaseOpenGLRenderer::SetGlobalIVec3(int propertyID, const ivec3& value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, const ivec4& value)
+void BaseOpenGLRenderer::SetGlobalIVec4(int propertyID, const ivec4& value)
 {
     m_globals.SetValue(propertyID, value);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, Texture1D* texture)
+void BaseOpenGLRenderer::SetGlobalTexture1D(int propertyID, Texture1D* texture)
 {
     m_globals.SetValue(propertyID, texture);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, Texture2D* texture)
+void BaseOpenGLRenderer::SetGlobalTexture2D(int propertyID, Texture2D* texture)
 {
     m_globals.SetValue(propertyID, texture);
 }
 
-void BaseOpenGLRenderer::SetShaderGlobal(int propertyID, Texture3D* texture)
+void BaseOpenGLRenderer::SetGlobalTexture3D(int propertyID, Texture3D* texture)
 {
     m_globals.SetValue(propertyID, texture);
 }
