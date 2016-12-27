@@ -15,6 +15,47 @@ namespace Rocket
     
     namespace OpenGL
     {
+        union GLShaderValue
+        {
+            float f;
+            vec2 v2;
+            vec3 v3;
+            vec4 v4;
+            
+            int i;
+            ivec2 iv2;
+            ivec3 iv3;
+            ivec4 iv4;
+            
+            mat4 mat4;
+            
+            Texture1D* t1d;
+            Texture2D* t2d;
+            Texture3D* t3d;
+            
+            GLShaderValue();
+        };
+        
+        enum GLShaderValueType
+        {
+            VT_FLOAT,
+            VT_VEC2,
+            VT_VEC3,
+            VT_VEC4,
+            VT_MAT4,
+            
+            VT_INT,
+            VT_IVEC2,
+            VT_IVEC3,
+            VT_IVEC4,
+            
+            VT_TEXTURE1D,
+            VT_TEXTURE2D,
+            VT_TEXTURE3D,
+            
+            VT_UNSET
+        };
+        
         class GLShaderGlobals
         {
         public:
@@ -49,55 +90,14 @@ namespace Rocket
             
         private:
             
-            enum ValueType
-            {
-                VT_FLOAT,
-                VT_VEC2,
-                VT_VEC3,
-                VT_VEC4,
-                VT_MAT4,
-                
-                VT_INT,
-                VT_IVEC2,
-                VT_IVEC3,
-                VT_IVEC4,
-                
-                VT_TEXTURE1D,
-                VT_TEXTURE2D,
-                VT_TEXTURE3D,
-                
-                VT_UNSET
-            };
-            
-            union Value
-            {
-                float f;
-                vec2 v2;
-                vec3 v3;
-                vec4 v4;
-                
-                int i;
-                ivec2 iv2;
-                ivec3 iv3;
-                ivec4 iv4;
-                
-                mat4 mat4;
-                
-                Texture1D* t1d;
-                Texture2D* t2d;
-                Texture3D* t3d;
-                
-                Value();
-            };
-            
-            struct ShaderProperty
+            struct Property
             {
                 std::string name;
-                Value value;
-                ValueType type;
+                GLShaderValue value;
+                GLShaderValueType type;
             };
             
-            std::vector<ShaderProperty> m_values;
+            std::vector<Property> m_properties;
             std::map<std::string, int> m_nameToIndex;
         };
     }

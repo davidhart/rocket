@@ -1,11 +1,11 @@
 #include "opengl/glshader.h"
 #include "opengl/gltexture.h"
+#include "opengl/glshaderglobals.h"
 
+#include <cstring>
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
-#include <map>
-#include <iostream>
 
 using namespace Rocket;
 using namespace Rocket::OpenGL;
@@ -34,11 +34,16 @@ GLShader::~GLShader()
 	{
 		glDeleteShader(m_frag);
 	}
+    
+    for (size_t i = 0; i < m_parameters.size(); ++i)
+    {
+        free(m_parameters[i].name);
+    }
 }
 
-bool GLShader::Create(const ShaderDef& source)
+bool GLShader::Create(const ShaderDef& source, GLShaderGlobals& globals)
 {
-	if (CreateInternal(source))
+	if (CreateInternal(source, globals))
 		return true;
 	
 	const char vertSource[] =
@@ -67,12 +72,12 @@ bool GLShader::Create(const ShaderDef& source)
 	errorShaderDef.frag = fragSource;
 	errorShaderDef.fragSize = sizeof(fragSource);
 
-	bool result = CreateInternal(errorShaderDef);
+	bool result = CreateInternal(errorShaderDef, globals);
 	assert(result); // Failed to create error shader
 	return true;
 }
 
-bool GLShader::CreateInternal(const ShaderDef& source)
+bool GLShader::CreateInternal(const ShaderDef& source, GLShaderGlobals& globals)
 {
 	m_vert = CreateSubShader(GL_VERTEX_SHADER, source.vertSize, source.vert);
 
@@ -111,7 +116,7 @@ bool GLShader::CreateInternal(const ShaderDef& source)
 
 	GLint activeUniforms;
 	glGetProgramiv(m_program, GL_ACTIVE_UNIFORMS, &activeUniforms);
-
+    
 	for (int i = 0; i < activeUniforms; ++i)
 	{
 		GLint size;
@@ -121,22 +126,17 @@ bool GLShader::CreateInternal(const ShaderDef& source)
 		int nameLength = 0;
 
 		glGetActiveUniform(m_program, i, sizeof(name), &nameLength, &size, &type, name);
-
-		GLint location = glGetUniformLocation(m_program, name);
-		m_shaderParameterLocations[std::string(name, nameLength)] = location;
+        
+        Uniform uniform;
+        uniform.name = (char*)malloc(nameLength+1);
+        memcpy(uniform.name, name, nameLength+1);
+        
+        uniform.location = glGetUniformLocation(m_program, name);
+        uniform.globalID = globals.AddProperty(name);
+        m_parameters.push_back(uniform);
 	}
-
+    
 	return true;
-}
-
-ShaderParameters* GLShader::CreateParameters()
-{
-	return new GLShaderParameters(this);
-}
-
-void GLShader::ReleaseParameters(ShaderParameters* parameters)
-{
-	delete parameters;
 }
 
 GLuint GLShader::GetNativeHandle()
@@ -144,16 +144,14 @@ GLuint GLShader::GetNativeHandle()
 	return m_program;
 }
 
-GLint GLShader::GetParameterLocation(const char* name)
+const GLShader::Uniform* GLShader::Uniforms() const
 {
-	auto it = m_shaderParameterLocations.find(name);
+    return m_parameters.data();
+}
 
-	if (it == m_shaderParameterLocations.end())
-	{
-		return -1;
-	}
-
-	return it->second;
+size_t GLShader::NumUniforms() const
+{
+    return m_parameters.size();
 }
 
 GLenum GLShader::CreateSubShader(GLenum type, unsigned, const void* source)
@@ -183,192 +181,4 @@ GLenum GLShader::CreateSubShader(GLenum type, unsigned, const void* source)
 	}
 
 	return shader;
-}
-
-ParameterValue::ParameterValue()
-{
-	// Intentionally uninitialized
-}
-
-ParameterData::ParameterData() :
-	location(-1),
-	setter(nullptr)
-{
-}
-
-GLShaderParameters::GLShaderParameters(GLShader* shader) :
-	m_shader(shader)
-{
-}
-
-void set1f(const ParameterData& data)
-{
-	glUniform1f(data.location, data.value.f);
-}
-
-void GLShaderParameters::SetFloat(const char* name, float value)
-{
-	ParameterValue pv;
-	pv.f = value;
-	Set(name, pv, &set1f);
-}
-
-void set2f(const ParameterData& data)
-{
-	glUniform2f(data.location, data.value.v2.x, data.value.v2.y);
-}
-
-void GLShaderParameters::SetVec2(const char* name, const vec2& value)
-{
-	ParameterValue pv;
-	pv.v2 = value;
-	Set(name, pv, &set2f);
-}
-
-void set3f(const ParameterData& data)
-{
-	glUniform3f(data.location, data.value.v3.x, data.value.v3.y, data.value.v3.z);
-}
-
-void GLShaderParameters::SetVec3(const char* name, const vec3& value)
-{
-	ParameterValue pv;
-	pv.v3 = value;
-	Set(name, pv, &set3f);
-}
-
-void set4f(const ParameterData& data)
-{
-	glUniform4f(data.location, data.value.v4.x, data.value.v4.y, data.value.v4.z, data.value.v4.w);
-}
-
-void GLShaderParameters::SetVec4(const char* name, const vec4& value)
-{
-	ParameterValue pv;
-	pv.v4 = value;
-	Set(name, pv, &set4f);
-}
-
-void setmat4f(const ParameterData& data)
-{
-	glUniformMatrix4fv(data.location, 1, GL_TRUE, data.value.mat4.data());
-}
-
-void GLShaderParameters::SetMat4(const char* name, const mat4& value)
-{
-	ParameterValue pv;
-	pv.mat4 = value;
-	Set(name, pv, &setmat4f);
-}
-
-void set1i(const ParameterData& data)
-{
-	glUniform1i(data.location, data.value.i);
-}
-
-void GLShaderParameters::SetInt(const char* name, int value)
-{
-	ParameterValue pv;
-	pv.i = value;
-	Set(name, pv, &set1i);
-}
-
-void set2i(const ParameterData& data)
-{
-	glUniform2i(data.location, data.value.iv2.x, data.value.iv2.y);
-}
-
-void GLShaderParameters::SetIVec2(const char* name, const ivec2& value)
-{
-	ParameterValue pv;
-	pv.iv2 = value;
-	Set(name, pv, &set2i);
-}
-
-void set3i(const ParameterData& data)
-{
-	glUniform3i(data.location, data.value.iv3.x, data.value.iv3.y, data.value.iv3.z);
-}
-
-void GLShaderParameters::SetIVec3(const char* name, const ivec3& value)
-{
-	ParameterValue pv;
-	pv.iv3 = value;
-	Set(name, pv, &set3i);
-}
-
-void set4i(const ParameterData& data)
-{
-	glUniform4i(data.location, data.value.iv4.x, data.value.iv4.y, data.value.iv4.z, data.value.iv4.w);
-}
-
-void GLShaderParameters::SetIVec4(const char* name, const ivec4& value)
-{
-	ParameterValue pv;
-	pv.iv4 = value;
-	Set(name, pv, &set4i);
-}
-
-void GLShaderParameters::SetTexture1D(const char* name, Texture1D* texture)
-{
-	m_samplers1D[name] = { m_shader->GetParameterLocation(name), texture };
-}
-
-void GLShaderParameters::SetTexture2D(const char* name, Texture2D* texture)
-{
-	m_samplers2D[name] = { m_shader->GetParameterLocation(name), texture };
-}
-
-void GLShaderParameters::SetTexture3D(const char* name, Texture3D* texture)
-{
-	m_samplers3D[name] = { m_shader->GetParameterLocation(name), texture };
-}
-
-void GLShaderParameters::Set(const char* name, const ParameterValue& value, SetFunc func)
-{
-	ParameterData data;
-	data.location = m_shader->GetParameterLocation(name);
-	data.value = value;
-	data.setter = func;
-	m_parameters[name] = data;
-}
-
-
-void GLShaderParameters::MakeCurrent()
-{
-	for (auto it = m_parameters.begin(); it != m_parameters.end(); ++it)
-	{
-		ParameterData data = it->second;
-
-		if (data.location >= 0)
-		{
-			it->second.setter(data);
-		}
-	}
-
-	int sampler = 0;
-    
-	for (auto it = m_samplers1D.begin(); it != m_samplers1D.end(); ++it)
-	{
-		glActiveTexture(GL_TEXTURE0 + sampler);
-		glBindTexture(GL_TEXTURE_1D, ((GLTexture1D*)it->second.texture)->GetNativeHandle());
-		glUniform1i(it->second.location, sampler);
-        sampler++;
-	}
-    
-    for (auto it = m_samplers2D.begin(); it != m_samplers2D.end(); ++it)
-    {
-        glActiveTexture(GL_TEXTURE0 + sampler);
-        glBindTexture(GL_TEXTURE_2D, ((GLTexture2D*)it->second.texture)->GetNativeHandle());
-        glUniform1i(it->second.location, sampler);
-        sampler++;
-    }
-    
-    for (auto it = m_samplers3D.begin(); it != m_samplers3D.end(); ++it)
-    {
-        glActiveTexture(GL_TEXTURE0 + sampler);
-        glBindTexture(GL_TEXTURE_3D, ((GLTexture3D*)it->second.texture)->GetNativeHandle());
-        glUniform1i(it->second.location, sampler);
-        sampler++;
-    }
 }

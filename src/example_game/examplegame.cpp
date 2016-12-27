@@ -352,8 +352,7 @@ void ExampleGame::Startup(GameServices* services)
 	m_texture = CreateTestTexture2D(renderer);
 
 	m_material = renderer->CreateMaterial(m_shader);
-	m_parameters = m_material->GetParameters();
-	m_parameters->SetTexture2D("s_texture", m_texture);
+	m_material->SetTexture2D("s_texture", m_texture);
 
 	m_renderTarget = CreateTestRenderTarget(renderer);
 
@@ -368,10 +367,9 @@ void ExampleGame::Startup(GameServices* services)
 	m_quadbinding = CreateScreenSpaceQuadBinding(renderer, m_quadverts, m_quadindices);
 	m_blitshader = CreateBlitShader(renderer);
 	m_blitMaterial = renderer->CreateMaterial(m_blitshader);
-
-	m_blitParameters = m_blitMaterial->GetParameters();
-	m_blitParameters->SetTexture2D("s_texture", m_renderTarget->GetColorAttachment(0));
-	m_blitParameters->SetTexture2D("s_displace", m_texture);
+    
+	m_blitMaterial->SetTexture2D("s_texture", m_renderTarget->GetColorAttachment(0));
+	m_blitMaterial->SetTexture2D("s_displace", m_texture);
 
 	m_mainQueue = renderer->CreateRenderQueue("composite", 1);
 	m_mainQueue->SetClearColorEnabled(true);
@@ -432,9 +430,9 @@ void ExampleGame::Update(float dt)
     mat4 scale = mat4::Scale(vec3(m_bump, m_bump, m_bump));
     mat4 modelmat = transform * transform2 * scale;;
 
-	m_parameters->SetVec4("u_color", RandomColor());
-	m_parameters->SetVec2("u_offset", m_offset);
-	m_parameters->SetMat4("u_transform", projectionmat * viewmat * modelmat);
+	m_material->SetVec4("u_color", RandomColor());
+	m_material->SetVec2("u_offset", m_offset);
+	m_material->SetMat4("u_transform", projectionmat * viewmat * modelmat);
 
 	m_framebufferQueue->Draw(m_binding, m_material);
 	m_mainQueue->Draw(m_quadbinding, m_blitMaterial);

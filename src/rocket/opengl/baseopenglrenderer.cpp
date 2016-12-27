@@ -57,7 +57,7 @@ Shader* BaseOpenGLRenderer::CreateShader(const ShaderDef& def)
 {   
     GLShader* shader = new GLShader();
     
-    if (shader->Create(def) == false)
+    if (shader->Create(def, m_globals) == false)
     {
 		// Should never happen, failed to create error shader!
         delete shader;
@@ -74,12 +74,7 @@ void BaseOpenGLRenderer::ReleaseShader(Shader* shader)
 
 Material* BaseOpenGLRenderer::CreateMaterial(Shader* shader)
 {
-    return new GLMaterial(shader);
-}
-
-Material* BaseOpenGLRenderer::CreateMaterial(Material* material)
-{
-    return new GLMaterial(material);
+    return new GLMaterial((GLShader*)shader);
 }
 
 void BaseOpenGLRenderer::ReleaseMaterial(Material* material)
@@ -365,7 +360,7 @@ void BaseOpenGLRenderer::Present()
 	glCullFace(GL_BACK);
 
 	for (size_t i = 0; i < m_renderQueues.size(); ++i)
-		m_renderQueues[i]->FlushQueue();
+		m_renderQueues[i]->FlushQueue(&m_globals);
     
 	glFlush();
     SwapBuffers();

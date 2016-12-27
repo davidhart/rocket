@@ -10,6 +10,8 @@ namespace Rocket
 {
 	namespace OpenGL
 	{
+        class GLShaderGlobals;
+        
 		class GLRenderQueue : public RenderQueue
 		{
 		public:
@@ -39,7 +41,7 @@ namespace Rocket
 			virtual void SetViewport(const ViewportRect& viewport);
 			virtual ViewportRect GetViewport() const;
 
-			void FlushQueue();
+			void FlushQueue(GLShaderGlobals* globals);
 
 		private:
 			struct QueueItem

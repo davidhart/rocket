@@ -32,7 +32,6 @@ private:
 	Rocket::Shader* m_shader;
 	Rocket::Texture2D* m_texture;
 	Rocket::Material* m_material;
-	Rocket::ShaderParameters* m_parameters;
 
 	Rocket::RenderTarget* m_renderTarget;
 	Rocket::RenderQueue* m_framebufferQueue;
@@ -42,7 +41,6 @@ private:
 	Rocket::DrawBinding* m_quadbinding;
 	Rocket::Shader* m_blitshader;
 	Rocket::Material* m_blitMaterial;
-	Rocket::ShaderParameters* m_blitParameters;
 	Rocket::RenderQueue* m_mainQueue;
     
     Rocket::Input::IButton* m_bumpButton;

@@ -1,10 +1,10 @@
 #include "opengl/glrenderqueue.h"
 
-#include "material.h"
 #include "opengl/rocket_opengl.h"
-#include "opengl/glshader.h"
+#include "opengl/glmaterial.h"
 #include "opengl/gldrawbinding.h"
 #include "opengl/glrendertarget.h"
+
 
 using namespace Rocket;
 using namespace Rocket::OpenGL;
@@ -111,7 +111,7 @@ ViewportRect GLRenderQueue::GetViewport() const
 	return m_viewport;
 }
 
-void GLRenderQueue::FlushQueue()
+void GLRenderQueue::FlushQueue(GLShaderGlobals* globals)
 {
 	if (m_enabled)
 	{
@@ -151,14 +151,9 @@ void GLRenderQueue::FlushQueue()
 		{
 			QueueItem draw = m_drawQueue[i];
 
-			Material* material = draw.material;
-
-			GLuint shaderhandle = ((GLShader*)material->GetShader())->GetNativeHandle();
-			glUseProgram(shaderhandle);
-
-			GLShaderParameters* parameters = (GLShaderParameters*)material->GetParameters();
-			parameters->MakeCurrent();
-
+			GLMaterial* material = (GLMaterial*)draw.material;
+            material->MakeCurrent(globals);
+            
 			((GLDrawBinding*)draw.binding)->Draw();
 		}
 	}

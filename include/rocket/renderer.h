@@ -40,7 +40,6 @@ namespace Rocket
 		virtual void ReleaseShader(Shader* shader) = 0;
         
         virtual Material* CreateMaterial(Shader* shader) = 0;
-        virtual Material* CreateMaterial(Material* material) = 0;
         virtual void ReleaseMaterial(Material* material) = 0;
 
         virtual Texture1D* CreateTexture(const TextureDef1D& textureData) = 0;
