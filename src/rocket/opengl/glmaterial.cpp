@@ -32,151 +32,151 @@ GLMaterial::~GLMaterial()
     
 }
 
-void GLMaterial::SetFloat(const char* name, float value)
+void GLMaterial::SetShaderFloat(const char* name, float value)
 {
     GLShaderValue v; v.f = value;
     SetByName(name, v, VT_FLOAT);
 }
 
-void GLMaterial::SetVec2(const char* name, const vec2& value)
+void GLMaterial::SetShaderVec2(const char* name, const vec2& value)
 {
     GLShaderValue v; v.v2 = value;
     SetByName(name, v, VT_VEC2);
 }
 
-void GLMaterial::SetVec3(const char* name, const vec3& value)
+void GLMaterial::SetShaderVec3(const char* name, const vec3& value)
 {
     GLShaderValue v; v.v3 = value;
     SetByName(name, v, VT_VEC3);
 }
 
-void GLMaterial::SetVec4(const char* name, const vec4& value)
+void GLMaterial::SetShaderVec4(const char* name, const vec4& value)
 {
     GLShaderValue v; v.v4 = value;
     SetByName(name, v, VT_VEC4);
 }
 
-void GLMaterial::SetMat4(const char* name, const mat4& value)
+void GLMaterial::SetShaderMat4(const char* name, const mat4& value)
 {
     GLShaderValue v; v.mat4 = value;
     SetByName(name, v, VT_MAT4);
 }
 
-void GLMaterial::SetInt(const char* name, int value)
+void GLMaterial::SetShaderInt(const char* name, int value)
 {
     GLShaderValue v; v.i = value;
     SetByName(name, v, VT_INT);
 }
 
-void GLMaterial::SetIVec2(const char* name, const ivec2& value)
+void GLMaterial::SetShaderIVec2(const char* name, const ivec2& value)
 {
     GLShaderValue v; v.iv2 = value;
     SetByName(name, v, VT_IVEC2);
 }
 
-void GLMaterial::SetIVec3(const char* name, const ivec3& value)
+void GLMaterial::SetShaderIVec3(const char* name, const ivec3& value)
 {
     GLShaderValue v; v.iv3 = value;
     SetByName(name, v, VT_IVEC3);
 }
 
-void GLMaterial::SetIVec4(const char* name, const ivec4& value)
+void GLMaterial::SetShaderIVec4(const char* name, const ivec4& value)
 {
     GLShaderValue v; v.iv4 = value;
     SetByName(name, v, VT_IVEC4);
 }
 
-void GLMaterial::SetTexture1D(const char* name, Texture1D* texture)
+void GLMaterial::SetShaderTexture1D(const char* name, Texture1D* texture)
 {
     GLShaderValue v; v.t1d = texture;
     SetByName(name, v, VT_TEXTURE1D);
 }
 
-void GLMaterial::SetTexture2D(const char* name, Texture2D* texture)
+void GLMaterial::SetShaderTexture2D(const char* name, Texture2D* texture)
 {
     GLShaderValue v; v.t2d = texture;
     SetByName(name, v, VT_TEXTURE2D);
 }
 
-void GLMaterial::SetTexture3D(const char* name, Texture3D* texture)
+void GLMaterial::SetShaderTexture3D(const char* name, Texture3D* texture)
 {
     GLShaderValue v; v.t3d = texture;
     SetByName(name, v, VT_TEXTURE3D);
 }
 
-void GLMaterial::SetFloat(int propertyID, float value)
+void GLMaterial::SetShaderFloat(int propertyID, float value)
 {
     GLShaderValue v; v.f = value;
     SetByID(propertyID, v, VT_FLOAT);
 }
 
-void GLMaterial::SetVec2(int propertyID, const vec2& value)
+void GLMaterial::SetShaderVec2(int propertyID, const vec2& value)
 {
     GLShaderValue v; v.v2 = value;
     SetByID(propertyID, v, VT_VEC2);
 }
 
-void GLMaterial::SetVec3(int propertyID, const vec3& value)
+void GLMaterial::SetShaderVec3(int propertyID, const vec3& value)
 {
     GLShaderValue v; v.v3 = value;
     SetByID(propertyID, v, VT_VEC3);
 }
 
-void GLMaterial::SetVec4(int propertyID, const vec4& value)
+void GLMaterial::SetShaderVec4(int propertyID, const vec4& value)
 {
     GLShaderValue v; v.v4 = value;
     SetByID(propertyID, v, VT_VEC4);
 }
 
-void GLMaterial::SetMat4(int propertyID, const mat4& value)
+void GLMaterial::SetShaderMat4(int propertyID, const mat4& value)
 {
     GLShaderValue v; v.mat4 = value;
     SetByID(propertyID, v, VT_MAT4);
 }
 
-void GLMaterial::SetInt(int propertyID, int value)
+void GLMaterial::SetShaderInt(int propertyID, int value)
 {
     GLShaderValue v; v.i = value;
     SetByID(propertyID, v, VT_INT);
 }
 
-void GLMaterial::SetIVec2(int propertyID, const ivec2& value)
+void GLMaterial::SetShaderIVec2(int propertyID, const ivec2& value)
 {
     GLShaderValue v; v.iv2 = value;
     SetByID(propertyID, v, VT_IVEC2);
 }
 
-void GLMaterial::SetIVec3(int propertyID, const ivec3& value)
+void GLMaterial::SetShaderIVec3(int propertyID, const ivec3& value)
 {
     GLShaderValue v; v.iv3 = value;
     SetByID(propertyID, v, VT_IVEC3);
 }
 
-void GLMaterial::SetIVec4(int propertyID, const ivec4& value)
+void GLMaterial::SetShaderIVec4(int propertyID, const ivec4& value)
 {
     GLShaderValue v; v.iv4 = value;
     SetByID(propertyID, v, VT_IVEC4);
 }
 
-void GLMaterial::SetTexture1D(int propertyID, Texture1D* texture)
+void GLMaterial::SetShaderTexture1D(int propertyID, Texture1D* texture)
 {
     GLShaderValue v; v.t1d = texture;
     SetByID(propertyID, v, VT_TEXTURE1D);
 }
 
-void GLMaterial::SetTexture2D(int propertyID, Texture2D* texture)
+void GLMaterial::SetShaderTexture2D(int propertyID, Texture2D* texture)
 {
     GLShaderValue v; v.t2d = texture;
     SetByID(propertyID, v, VT_TEXTURE2D);
 }
 
-void GLMaterial::SetTexture3D(int propertyID, Texture3D* texture)
+void GLMaterial::SetShaderTexture3D(int propertyID, Texture3D* texture)
 {
     GLShaderValue v; v.t3d = texture;
     SetByID(propertyID, v, VT_TEXTURE3D);
 }
 
-void GLMaterial::Clear(const char *name)
+void GLMaterial::ClearShaderProperty(const char *name)
 {
     size_t size = m_parameters.size();
     for (int i = 0; i < size; ++i)
@@ -190,7 +190,7 @@ void GLMaterial::Clear(const char *name)
     // Not found..
 }
 
-void GLMaterial::Clear(int propertyID)
+void GLMaterial::ClearShaderProperty(int propertyID)
 {
     size_t size = m_parameters.size();
     for (int i = 0; i < size; ++i)
@@ -235,7 +235,7 @@ void GLMaterial::SetByID(int propertyID, GLShaderValue value, GLShaderValueType 
     // Not found..
 }
 
-void GLMaterial::MakeCurrent(GLShaderGlobals* globals)
+void GLMaterial::MakeCurrent(GLShaderOverride* overrides)
 {
     int activeTexture = 0;
     
@@ -253,9 +253,9 @@ void GLMaterial::MakeCurrent(GLShaderGlobals* globals)
         if (type == VT_UNSET)
         {
             // get from globals
-            const GLShaderGlobals::Property* global = globals->GetProperty(parameter.globalID);
-            type = global->type;
-            value = &global->value;
+            const GLShaderProperty* overrideProperty = overrides->GetProperty(parameter.globalID);
+            type = overrideProperty->type;
+            value = &overrideProperty->value;
         }
         
         // TODO: type should be set with uniforms not per value set

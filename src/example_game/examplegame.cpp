@@ -321,9 +321,11 @@ vec4 RandomColor()
 
 void ExampleGame::Startup(GameServices* services)
 {
-    // Setup input
+    // Configure game
     GameView* view = services->GameView();
-
+    view->SetTitle("Example Game");
+    
+    // Setup input
     IControlScheme* controlScheme = view->AddControlScheme("controls");
     controlScheme->AddButton("bump");
     controlScheme->AddButtonKeyboardMapping("bump", KeyCode::KEY_SPACE);
@@ -342,6 +344,10 @@ void ExampleGame::Startup(GameServices* services)
 
     // Setup graphics
     Renderer* renderer = services->Renderer();
+    
+    m_properties.Color = renderer->GetShaderPropertyID("u_color");
+    m_properties.Offset = renderer->GetShaderPropertyID("u_offset");
+    m_properties.Transform = renderer->GetShaderPropertyID("u_transform");
 
     m_primaryTarget = renderer->GetPrimaryRenderTarget();
 
@@ -351,8 +357,11 @@ void ExampleGame::Startup(GameServices* services)
 	m_shader = CreateTestShader(renderer);
 	m_texture = CreateTestTexture2D(renderer);
 
-	m_material = renderer->CreateMaterial(m_shader);
-	m_material->SetTexture2D("s_texture", m_texture);
+    for (int i = 0; i < 3; ++i)
+    {
+        m_material[i] = renderer->CreateMaterial(m_shader);
+        m_material[i]->SetShaderTexture2D("s_texture", m_texture);
+    }
 
 	m_renderTarget = CreateTestRenderTarget(renderer);
 
@@ -368,8 +377,8 @@ void ExampleGame::Startup(GameServices* services)
 	m_blitshader = CreateBlitShader(renderer);
 	m_blitMaterial = renderer->CreateMaterial(m_blitshader);
     
-	m_blitMaterial->SetTexture2D("s_texture", m_renderTarget->GetColorAttachment(0));
-    m_blitMaterial->SetTexture2D("s_displace", m_texture);
+	m_blitMaterial->SetShaderTexture2D("s_texture", m_renderTarget->GetColorAttachment(0));
+    m_blitMaterial->SetShaderTexture2D("s_displace", m_texture);
     
 	m_mainQueue = renderer->CreateRenderQueue("composite", 1);
 	m_mainQueue->SetClearColorEnabled(true);
@@ -378,6 +387,8 @@ void ExampleGame::Startup(GameServices* services)
 
 	m_angle = 0.0f;
 	m_angle2 = 0.0f;
+    m_spin = 1.0f;
+    m_spin2 = 1.0f;
 	m_offset = vec2(0.0f, 0.0f);
 }
 
@@ -390,7 +401,9 @@ void ExampleGame::Shutdown(GameServices* services)
 	renderer->ReleaseRenderQueue(m_mainQueue);
 	renderer->ReleaseRenderQueue(m_framebufferQueue);
 
-	renderer->ReleaseMaterial(m_material);
+    for (int i = 0 ; i < 3; ++i)
+        renderer->ReleaseMaterial(m_material[i]);
+    
 	renderer->ReleaseMaterial(m_blitMaterial);
 
 	renderer->ReleaseShader(m_shader);
@@ -413,6 +426,27 @@ void ExampleGame::Update(float dt)
 	m_offset.y += 144.0f * 0.0025f * dt;
 	m_angle += m_spinAxisX->Value() * dt * 10.0f;
 	m_angle2 += m_spinAxisY->Value() * dt * 10.0f;
+    
+    if (m_spinAxisX->Value() > 0.01f)
+    {
+        m_spin = 1.0f;
+    }
+    else if (m_spinAxisX->Value() < -0.01f)
+    {
+        m_spin = -1.0f;
+    }
+    
+    if (m_spinAxisY->Value() > 0.01f)
+    {
+        m_spin2 = 1.0f;
+    }
+    else if (m_spinAxisY->Value() < -0.01f)
+    {
+        m_spin2 = -1.0f;
+    }
+    
+    m_angle += m_spin * dt * 1.0f;
+    m_angle2 += m_spin2 * dt * 0.75f;
 
     if (m_bumpButton->WasJustPressed())
         m_bump = 2;
@@ -422,18 +456,29 @@ void ExampleGame::Update(float dt)
 
 	ivec2 size = m_primaryTarget->GetSize();
 	float ratio = (float)size.x / (float)size.y;
-
+    
 	mat4 projectionmat = mat4::Frustum(-1.0f * ratio, 1.0f * ratio, -1.0f, 1.0f, 1.5f, 1000.0f);
 	mat4 viewmat = mat4::Translate(vec3(0.0f, 0.0f, -5.5f));
 	mat4 transform = mat4::AxisAngle(vec3::Up(), m_angle);
 	mat4 transform2 = mat4::AxisAngle(vec3::Right(), m_angle2);
     mat4 scale = mat4::Scale(vec3(m_bump, m_bump, m_bump));
-    mat4 modelmat = transform * transform2 * scale;;
+    mat4 modelmat = transform * transform2 * scale;
 
-	m_material->SetVec4("u_color", RandomColor());
-	m_material->SetVec2("u_offset", m_offset);
-	m_material->SetMat4("u_transform", projectionmat * viewmat * modelmat);
-
-	m_framebufferQueue->Draw(m_binding, m_material);
+	m_framebufferQueue->SetShaderVec4(m_properties.Color, RandomColor());
+	m_framebufferQueue->SetShaderVec2(m_properties.Offset, m_offset);
+    
+    
+	m_material[0]->SetShaderMat4(m_properties.Transform, projectionmat * viewmat * modelmat);
+    m_framebufferQueue->Draw(m_binding, m_material[0]);
+    
+    mat4 offset = mat4::Translate(vec3(5.0f, 0.0f, -3.0f));
+    m_material[1]->SetShaderMat4(m_properties.Transform, projectionmat * viewmat * offset * modelmat);
+    m_framebufferQueue->Draw(m_binding, m_material[1]);
+    
+    offset = mat4::Translate(vec3(-5.0f, 0.0f, -3.0f));
+    m_material[2]->SetShaderMat4(m_properties.Transform, projectionmat * viewmat * offset * modelmat);
+    m_framebufferQueue->Draw(m_binding, m_material[2]);
+    
+    
 	m_mainQueue->Draw(m_quadbinding, m_blitMaterial);
 }

@@ -23,6 +23,13 @@ public:
 	virtual void Update(float dt);
 
 private:
+    
+    struct
+    {
+        int Color;
+        int Transform;
+        int Offset;
+    } m_properties;
 
     Rocket::RenderTarget* m_primaryTarget;
 
@@ -31,7 +38,7 @@ private:
 	Rocket::DrawBinding* m_binding;
 	Rocket::Shader* m_shader;
 	Rocket::Texture2D* m_texture;
-	Rocket::Material* m_material;
+	Rocket::Material* m_material[3];
 
 	Rocket::RenderTarget* m_renderTarget;
 	Rocket::RenderQueue* m_framebufferQueue;
@@ -49,6 +56,9 @@ private:
 
 	float m_angle;
 	float m_angle2;
+    float m_spin;
+    float m_spin2;
+    
 	Rocket::vec2 m_offset;
     float m_bump;
 

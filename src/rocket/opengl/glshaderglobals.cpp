@@ -20,8 +20,7 @@ int GLShaderGlobals::AddProperty(const char* name)
         return it->second;
     }
     
-    Property property;
-    property.name = name;
+    GLShaderProperty property;
     property.type = VT_UNSET;
     m_properties.push_back(property);
     
@@ -110,89 +109,89 @@ void GLShaderGlobals::SetValue(const char* name, Texture3D* texture)
 
 void GLShaderGlobals::SetValue(int propertyID, float value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.f = value;
     p.type = VT_FLOAT;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, const vec2& value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.v2 = value;
     p.type = VT_VEC2;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, const vec3& value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.v3 = value;
     p.type = VT_VEC3;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, const vec4& value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.v4 = value;
     p.type = VT_VEC4;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, const mat4& value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.mat4 = value;
     p.type = VT_MAT4;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, int value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.i = value;
     p.type = VT_INT;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, const ivec2& value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.iv2 = value;
     p.type = VT_IVEC2;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, const ivec3& value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.iv3 = value;
     p.type = VT_IVEC3;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, const ivec4& value)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.iv4 = value;
     p.type = VT_IVEC4;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, Texture1D* texture)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.t1d = texture;
     p.type = VT_TEXTURE1D;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, Texture2D* texture)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.t2d = texture;
     p.type = VT_TEXTURE2D;
 }
 
 void GLShaderGlobals::SetValue(int propertyID, Texture3D* texture)
 {
-    Property& p = m_properties[propertyID];
+    GLShaderProperty& p = m_properties[propertyID];
     p.value.t3d = texture;
     p.type = VT_TEXTURE3D;
 }
 
-const GLShaderGlobals::Property* GLShaderGlobals::GetProperty(int propertyID) const
+const GLShaderProperty* GLShaderGlobals::GetProperty(int propertyID) const
 {
-    return &m_properties[propertyID];
+    return &m_properties.at(propertyID);
 }

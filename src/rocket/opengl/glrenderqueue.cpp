@@ -1,16 +1,18 @@
 #include "opengl/glrenderqueue.h"
-
 #include "opengl/rocket_opengl.h"
 #include "opengl/glmaterial.h"
 #include "opengl/gldrawbinding.h"
 #include "opengl/glrendertarget.h"
 
+#include <cassert>
+
 
 using namespace Rocket;
 using namespace Rocket::OpenGL;
 
-GLRenderQueue::GLRenderQueue(const char* name, int priority, RenderTarget* defaultTarget) :
-	m_name(name),
+GLRenderQueue::GLRenderQueue(const char* name, int priority, RenderTarget* defaultTarget, GLShaderGlobals* globals) :
+    m_globals(globals),
+    m_name(name),
 	m_priority(priority),
 	m_enabled(true),
 	m_clearColorEnabled(false),
@@ -111,7 +113,206 @@ ViewportRect GLRenderQueue::GetViewport() const
 	return m_viewport;
 }
 
-void GLRenderQueue::FlushQueue(GLShaderGlobals* globals)
+void GLRenderQueue::SetShaderFloat(const char* name, float value)
+{
+    SetShaderFloat(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderVec2(const char* name, const vec2& value)
+{
+    SetShaderVec2(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderVec3(const char* name, const vec3& value)
+{
+    SetShaderVec3(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderVec4(const char* name, const vec4& value)
+{
+    SetShaderVec4(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderMat4(const char* name, const mat4& value)
+{
+    SetShaderMat4(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderInt(const char* name, int value)
+{
+    SetShaderInt(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderIVec2(const char* name, const ivec2& value)
+{
+    SetShaderIVec2(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderIVec3(const char* name, const ivec3& value)
+{
+    SetShaderIVec3(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderIVec4(const char* name, const ivec4& value)
+{
+    SetShaderIVec4(m_globals->GetPropertyID(name), value);
+}
+
+void GLRenderQueue::SetShaderTexture1D(const char* name, Texture1D* texture)
+{
+    SetShaderTexture1D(m_globals->GetPropertyID(name), texture);
+}
+
+void GLRenderQueue::SetShaderTexture2D(const char* name, Texture2D* texture)
+{
+    SetShaderTexture2D(m_globals->GetPropertyID(name), texture);
+}
+
+void GLRenderQueue::SetShaderTexture3D(const char* name, Texture3D* texture)
+{
+    SetShaderTexture3D(m_globals->GetPropertyID(name), texture);
+}
+
+void GLRenderQueue::SetShaderFloat(int propertyID, float value)
+{
+    GLShaderProperty property;
+    property.type = VT_FLOAT;
+    property.value.f = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderVec2(int propertyID, const vec2& value)
+{
+    GLShaderProperty property;
+    property.type = VT_VEC2;
+    property.value.v2 = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderVec3(int propertyID, const vec3& value)
+{
+    GLShaderProperty property;
+    property.type = VT_VEC3;
+    property.value.v3 = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderVec4(int propertyID, const vec4& value)
+{
+    GLShaderProperty property;
+    property.type = VT_VEC4;
+    property.value.v4 = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderMat4(int propertyID, const mat4& value)
+{
+    GLShaderProperty property;
+    property.type = VT_MAT4;
+    property.value.mat4 = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderInt(int propertyID, int value)
+{
+    GLShaderProperty property;
+    property.type = VT_INT;
+    property.value.i = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderIVec2(int propertyID, const ivec2& value)
+{
+    GLShaderProperty property;
+    property.type = VT_IVEC2;
+    property.value.iv2 = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderIVec3(int propertyID, const ivec3& value)
+{
+    GLShaderProperty property;
+    property.type = VT_IVEC3;
+    property.value.iv3 = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderIVec4(int propertyID, const ivec4& value)
+{
+    GLShaderProperty property;
+    property.type = VT_IVEC4;
+    property.value.iv4 = value;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderTexture1D(int propertyID, Texture1D* texture)
+{
+    GLShaderProperty property;
+    property.type = VT_TEXTURE1D;
+    property.value.t1d = texture;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderTexture2D(int propertyID, Texture2D* texture)
+{
+    GLShaderProperty property;
+    property.type = VT_TEXTURE2D;
+    property.value.t2d = texture;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::SetShaderTexture3D(int propertyID, Texture3D* texture)
+{
+    GLShaderProperty property;
+    property.type = VT_TEXTURE3D;
+    property.value.t3d = texture;
+    SetProperty(propertyID, property);
+}
+
+void GLRenderQueue::ClearShaderProperty(const char* name)
+{
+    ClearShaderProperty(m_globals->GetPropertyID(name));
+}
+
+void GLRenderQueue::ClearShaderProperty(int propertyID)
+{
+    int index = -1;
+    
+    for(int i = 0; i < m_propertyIDs.size(); ++i)
+    {
+        if (m_propertyIDs[i] == propertyID)
+        {
+            index = i;
+            break;
+        }
+    }
+    
+    assert(index >= 0); // Index not found
+    
+    m_propertyIDs.erase(m_propertyIDs.begin() + index);
+    m_properties.erase(m_properties.begin() + index);
+}
+
+const GLShaderProperty* GLRenderQueue::GetProperty(int propertyID) const
+{
+    int index = -1;
+    size_t size = m_propertyIDs.size();
+    for (int i = 0; i < size; ++i)
+    {
+        if (m_propertyIDs[i] == propertyID)
+        {
+            index = i;
+            break;
+        }
+    }
+    
+    if (index < 0)
+        return m_globals->GetProperty(propertyID);
+    
+    return &m_properties[index];
+}
+
+void GLRenderQueue::FlushQueue()
 {
 	if (m_enabled)
 	{
@@ -152,11 +353,36 @@ void GLRenderQueue::FlushQueue(GLShaderGlobals* globals)
 			QueueItem draw = m_drawQueue[i];
 
 			GLMaterial* material = (GLMaterial*)draw.material;
-            material->MakeCurrent(globals);
+            material->MakeCurrent((GLShaderOverride*)this);
             
 			((GLDrawBinding*)draw.binding)->Draw();
 		}
 	}
 
 	m_drawQueue.clear();
+}
+
+void GLRenderQueue::SetProperty(int propertyID, GLShaderProperty& property)
+{
+    int index = -1;
+    size_t size = m_propertyIDs.size();
+    
+    for (int i = 0; i < size; ++i)
+    {
+        if (m_propertyIDs[i] == propertyID)
+        {
+            index = i;
+            break;
+        }
+    }
+    
+    if (index < 0)
+    {
+        m_propertyIDs.push_back(propertyID);
+        m_properties.push_back(property);
+    }
+    else
+    {
+        m_properties[index] = property;
+    }
 }

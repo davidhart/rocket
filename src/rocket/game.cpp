@@ -41,6 +41,7 @@ Renderer* InternalGameServices::Renderer()
 int Game::Bootstrap(Game* game)
 {
     GameView* view = GameView::Create("bootstrap");
+    view->SetIsResizable(true);
 
     if (view == nullptr)
         return -1;

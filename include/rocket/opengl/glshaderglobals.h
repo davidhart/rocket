@@ -56,15 +56,21 @@ namespace Rocket
             VT_UNSET
         };
         
-        class GLShaderGlobals
+        struct GLShaderProperty
+        {
+            GLShaderValue value;
+            GLShaderValueType type;
+        };
+        
+        class GLShaderOverride
         {
         public:
-            struct Property
-            {
-                std::string name;
-                GLShaderValue value;
-                GLShaderValueType type;
-            };
+            virtual const GLShaderProperty* GetProperty(int propertyID) const = 0;
+        };
+        
+        class GLShaderGlobals : public GLShaderOverride
+        {
+        public:
             
             int AddProperty(const char* name);
             int GetPropertyID(const char* name);
@@ -95,12 +101,11 @@ namespace Rocket
             void SetValue(int propertyID, Texture2D* texture);
             void SetValue(int propertyID, Texture3D* texture);
             
-            
-            const Property* GetProperty(int propertyID) const;
+            const GLShaderProperty* GetProperty(int propertyID) const;
             
         private:
             
-            std::vector<Property> m_properties;
+            std::vector<GLShaderProperty> m_properties;
             std::map<std::string, int> m_nameToIndex;
         };
     }
