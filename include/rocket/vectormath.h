@@ -49,8 +49,15 @@ namespace Rocket
 
 		static tvec2<T> Zero();
 		static tvec2<T> One();
+        
+        static T Dot(const tvec2<T>& lhs, const tvec2<T>& rhs);
 	};
+#pragma pack(pop)
 
+    template <typename T> tvec2<T> operator*(T lhs, const tvec2<T>& rhs);
+    template <typename T> tvec2<T> operator/(T lhs, const tvec2<T>& rhs);
+    
+#pragma pack(push, 1)
 	template<typename T> class tvec3
 	{
 	public:
@@ -95,7 +102,12 @@ namespace Rocket
 
 		static T Dot(const tvec3<T>& lhs, const tvec3<T>& rhs);
 	};
-
+#pragma pack(pop)
+    
+    template <typename T> tvec3<T> operator*(T lhs, const tvec3<T>& rhs);
+    template <typename T> tvec3<T> operator/(T lhs, const tvec3<T>& rhs);
+    
+#pragma pack(push, 1)
 	template<typename T> class tvec4
 	{
 	public:
@@ -138,6 +150,10 @@ namespace Rocket
 		static tvec4<T> Zero();
 		static tvec4<T> One();
 	};
+#pragma pack(pop)
+
+    template<typename T> tvec4<T> operator*(T lhs, const tvec4<T>& rhs);
+    template<typename T> tvec4<T> operator/(T lhs, const tvec4<T>& rhs);
 
 	typedef tvec2<float> vec2;
 	typedef tvec3<float> vec3;
@@ -149,6 +165,7 @@ namespace Rocket
 	typedef tvec3<int> ivec3;
 	typedef tvec4<int> ivec4;
 
+#pragma pack(push, 1)
 	template<typename T> class tmat4
 	{
 	public:
@@ -176,9 +193,9 @@ namespace Rocket
 	private:
 		T values[16];
 	};
-
-	typedef tmat4<float> mat4;
 #pragma pack(pop)
+    
+	typedef tmat4<float> mat4;
 
 	// util
     inline float DegreesToRadians(float degrees)
@@ -189,6 +206,11 @@ namespace Rocket
     inline float RadiansToDegrees(float radians)
     {
         return radians / (float)ROCKET_PI * 180.0f;
+    }
+    
+    template <typename T> inline T rocket_dot(T x0, T y0, T x1, T y1)
+    {
+        return x0 * x1 + y0 * y1;
     }
 
 	template <typename T> inline T rocket_dot(T x0, T y0, T z0, T x1, T y1, T z1)
@@ -334,6 +356,21 @@ namespace Rocket
 	{
 		return tvec2<T>(1, 1);
 	}
+    
+    template<typename T> inline T tvec2<T>::Dot(const tvec2<T>& lhs, const tvec2<T>& rhs)
+    {
+        return rocket_dot(lhs.x, lhs.y, rhs.x, rhs.y);
+    }
+    
+    template<typename T> inline tvec2<T> operator*(T lhs, const tvec2<T>& rhs)
+    {
+        return vec2(lhs * rhs.x, lhs * rhs.y);
+    }
+    
+    template<typename T> inline tvec2<T> operator/(T lhs, const tvec2<T>& rhs)
+    {
+        return vec2(lhs / rhs.x, lhs / rhs.y);
+    }
 
 	// tvec3 implementation
 	template<typename T> inline tvec3<T>::tvec3() :
@@ -500,6 +537,16 @@ namespace Rocket
 		return rocket_dot(lhs.x, lhs.y, lhs.z, rhs.x, rhs.y, rhs.z);
 	}
 
+    template<typename T> inline tvec3<T> operator*(T lhs, const tvec3<T>& rhs)
+    {
+        return tvec3<T>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
+    }
+    
+    template<typename T> inline tvec3<T> operator/(T lhs, const tvec3<T>& rhs)
+    {
+        return tvec3<T>(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z);
+    }
+    
 	// tvec4 implementation
 	template<typename T> inline tvec4<T>::tvec4() :
 		x(0), y(0), z(0), w(0)
@@ -660,6 +707,16 @@ namespace Rocket
 	{
 		return tvec4<T>(1, 1, 1, 1);
 	}
+    
+    template<typename T> inline tvec4<T> operator*(T lhs, const tvec4<T>& rhs)
+    {
+        return tvec4<T>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z, lhs * rhs.w);
+    }
+    
+    template<typename T> inline tvec4<T> operator/(T lhs, const tvec4<T>& rhs)
+    {
+        return tvec4<T>(lhs / rhs.x, lhs / rhs.y, lhs / rhs.z, lhs / rhs.w);
+    }
 
 	// tmat4 implementation
 	template<typename T> inline tmat4<T>::tmat4()
