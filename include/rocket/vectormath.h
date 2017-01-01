@@ -286,7 +286,7 @@ namespace Rocket
 
     template <typename T> inline const tvec2<T>& tvec2<T>::operator+=(const tvec2<T>& rhs)
     {
-        x += rhs.y;
+        x += rhs.x;
         y += rhs.y;
         
         return *this;
