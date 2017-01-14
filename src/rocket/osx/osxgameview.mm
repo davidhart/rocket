@@ -205,11 +205,9 @@ bool OSXGameView::Create()
     windowRect.origin = CGPointMake(0.0f, 0.0f);
     windowRect.size = CGSizeMake(800.0f, 600.0f);
     
-    NSWindowStyleMask windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
-    
     RocketOSXWindow* window = [[RocketOSXWindow alloc]
                  initWithContentRect:windowRect
-                 styleMask:windowStyle
+                 styleMask:NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask
                  backing:NSBackingStoreBuffered
                  defer:NO];
     
