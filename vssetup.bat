@@ -1,1 +1,1 @@
-cmake -H. -Bbuild/vs -G "Visual Studio 14 2015"
+cmake -H. -Bbuild/vs -G "Visual Studio 15 2017"

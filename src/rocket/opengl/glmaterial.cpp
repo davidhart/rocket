@@ -13,7 +13,7 @@ GLMaterial::GLMaterial(GLShader* shader) :
     assert(m_shader);
     
     const GLShader::Uniform* uniforms = shader->Uniforms();
-    size_t numuniforms = shader->NumUniforms();
+    int numuniforms = (int)shader->NumUniforms();
     
     m_parameters.resize(numuniforms);
     
@@ -178,7 +178,7 @@ void GLMaterial::SetShaderTexture3D(int propertyID, Texture3D* texture)
 
 void GLMaterial::ClearShaderProperty(const char *name)
 {
-    size_t size = m_parameters.size();
+    int size = (int)m_parameters.size();
     for (int i = 0; i < size; ++i)
     {
         if (strcmp(m_parameters[i].name, name) == 0)
@@ -192,7 +192,7 @@ void GLMaterial::ClearShaderProperty(const char *name)
 
 void GLMaterial::ClearShaderProperty(int propertyID)
 {
-    size_t size = m_parameters.size();
+    int size = (int)m_parameters.size();
     for (int i = 0; i < size; ++i)
     {
         if (m_parameters[i].globalID == propertyID)
@@ -206,7 +206,7 @@ void GLMaterial::ClearShaderProperty(int propertyID)
 
 void GLMaterial::SetByName(const char *name, GLShaderValue value, GLShaderValueType type)
 {
-    size_t size = m_parameters.size();
+    int size = (int)m_parameters.size();
     for (int i = 0; i < size; ++i)
     {
         if (strcmp(m_parameters[i].name, name) == 0)
@@ -221,7 +221,7 @@ void GLMaterial::SetByName(const char *name, GLShaderValue value, GLShaderValueT
 
 void GLMaterial::SetByID(int propertyID, GLShaderValue value, GLShaderValueType type)
 {
-    size_t size = m_parameters.size();
+    int size = (int)m_parameters.size();
     for (int i = 0; i < size; ++i)
     {
         if (m_parameters[i].globalID == propertyID)
@@ -241,7 +241,7 @@ void GLMaterial::MakeCurrent(GLShaderOverride* overrides)
     
     glUseProgram(m_shader->GetNativeHandle());
     
-    size_t numParameters = m_parameters.size();
+    int numParameters = (int)m_parameters.size();
     for (int i = 0; i < numParameters; ++i)
     {
         Parameter& parameter = m_parameters[i];

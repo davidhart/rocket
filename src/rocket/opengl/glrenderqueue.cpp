@@ -278,7 +278,7 @@ void GLRenderQueue::ClearShaderProperty(int propertyID)
 {
     int index = -1;
     
-    for(int i = 0; i < m_propertyIDs.size(); ++i)
+    for(int i = 0; i < (int)m_propertyIDs.size(); ++i)
     {
         if (m_propertyIDs[i] == propertyID)
         {
@@ -296,7 +296,7 @@ void GLRenderQueue::ClearShaderProperty(int propertyID)
 const GLShaderProperty* GLRenderQueue::GetProperty(int propertyID) const
 {
     int index = -1;
-    size_t size = m_propertyIDs.size();
+    int size = (int)m_propertyIDs.size();
     for (int i = 0; i < size; ++i)
     {
         if (m_propertyIDs[i] == propertyID)
@@ -365,7 +365,7 @@ void GLRenderQueue::FlushQueue()
 void GLRenderQueue::SetProperty(int propertyID, GLShaderProperty& property)
 {
     int index = -1;
-    size_t size = m_propertyIDs.size();
+    int size = (int)m_propertyIDs.size();
     
     for (int i = 0; i < size; ++i)
     {
